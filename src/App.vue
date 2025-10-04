@@ -22,8 +22,8 @@
 import Navbar from '@/components/Navbar.vue';
 import HomeSection from '@/components/HomeSection.vue';
 import Counter from '@/components/Counter.vue';
-import Projects from '@/components/Projects.vue';
-import Skills from '@/components/Skills.vue';
+import Projects from '@/components/Features.vue';
+import Skills from '@/components/Benefits.vue';
 import BackToTop from '@/components/BackToTop.vue';
 </script>
 

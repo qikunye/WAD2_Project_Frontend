@@ -1,22 +1,25 @@
 <template>
-    <div class="relative">
-        <header class = "absolute w-1/2 aspect-[16/5] -skew-x-12 rounded-full bg-gradient-to-r from-[#00c6cc]
-        via[#785ae4] to-secondary opacity-30 dark:opacity-20 blur-[100px] left-10 top-0 hidden md:block">
-        </header>
-        <header class = "absolute w-1/2 aspect-[16/5] -skew-x-12 rounded-full bg-gradient-to-r from-[#00c6cc]
-        via[#785ae4] to-secondary opacity-30 dark:opacity-20 blur-[100px] left-10 top-0 hidden md:block">
-        </header>
-    </div>
-    <!--Title-->
-    <h2 class="text-4xl md:text-5xl lg:text-6xl font-bold text-center text-secondary stroke-text text-stroke-primary
-    dark:text-stroke-secondary " data-aos="fade-up">{{ title }}</h2>
-</template>
-<script setup>
-defineProps({
-    title:{
-        type:String,
-        required:true
-    }
-})
-
-</script>
+    <!--
+      A simple section header component.  It renders a level-two heading
+      with the global section-title class so that styling stays consistent
+      throughout the project.  Additional content can be provided via a slot.
+    -->
+    <h2 class="section-title">
+      <slot>{{ title }}</slot>
+    </h2>
+  </template>
+  
+  <script setup>
+  defineProps({
+    title: {
+      type: String,
+      default: '',
+    },
+  });
+  </script>
+  
+  <!--
+    No scoped styles are required here.  The .section-title class is defined
+    in the project's global styles.css.
+  -->
+  
