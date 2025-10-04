@@ -244,6 +244,33 @@ p {
   color: var(--color-secondary);
 }
 
+/* --------------------------------------------------------------------
+   Menu button styles
+
+   The "Menu" button sits next to the navigation links and toggles the
+   bubble menu overlay defined in MenuOverlay.vue.  It uses the
+   primary colour for its background and switches colours on hover to
+   maintain contrast with the rest of the navbar.  Feel free to
+   adjust padding and border-radius as needed for your design.
+--------------------------------------------------------------------- */
+.menu-button {
+  background-color: var(--color-primary);
+  color: var(--color-secondary);
+  border: none;
+  padding: 0.5rem 1rem;
+  border-radius: 0.5rem;
+  font-family: var(--font-body);
+  cursor: pointer;
+  transition: background-color 0.3s ease, color 0.3s ease, transform 0.3s ease;
+}
+
+.menu-button:hover {
+  background-color: var(--color-secondary);
+  color: var(--color-primary);
+  /* Shift the button slightly to the upper right on hover */
+  transform: translate(0.2rem, -0.2rem);
+}
+
 /* Home section */
 .home-section {
   padding: 4rem 2rem;
