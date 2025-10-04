@@ -1,0 +1,355 @@
+/*
+ * styles.css
+ *
+ * This stylesheet defines a simple design system inspired by the EisLab website.
+ * It exposes colour variables and font families similar to those used on EisLab’s
+ * home page and bubble navigation. The palette includes a light warm grey
+ * background, a deep purple/blue for primary text, a soft pink for
+ * navigation bubbles, and an optional reddish accent. Headings use a bold
+ * display font, while body text uses a clean sans‑serif. Utility classes
+ * provide basic spacing and button styles. Responsive rules ensure
+ * consistent scaling on smaller screens.
+ */
+
+@import url('https://fonts.googleapis.com/css2?family=Anton:wght@400&family=Poppins:wght@400;600;800&display=swap');
+
+/*
+  Root-level CSS custom properties. Adjust these values to fine‑tune the
+  colour palette and typography across your project. Using variables makes
+  it easy to implement a dark mode or switch palettes in the future.
+*/
+:root {
+  /* Colour palette */
+  --color-background: #e5e4e2; /* light warm grey */
+  --color-primary: #1c1456;   /* deep purple/blue for headings and text */
+  --color-secondary: #f4b6c2; /* soft pink for interactive elements */
+  --color-accent: #e64a19;    /* optional accent (e.g., badges or highlights) */
+
+  /* Typography */
+  --font-heading: 'Anton', sans-serif;
+  --font-body: 'Poppins', sans-serif;
+}
+
+/* Normalize and base styles */
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: var(--font-body);
+  background-color: var(--color-background);
+  color: var(--color-primary);
+  line-height: 1.6;
+}
+
+/* Headings */
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-heading);
+  color: var(--color-primary);
+  letter-spacing: 0.04em;
+  margin-bottom: 0.5rem;
+}
+
+h1 { font-size: 3rem; }
+h2 { font-size: 2.5rem; }
+h3 { font-size: 2rem; }
+h4 { font-size: 1.5rem; }
+h5 { font-size: 1.25rem; }
+h6 { font-size: 1rem; }
+
+p {
+  font-family: var(--font-body);
+  font-size: 1rem;
+  margin-bottom: 1rem;
+}
+
+/* Utility classes for margin and padding */
+.mt-1 { margin-top: 0.5rem; }
+.mt-2 { margin-top: 1rem; }
+.mt-3 { margin-top: 1.5rem; }
+.mb-1 { margin-bottom: 0.5rem; }
+.mb-2 { margin-bottom: 1rem; }
+.mb-3 { margin-bottom: 1.5rem; }
+.p-1  { padding: 0.5rem; }
+.p-2  { padding: 1rem; }
+.p-3  { padding: 1.5rem; }
+
+/* Bubble navigation styles */
+.bubble-nav {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  gap: 1rem;
+  margin: 2rem 0;
+}
+
+.bubble-nav .bubble {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: var(--color-secondary);
+  color: var(--color-primary);
+  font-family: var(--font-heading);
+  border-radius: 50%;
+  text-transform: uppercase;
+  text-align: center;
+  cursor: pointer;
+  transition: transform 0.3s ease;
+}
+
+.bubble-nav .bubble:hover {
+  transform: scale(1.05);
+}
+
+/* Size modifiers for bubbles */
+.bubble-nav .bubble.large {
+  width: 20rem;
+  height: 20rem;
+}
+
+.bubble-nav .bubble.medium {
+  width: 14rem;
+  height: 14rem;
+}
+
+.bubble-nav .bubble.small {
+  width: 10rem;
+  height: 10rem;
+}
+
+/* Primary button */
+.btn-primary {
+  display: inline-block;
+  padding: 0.75rem 1.5rem;
+  background-color: var(--color-primary);
+  color: var(--color-secondary);
+  border: none;
+  border-radius: 0.5rem;
+  font-family: var(--font-heading);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.3s ease;
+}
+
+.btn-primary:hover {
+  background-color: var(--color-secondary);
+  color: var(--color-primary);
+  transform: translateY(-2px);
+}
+
+
+/* styles.css */
+
+/* Button positioning */
+.back-to-top {
+  position: fixed;
+  bottom: 1rem; /* 4 units */
+  right: 1rem; /* 4 units */
+  width: 3rem; /* 12 units */
+  height: 3rem; /* 12 units */
+  border-radius: 50%; /* Full circle */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: opacity 0.3s ease, background-color 0.3s ease;
+}
+
+/* Background colors */
+/* Default styles for the back-to-top button.  Even though the component
+   is currently unused, these rules are provided for future expansion. */
+.back-to-top {
+  background-color: var(--color-primary);
+  color: var(--color-secondary);
+}
+
+.back-to-top:hover {
+  background-color: var(--color-secondary);
+  color: var(--color-primary);
+}
+
+/* Dark mode support for back-to-top */
+.dark .back-to-top {
+  background-color: var(--color-secondary);
+  color: var(--color-primary);
+}
+
+/* Font size for the icon inside the back-to-top button */
+.back-to-top .icon {
+  font-size: 1.25rem;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  h1 { font-size: 2.5rem; }
+  h2 { font-size: 2rem; }
+  h3 { font-size: 1.5rem; }
+  .bubble-nav .bubble.large {
+    width: 16rem;
+    height: 16rem;
+  }
+  .bubble-nav .bubble.medium {
+    width: 12rem;
+    height: 12rem;
+  }
+  .bubble-nav .bubble.small {
+    width: 8rem;
+    height: 8rem;
+  }
+}
+
+/* =====================================================================
+   Custom component styles for the food waste project
+   These classes replace the Tailwind CSS classes previously used in the
+   original project.  They reference the colour palette and fonts defined
+   at the top of this file.
+======================================================================= */
+
+/* Navigation bar */
+.navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem 2rem;
+  background-color: var(--color-background);
+}
+
+.navbar-brand {
+  font-family: var(--font-heading);
+  font-size: 2rem;
+  color: var(--color-primary);
+}
+
+.navbar-menu {
+  display: flex;
+  gap: 2rem;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.navbar-link {
+  font-family: var(--font-heading);
+  text-decoration: none;
+  color: var(--color-primary);
+  transition: color 0.3s ease;
+  font-size: 1rem;
+}
+
+.navbar-link:hover {
+  color: var(--color-secondary);
+}
+
+/* Home section */
+.home-section {
+  padding: 4rem 2rem;
+}
+
+.home-container {
+  max-width: 800px;
+  margin: 0 auto;
+  text-align: center;
+}
+
+.home-title {
+  font-size: 2.5rem;
+  color: var(--color-primary);
+}
+
+.home-description {
+  font-size: 1.125rem;
+  color: var(--color-primary);
+  margin-top: 1rem;
+  line-height: 1.6;
+}
+
+/* =====================================================================
+   Statistics section
+   The stats section presents key numerical metrics about the application.
+   Each statistic is displayed in a simple card-like format.
+======================================================================= */
+
+.stats-section {
+  padding: 4rem 2rem;
+  text-align: center;
+}
+
+.stats-container {
+  display: flex;
+  justify-content: center;
+  gap: 2rem;
+  flex-wrap: wrap;
+}
+
+.stat {
+  text-align: center;
+}
+
+.stat-number {
+  font-family: var(--font-heading);
+  font-size: 3rem;
+  color: var(--color-primary);
+}
+
+.stat-title {
+  font-family: var(--font-body);
+  font-size: 1.2rem;
+  margin-top: 0.5rem;
+  color: var(--color-primary);
+}
+
+/* =====================================================================
+   Cards grid section
+   This generic grid layout is used for both the features and benefits
+   sections.  It adapts to various screen sizes and provides a neat
+   presentation for items of equal importance.
+======================================================================= */
+
+.cards-section {
+  padding: 4rem 2rem;
+}
+
+.section-title {
+  font-family: var(--font-heading);
+  font-size: 2.5rem;
+  margin-bottom: 2rem;
+  text-align: center;
+  color: var(--color-primary);
+}
+
+.cards-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 2rem;
+}
+
+.card {
+  background-color: var(--color-background);
+  padding: 2rem;
+  border-radius: 1rem;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+  text-align: center;
+  transition: transform 0.3s ease;
+}
+
+.card:hover {
+  transform: translateY(-5px);
+}
+
+.card-title {
+  font-family: var(--font-heading);
+  font-size: 1.5rem;
+  margin-bottom: 0.5rem;
+  color: var(--color-primary);
+}
+
+.card-desc {
+  font-family: var(--font-body);
+  font-size: 1rem;
+  color: var(--color-primary);
+  line-height: 1.5;
+}
