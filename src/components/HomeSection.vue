@@ -13,5 +13,5 @@
 
 <script setup>
 // HomeSection component displays the core problem definition text.  It uses CSS classes
-// defined in styles.css for layout and typography.
+// defined in main.css for layout and typography.
 </script>

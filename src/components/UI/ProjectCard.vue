@@ -2,7 +2,7 @@
     <!--
       A card component that displays an optional image, title, description,
       tags and an optional link to the project’s source code.  It uses
-      classes from styles.css for the main card layout and defines scoped
+      classes from main.css for the main card layout and defines scoped
       styles for the tags and link.
     -->
     <div class="card">

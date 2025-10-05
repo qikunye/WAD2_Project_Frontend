@@ -25,8 +25,16 @@
         {{ item.name }}
       </a>
     </nav>
-    <!-- Menu button to open the bubble menu overlay -->
-    <button class="menu-button" @click="menuOpen = true">Menu</button>
+
+    <div class="navbar-buttons">
+      <!-- Login/Profile button -->
+      <button v-if="!userStore.isLoggedIn" class="auth-button">Login</button>
+      <button v-else class="auth-button">Profile</button>
+
+      <!-- Menu button to open the bubble menu overlay -->
+      <button class="menu-button" @click="menuOpen = true">Menu</button>
+    </div>
+
     <!-- Bubble menu overlay component -->
     <MenuOverlay
       :isOpen="menuOpen"
@@ -37,8 +45,9 @@
 </template>
 
 <script setup>
-import { ref } from 'vue';
+import { ref, onMounted } from 'vue';
 import MenuOverlay from './MenuOverlay.vue';
+import { useUserStore } from '../stores/userStore';
 
 // Navigation items for the standard navbar.  The Home link scrolls within
 // the SPA, while the other links point to standalone pages located in
@@ -51,7 +60,7 @@ const menuOpen = ref(false);
 // Items to display inside the bubble menu overlay.  Each item defines
 // a name, a destination and a CSS class used to position and size its
 // circle.  You can adjust the class names to match definitions in
-// MenuOverlay.vue or styles.css.
+// MenuOverlay.vue or main.css.
 const overlayItems = [
   { name: 'Home', href: '#home', class: 'bubble-home' },
   { name: 'Recipes Finder', href: '/recipes.html', class: 'bubble-recipes' },
@@ -70,5 +79,14 @@ const scrollToSection = (href) => {
     }
   }
 };
+
+// accessing user store to check if user logged in
+const userStore = useUserStore();
+
+onMounted(async () => {
+  if (userStore.user === null) {
+    await userStore.fetchUser();
+  }
+})
 </script>
   

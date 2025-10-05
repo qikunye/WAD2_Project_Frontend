@@ -3,7 +3,7 @@
     Statistics section for the food waste application.  This replaces the original
     Tailwind-based counter component with a simpler design.  The section
     displays a few key numbers about the app using custom CSS classes
-    defined in styles.css.
+    defined in main.css.
   -->
   <section id="stats" class="stats-section">
     <div class="stats-container">
