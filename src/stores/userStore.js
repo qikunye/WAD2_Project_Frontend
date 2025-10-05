@@ -21,6 +21,11 @@ export const useUserStore = defineStore("user", {
                 this.isLoggedIn = false;
                 this.user = null;
             }
+        },
+        async logout() {
+            this.isLoggedIn = false;
+            this.user = null; 
         }
+
     }
 })
