@@ -28,8 +28,8 @@
 
     <div class="navbar-buttons">
       <!-- Login/Profile button -->
-      <button v-if="!userStore.isLoggedIn" class="auth-button">Login</button>
-      <button v-else class="auth-button">Profile</button>
+      <router-link v-if="!userStore.isLoggedIn" to="/login" class="auth-button">Login</router-link>
+      <router-link v-else to="/profile" class="auth-button">Profile</router-link>  
 
       <!-- Menu button to open the bubble menu overlay -->
       <button class="menu-button" @click="menuOpen = true">Menu</button>
