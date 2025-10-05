@@ -210,7 +210,7 @@ p {
 ======================================================================= */
 
 /* Navigation bar */
-.navbar {
+/* .navbar {
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -222,7 +222,33 @@ p {
   font-family: var(--font-heading);
   font-size: 2rem;
   color: var(--color-primary);
+} */
+
+.navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem 2rem;
+  background-color: var(--color-background);
 }
+
+.navbar-brand-container {
+  display: flex;
+  align-items: center;
+  gap: 0.3rem; /* space between logo and brand text */
+}
+
+.navbar-logo {
+  height: 40px; /* adjust to fit your navbar */
+  width: auto;
+}
+
+.navbar-brand {
+  font-family: var(--font-heading);
+  font-size: 2rem;
+  color: var(--color-primary);
+}
+
 
 .navbar-menu {
   display: flex;

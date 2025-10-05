@@ -9,7 +9,10 @@
     scrolling within the current page.
   -->
   <header class="navbar">
-    <div class="navbar-brand">Food Waste App</div>
+    <div class="navbar-brand-container">
+        <img src="../../public/images/zerobites_logo.png" alt="ZeroBites Logo" class="navbar-logo" />
+        <div class="navbar-brand">ZeroBites</div>
+    </div>
     <nav class="navbar-menu">
       <!-- iterate over Menu to render each link -->
       <a
