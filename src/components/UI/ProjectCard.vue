@@ -14,7 +14,7 @@
         class="card-image"
       />
       <h3 class="card-title">{{ title }}</h3>
-      <p class="card-desc">{{ description }}</p>
+      <!-- <p class="card-desc">{{ description }}</p> -->
       <!-- Tags -->
       <ul v-if="tags && tags.length" class="card-tags">
         <li v-for="(tag, index) in tags" :key="index">#{{ tag }}</li>
@@ -54,6 +54,7 @@
   </script>
   
   <style scoped>
+
   /* Image on top of the card */
   .card-image {
     width: 100%;
