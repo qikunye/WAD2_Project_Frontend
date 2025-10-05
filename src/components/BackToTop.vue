@@ -3,7 +3,7 @@
     A simple back-to-top button.  It becomes visible when the user scrolls down
     more than 300px.  The button uses a Unicode up-arrow character instead of
     relying on an external icon library.  Styles for `.back-to-top` and
-    `.icon` are defined in styles.css.
+    `.icon` are defined in main.css.
   -->
   <button
     v-if="isVisible"

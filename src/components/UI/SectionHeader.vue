@@ -20,6 +20,6 @@
   
   <!--
     No scoped styles are required here.  The .section-title class is defined
-    in the project's global styles.css.
+    in the project's global main.css.
   -->
   

@@ -1,7 +1,7 @@
 <template>
   <!--
     A simple button component that uses the primary button styling defined
-    in your global styles.css.  It emits a native click event when
+    in your global main.css.  It emits a native click event when
     pressed and falls back to the provided label if no slot content is
     given.
   -->
@@ -31,5 +31,5 @@ const props = defineProps({
 
 <!--
   No scoped styles are needed here because the appearance is controlled
-  by the .btn-primary class defined in styles.css.
+  by the .btn-primary class defined in main.css.
 -->

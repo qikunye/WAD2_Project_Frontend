@@ -20,10 +20,14 @@
 */
 :root {
   /* Colour palette */
-  --color-background: #e5e4e2; /* light warm grey */
-  --color-primary: #1c1456;   /* deep purple/blue for headings and text */
-  --color-secondary: #f4b6c2; /* soft pink for interactive elements */
-  --color-accent: #e64a19;    /* optional accent (e.g., badges or highlights) */
+  --color-background: #e5e4e2;
+  /* light warm grey */
+  --color-primary: #1c1456;
+  /* deep purple/blue for headings and text */
+  --color-secondary: #f4b6c2;
+  /* soft pink for interactive elements */
+  --color-accent: #e64a19;
+  /* optional accent (e.g., badges or highlights) */
 
   /* Typography */
   --font-heading: 'Anton', sans-serif;
@@ -31,7 +35,9 @@
 }
 
 /* Normalize and base styles */
-*, *::before, *::after {
+*,
+*::before,
+*::after {
   box-sizing: border-box;
   margin: 0;
   padding: 0;
@@ -45,19 +51,41 @@ body {
 }
 
 /* Headings */
-h1, h2, h3, h4, h5, h6 {
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
   font-family: var(--font-heading);
   color: var(--color-primary);
   letter-spacing: 0.04em;
   margin-bottom: 0.5rem;
 }
 
-h1 { font-size: 3rem; }
-h2 { font-size: 2.5rem; }
-h3 { font-size: 2rem; }
-h4 { font-size: 1.5rem; }
-h5 { font-size: 1.25rem; }
-h6 { font-size: 1rem; }
+h1 {
+  font-size: 3rem;
+}
+
+h2 {
+  font-size: 2.5rem;
+}
+
+h3 {
+  font-size: 2rem;
+}
+
+h4 {
+  font-size: 1.5rem;
+}
+
+h5 {
+  font-size: 1.25rem;
+}
+
+h6 {
+  font-size: 1rem;
+}
 
 p {
   font-family: var(--font-body);
@@ -66,15 +94,41 @@ p {
 }
 
 /* Utility classes for margin and padding */
-.mt-1 { margin-top: 0.5rem; }
-.mt-2 { margin-top: 1rem; }
-.mt-3 { margin-top: 1.5rem; }
-.mb-1 { margin-bottom: 0.5rem; }
-.mb-2 { margin-bottom: 1rem; }
-.mb-3 { margin-bottom: 1.5rem; }
-.p-1  { padding: 0.5rem; }
-.p-2  { padding: 1rem; }
-.p-3  { padding: 1.5rem; }
+.mt-1 {
+  margin-top: 0.5rem;
+}
+
+.mt-2 {
+  margin-top: 1rem;
+}
+
+.mt-3 {
+  margin-top: 1.5rem;
+}
+
+.mb-1 {
+  margin-bottom: 0.5rem;
+}
+
+.mb-2 {
+  margin-bottom: 1rem;
+}
+
+.mb-3 {
+  margin-bottom: 1.5rem;
+}
+
+.p-1 {
+  padding: 0.5rem;
+}
+
+.p-2 {
+  padding: 1rem;
+}
+
+.p-3 {
+  padding: 1.5rem;
+}
 
 /* Bubble navigation styles */
 .bubble-nav {
@@ -147,11 +201,16 @@ p {
 /* Button positioning */
 .back-to-top {
   position: fixed;
-  bottom: 1rem; /* 4 units */
-  right: 1rem; /* 4 units */
-  width: 3rem; /* 12 units */
-  height: 3rem; /* 12 units */
-  border-radius: 50%; /* Full circle */
+  bottom: 1rem;
+  /* 4 units */
+  right: 1rem;
+  /* 4 units */
+  width: 3rem;
+  /* 12 units */
+  height: 3rem;
+  /* 12 units */
+  border-radius: 50%;
+  /* Full circle */
   display: flex;
   align-items: center;
   justify-content: center;
@@ -185,17 +244,28 @@ p {
 
 /* Responsive adjustments */
 @media (max-width: 768px) {
-  h1 { font-size: 2.5rem; }
-  h2 { font-size: 2rem; }
-  h3 { font-size: 1.5rem; }
+  h1 {
+    font-size: 2.5rem;
+  }
+
+  h2 {
+    font-size: 2rem;
+  }
+
+  h3 {
+    font-size: 1.5rem;
+  }
+
   .bubble-nav .bubble.large {
     width: 16rem;
     height: 16rem;
   }
+
   .bubble-nav .bubble.medium {
     width: 12rem;
     height: 12rem;
   }
+
   .bubble-nav .bubble.small {
     width: 8rem;
     height: 8rem;
@@ -210,20 +280,6 @@ p {
 ======================================================================= */
 
 /* Navigation bar */
-/* .navbar {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 1rem 2rem;
-  background-color: var(--color-background);
-}
-
-.navbar-brand {
-  font-family: var(--font-heading);
-  font-size: 2rem;
-  color: var(--color-primary);
-} */
-
 .navbar {
   display: flex;
   justify-content: space-between;
@@ -232,14 +288,40 @@ p {
   background-color: var(--color-background);
 }
 
+.navbar-buttons {
+  display: flex;
+  gap: 1rem;
+  /* spacing between auth and menu buttons */
+}
+
+.auth-button {
+  padding: 0.5rem 1rem;
+  border-radius: 0.5rem;
+  border: none;
+  cursor: pointer;
+  background-color: var(--color-primary);
+  color: var(--color-secondary);
+  transition: background-color 0.3s ease, transform 0.3s ease;
+}
+
+.auth-button:hover {
+  background-color: var(--color-secondary);
+  color: var(--color-primary);
+  /* transform: translateY(-2px); */
+  transform: translate(0.2rem, -0.2rem);
+
+}
+
 .navbar-brand-container {
   display: flex;
   align-items: center;
-  gap: 0.3rem; /* space between logo and brand text */
+  gap: 0.3rem;
+  /* space between logo and brand text */
 }
 
 .navbar-logo {
-  height: 40px; /* adjust to fit your navbar */
+  height: 40px;
+  /* adjust to fit your navbar */
   width: auto;
 }
 
@@ -248,7 +330,6 @@ p {
   font-size: 2rem;
   color: var(--color-primary);
 }
-
 
 .navbar-menu {
   display: flex;
