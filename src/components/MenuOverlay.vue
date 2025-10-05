@@ -102,7 +102,7 @@ defineProps({
   content: "";
   position: absolute;
   inset: 12%;
-  background: url("/images/icons8-sahasrara-96.png") no-repeat center/contain;
+  background: url("/images/40865-ffffff.svg") no-repeat center/contain;
   opacity: 0;
   transition: opacity 1.5s ease-in-out;
   z-index: -1;
