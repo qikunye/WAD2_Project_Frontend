@@ -63,7 +63,7 @@ const menuOpen = ref(false);
 // MenuOverlay.vue or main.css.
 const overlayItems = [
   { name: 'Home', href: '#home', class: 'bubble-home' },
-  { name: 'Recipes Finder', href: '/recipes.html', class: 'bubble-recipes' },
+  { name: 'Recipes Finder', href: '/recipes', class: 'bubble-recipes' },
   { name: 'Food Tracker', href: '/food-tracker.html', class: 'bubble-tracker' },
   { name: 'Meal Planner & Shopping List', href: '/meal-planner.html', class: 'bubble-planner' },
   { name: 'Meal Sharing Forum', href: '/meal-sharing.html', class: 'bubble-forum' },

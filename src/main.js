@@ -1,5 +1,12 @@
 import { createApp } from 'vue';
 import { createPinia } from 'pinia';
+
+//Import Bootstrap CSS
+import 'bootstrap/dist/css/bootstrap.min.css';
+
+//Import Bootstrap JS bundle (includes Popper)
+import 'bootstrap/dist/js/bootstrap.bundle.min.js';
+
 // Import the custom stylesheet that contains the colour palette and utility classes.
 import App from './App.vue';
 import router from './router';
