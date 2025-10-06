@@ -36,7 +36,7 @@ onMounted(async () => {
 
         <div v-else class="row g-4">
             <div class="col-12 col-md-6 col-xl-4" v-for="recipe in recipes" :key="recipe.id">
-                <ProjectCard :title="recipe.title" :image="recipe.image" 
+                <ProjectCard :title="recipe.title" :image="recipe.image" :tags="recipe.dishTypes"
                     @click="$router.push({ name: 'SpecificRecipe', query: { id: recipe.id } })" class="h-100" />
             </div>
         </div>

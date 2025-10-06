@@ -12,9 +12,9 @@
     <h3 class="card-title">{{ title }}</h3>
     <!-- <p class="card-desc">{{ description }}</p> -->
     <!-- Tags -->
-    <!-- <ul v-if="tags && tags.length" class="card-tags"> -->
-      <!-- <li v-for="(tag, index) in tags" :key="index">#{{ tag }}</li> -->
-    <!-- </ul> -->
+    <ul v-if="tags && tags.length" class="card-tags">
+      <li v-for="(tag, index) in tags" :key="index">#{{ tag }}</li>
+    </ul>
     <!-- Optional link -->
     <!-- <div v-if="codeLink" class="card-actions"> -->
       <!-- <a :href="codeLink" class="card-link" target="_blank" rel="noopener">View Code</a> -->
