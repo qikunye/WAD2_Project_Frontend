@@ -3,9 +3,11 @@ import ProjectCard from "../components/UI/ProjectCard.vue";
 import { ref, onMounted } from "vue";
 import axios from "axios";
 import { useRoute, useRouter } from "vue-router";
+import { useUserStore } from "../stores/userStore";
 
 const route = useRoute();
 const router = useRouter();
+const userStore = useUserStore();
 const recipeId = route.query.id; //read ?id= from URL
 var recipeInfo = ref({});
 
@@ -32,13 +34,27 @@ onMounted(async () => {
         console.error("Failed to load recipe:", err);
     }
 });
+
+function addToMealPlan() {
+    if (!userStore.isLoggedIn) {
+        // Not logged in, then redirect to login
+        router.push({ name: "Login" });
+    }
+    else{
+        //call api backend to add to meal plan and redirect to meal plan vue (Chin Hui Part)
+    }
+}
 </script>
 
 <template>
     <div class="container py-4">
-        <h1>Recipe ID: {{ recipeId }}</h1>
+        <h1>{{ recipeInfo.title }}</h1>
+        <img :src="recipeInfo.image" alt="Recipe Image" class="img-fluid mb-3" />
 
-            {{ recipeInfo.title }}
+        <!-- Add to Meal Plan Button -->
+        <button class="btn btn-primary" @click="addToMealPlan">
+            Add to Meal Plan
+        </button>
     </div>
 </template>
 
