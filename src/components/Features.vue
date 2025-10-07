@@ -21,15 +21,15 @@
       <!-- Splash background with custom image - ENLARGED -->
       <div class="splash-background" ref="splashBackground">
         <img src="/images/splash.png" alt="Splash background" />
-        
-        <!-- Text bubbles - repositioned inside splash -->
-        <div class="text-bubble bubble-top-right" ref="bubbleTopRight">
-          <p>Discover amazing features to reduce food waste</p>
-        </div>
-        
-        <div class="text-bubble bubble-bottom-left" ref="bubbleBottomLeft">
-          <p>Join our community of sustainable food lovers</p>
-        </div>
+      </div>
+
+      <!-- Text bubbles - FIXED POSITIONING -->
+      <div class="text-bubble bubble-top-right" ref="bubbleTopRight">
+        <p>Discover amazing features to reduce food waste</p>
+      </div>
+      
+      <div class="text-bubble bubble-bottom-left" ref="bubbleBottomLeft">
+        <p>Join our community of sustainable food lovers</p>
       </div>
 
       <!-- Title content wrapper -->
@@ -123,8 +123,8 @@ const features = [
     corner: 'bottom-right'
   },
   {
-    title: 'Personalized Meal Planner',
-    description: 'Plan weekly meals that fit your budget, save time, and cut food waste.',
+    title: 'Meal Planner',
+    description: 'Plan meals that fit your budget and cut food waste.',
     image: 'public/images/5b9268747f3cdf55cbda63a22312fc0a.jpg',
     icon: '📅',
     corner: 'left'
@@ -477,7 +477,7 @@ const animateOut = () => {
   filter: drop-shadow(0 10px 30px rgba(179, 230, 255, 0.3));
 }
 
-/* Text bubbles - positioned at edges of splash */
+/* Text bubbles - FIXED POSITIONING relative to title container */
 .text-bubble {
   position: absolute;
   padding: 1.25rem 1.75rem;
@@ -488,7 +488,7 @@ const animateOut = () => {
   font-style: italic;
   max-width: 270px;
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
-  z-index: 2;
+  z-index: 20; /* Increased z-index to ensure visibility */
   pointer-events: all;
   will-change: transform, opacity;
   line-height: 1.4;
@@ -498,22 +498,24 @@ const animateOut = () => {
   margin: 0;
 }
 
-/* Top-right bubble - positioned at TOP-RIGHT corner of splash image */
+/* Top-right bubble - FIXED positioning relative to title container */
 .bubble-top-right {
-  top: 8%;
-  right: 8%;
+  top: -90px;
+  right: -100px;
   background-color: #ffc1c2;
   color: #1c1456;
-  transform: rotate(3deg);
+  transform-origin: center center;
+  transform: rotate(3deg) translateY(-3%);
 }
 
-/* Bottom-left bubble - positioned at BOTTOM-LEFT corner of splash image */
+/* Bottom-left bubble - FIXED positioning relative to title container */
 .bubble-bottom-left {
-  bottom: 8%;
-  left: 8%;
+  bottom: -90px;
+  left: -100px;
   background-color: #f7e273;
   color: #1c1456;
-  transform: rotate(-3deg);
+  transform-origin: center center;
+  transform: rotate(-3deg) translateY(3%);
 }
 
 /* Title content wrapper */
@@ -527,7 +529,7 @@ const animateOut = () => {
   position: relative;
   z-index: 2;
   will-change: transform;
-  margin-bottom: 1.5rem;
+  margin-bottom: 0.75rem; /* Reduced from 1.5rem */
 }
 
 .title-svg {
@@ -550,10 +552,10 @@ const animateOut = () => {
 /* Subheading - reduced max-width */
 .title-subheading {
   font-family: var(--font-body);
-  font-size: 1rem;
+  font-size: clamp(0.85rem, 2vw, 1rem); /* Fluid font size */
   line-height: 1.5;
   color: #1c1456;
-  max-width: 580px;
+  max-width: min(580px, 90%); /* Responsive max-width */
   margin: 0 auto;
   font-weight: 400;
   opacity: 0.85;
@@ -561,8 +563,8 @@ const animateOut = () => {
 
 /* Animated stroke effect - default state (outline only) */
 .text-stroke {
-  fill:none ;
-  stroke: none;
+  fill: none;
+  stroke: #1c1456;
   stroke-width: 5;
   stroke-linejoin: round;
   stroke-dasharray: 70 330;
@@ -739,6 +741,9 @@ const animateOut = () => {
   color: white;
   text-align: left;
 }
+.overlay-content h3 {
+  color: #ffffff !important;
+}
 
 .icon {
   font-size: 2.5rem;
@@ -777,21 +782,20 @@ const animateOut = () => {
   .splash-background {
     width: 800%;
     height: 550%;
-    top: 70%;
   }
 
   .bubble-top-right {
-    top: 7%;
-    right: 7%;
+    top: -80px;
+    right: -80px;
   }
 
   .bubble-bottom-left {
-    bottom: 7%;
-    left: 7%;
+    bottom: -80px;
+    left: -80px;
   }
 
-  .title-subheading {
-    max-width: 550px;
+  .title-svg-wrapper {
+    margin-bottom: 0.5rem;
   }
 
   .feature-image-1,
@@ -809,46 +813,44 @@ const animateOut = () => {
   .splash-background {
     width: 700%;
     height: 500%;
-    top: 65%;
   }
 
   .feature-image-1,
   .feature-image-2,
   .feature-image-5,
   .feature-image-6 {
-    width: 240px;
-    height: 170px;
+    width: clamp(220px, 20vw, 240px);
+    height: clamp(160px, 15vw, 170px);
   }
 
   .feature-image-3,
   .feature-image-4 {
-    width: 220px;
-    height: 160px;
+    width: clamp(200px, 18vw, 220px);
+    height: clamp(150px, 14vw, 160px);
   }
 
   .text-bubble {
-    font-size: 0.85rem;
-    padding: 1rem 1.5rem;
-    max-width: 240px;
-  }
-
-  .svg-text {
-    font-size: 100px;
-  }
-
-  .title-subheading {
-    font-size: 0.95rem;
-    max-width: 520px;
+    font-size: clamp(0.75rem, 1.5vw, 0.85rem);
+    padding: clamp(0.8rem, 1.5vw, 1rem) clamp(1.2rem, 2vw, 1.5rem);
+    max-width: clamp(200px, 25vw, 240px);
   }
 
   .bubble-top-right {
-    top: 6%;
-    right: 6%;
+    top: -70px;
+    right: -60px;
   }
 
   .bubble-bottom-left {
-    bottom: 6%;
-    left: 6%;
+    bottom: -70px;
+    left: -60px;
+  }
+
+  .svg-text {
+    font-size: clamp(80px, 10vw, 100px);
+  }
+
+  .title-svg-wrapper {
+    margin-bottom: 0.4rem;
   }
 }
 
@@ -856,60 +858,67 @@ const animateOut = () => {
   .splash-background {
     width: 600%;
     height: 450%;
-    top: 60%;
   }
 
   .svg-text {
-    font-size: 80px;
-  }
-
-  .title-subheading {
-    font-size: 0.9rem;
-    max-width: 480px;
+    font-size: clamp(60px, 9vw, 80px);
   }
 
   .title-container {
-    padding: 2rem;
+    padding: clamp(1.5rem, 3vw, 2rem);
+  }
+
+  .title-svg-wrapper {
+    margin-bottom: 0.3rem;
   }
 
   .text-bubble {
-    font-size: 0.8rem;
-    padding: 0.9rem 1.3rem;
-    max-width: 220px;
+    font-size: clamp(0.7rem, 1.4vw, 0.8rem);
+    padding: clamp(0.7rem, 1.2vw, 0.9rem) clamp(1rem, 1.8vw, 1.3rem);
+    max-width: clamp(180px, 22vw, 220px);
   }
 
   .bubble-top-right {
-    top: 5%;
-    right: 5%;
+    top: -60px;
+    right: -40px;
   }
 
   .bubble-bottom-left {
-    bottom: 5%;
-    left: 5%;
+    bottom: -60px;
+    left: -40px;
   }
 
   .feature-image-1,
   .feature-image-2 {
     top: 12%;
+    width: clamp(200px, 25vw, 240px);
+    height: clamp(140px, 18vw, 170px);
+  }
+
+  .feature-image-3,
+  .feature-image-4 {
+    width: clamp(180px, 22vw, 220px);
+    height: clamp(130px, 16vw, 160px);
   }
 
   .feature-image-5,
   .feature-image-6 {
     bottom: 12%;
+    width: clamp(200px, 25vw, 240px);
+    height: clamp(140px, 18vw, 170px);
   }
 }
 
 @media (max-width: 768px) {
   .features-section {
-    padding: 3rem 1rem;
+    padding: clamp(2rem, 4vw, 3rem) clamp(0.5rem, 2vw, 1rem);
     min-height: auto;
-    padding-bottom: 8rem;
+    padding-bottom: clamp(4rem, 8vw, 8rem);
   }
 
   .splash-background {
     width: 500%;
     height: 400%;
-    top: 55%;
     position: relative;
     transform: none;
     left: auto;
@@ -917,25 +926,30 @@ const animateOut = () => {
   }
 
   .svg-text {
-    font-size: 60px;
+    font-size: clamp(40px, 12vw, 60px);
+  }
+
+  .title-svg-wrapper {
+    margin-bottom: 0.25rem;
   }
 
   .title-subheading {
-    font-size: 0.85rem;
+    font-size: clamp(0.75rem, 2.5vw, 0.85rem);
     max-width: 90%;
     line-height: 1.4;
   }
 
+  /* Text bubbles stack on mobile */
   .text-bubble {
-    font-size: 0.8rem;
-    padding: 1rem 1.5rem;
-    max-width: 200px;
-    position: relative;
-    margin: 1rem auto;
-    top: auto;
-    right: auto;
-    bottom: auto;
-    left: auto;
+    position: relative !important;
+    font-size: clamp(0.7rem, 2.5vw, 0.8rem);
+    padding: clamp(0.8rem, 2vw, 1rem) clamp(1.2rem, 3vw, 1.5rem);
+    max-width: min(200px, 80vw);
+    margin: clamp(0.5rem, 2vw, 1rem) auto;
+    top: auto !important;
+    right: auto !important;
+    bottom: auto !important;
+    left: auto !important;
   }
 
   .bubble-top-right {
@@ -956,9 +970,9 @@ const animateOut = () => {
   .feature-image {
     position: relative !important;
     width: 100% !important;
-    max-width: 350px;
-    height: 200px !important;
-    margin: 1rem auto;
+    max-width: min(350px, 90vw);
+    height: clamp(180px, 40vw, 200px) !important;
+    margin: clamp(0.5rem, 2vw, 1rem) auto;
     left: 50% !important;
     right: auto !important;
     top: auto !important;
@@ -971,26 +985,27 @@ const animateOut = () => {
     display: flex;
     flex-direction: column;
     align-items: center;
-    margin-top: 3rem;
+    margin-top: clamp(2rem, 5vw, 3rem);
     pointer-events: all;
+    gap: clamp(0.5rem, 2vw, 1rem);
   }
 
   .title-container {
     position: relative;
-    margin-bottom: 2rem;
-    padding: 2rem 1rem;
+    margin-bottom: clamp(1rem, 3vw, 2rem);
+    padding: clamp(1.5rem, 3vw, 2rem) clamp(0.5rem, 2vw, 1rem);
   }
 
   .overlay-content h3 {
-    font-size: 1.1rem;
+    font-size: clamp(1rem, 3vw, 1.1rem);
   }
 
   .overlay-content p {
-    font-size: 0.85rem;
+    font-size: clamp(0.8rem, 2.5vw, 0.85rem);
   }
 
   .icon {
-    font-size: 2rem;
+    font-size: clamp(1.75rem, 5vw, 2rem);
   }
 }
 
@@ -1015,5 +1030,4 @@ const animateOut = () => {
   outline: 3px solid var(--color-primary);
   outline-offset: 8px;
   border-radius: 1rem;
-}
-</style>
+}</style>
