@@ -493,3 +493,23 @@ p {
   color: var(--color-primary);
   line-height: 1.5;
 }
+
+/* Scrolly Images Section Support */
+#wrapper {
+  overflow: hidden;
+  width: 100%;
+}
+
+#content {
+  overflow: visible;
+  width: 100%;
+}
+
+/* Ensure smooth scrolling */
+.scrolly-section {
+  will-change: transform;
+}
+
+.scrolly-section img {
+  will-change: transform;
+}

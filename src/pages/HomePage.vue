@@ -1,27 +1,46 @@
 <template>
-  <!--
-    Top-level layout for the food waste app.  In addition to the navigation
-    bar and home section, we now include sections for statistics, features,
-    benefits and a back-to-top button.  Each component is rendered
-    sequentially on the page.
-  -->
   <div class="home-container">
     <HomeSection />
     <Counter />
-    <Features />
+    <Features />  
     <Benefits />
     <BackToTop />
   </div>
 </template>
 
 <script setup>
-// Import static components directly without lazy loading.  This keeps
-// the setup simple and makes the page load quickly because there are
-// no asynchronous component boundaries.
+import { onMounted } from 'vue';
 import Navbar from '@/components/Navbar.vue';
 import HomeSection from '@/components/HomeSection.vue';
 import Counter from '@/components/Counter.vue';
 import Features from '@/components/Features.vue';
 import Benefits from '@/components/Benefits.vue';
 import BackToTop from '@/components/BackToTop.vue';
+
+onMounted(() => {
+  const observerOptions = {
+    threshold: 0.1,
+    rootMargin: '0px 0px -100px 0px'
+  };
+
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('is-visible');
+      }
+    });
+  }, observerOptions);
+
+  document.querySelectorAll('.cards-section, .stats-section, .home-section, .benefits-section').forEach(section => {
+    observer.observe(section);
+  });
+});
 </script>
+
+<style scoped>
+.home-container {
+  overflow-x: hidden;
+  width: 100%;
+  max-width: 100vw;
+}
+</style>
