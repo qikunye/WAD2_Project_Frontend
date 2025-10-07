@@ -6,27 +6,40 @@
       styles for the tags and link.
     -->
  
-  <div class="card">
-    <!-- Image slot -->
-    <img v-if="image" :src="image" :alt="title" class="card-image" />
-    <h3 class="card-title">{{ title }}</h3>
-    <!-- <p class="card-desc">{{ description }}</p> -->
-    <!-- Tags -->
-    <ul v-if="tags && tags.length" class="card-tags">
-      <li v-for="(tag, index) in tags" :key="index">#{{ tag }}</li>
-    </ul>
-    <!-- Optional link -->
-    <!-- <div v-if="codeLink" class="card-actions"> -->
-      <!-- <a :href="codeLink" class="card-link" target="_blank" rel="noopener">View Code</a> -->
-    <!-- </div> -->
-  </div>
+<div class="card">
+    <!-- Image with fallback -->
+    <img
+      :src="imageToShow"
+      :alt="title"
+      class="card-image"
+    />
 
+    <div class="card-gradient"></div>
+
+    <!-- Title -->
+    <h3 class="card-title">{{ title }}</h3>
+
+    <!-- Hover overlay -->
+    <div class="card-overlay">
+      <p class="info prep-time">Time Needed: {{ prepTime }} mins</p>
+      <!-- class="info health-score"-> these are static classes — they’re always applied.
+      :class="healthScoreColor" → this is a dynamic class that Vue adds on top, based on the computed value. -->
+      <p class="info health-score" :class="healthScoreColor" >Health Score: {{ healthScore }} / 100</p>
+
+      <ul v-if="tags && tags.length" class="tags">
+        <li v-for="(tag, index) in tags" :key="index" :style="{ transitionDelay: `${0.4 + index * 0.15}s` }">
+          #{{ tag }}
+        </li>
+      </ul>
+    </div>
+  </div>
 </template>
   
   <script setup>
+  import { computed } from 'vue';
   // Props for the ProjectCard.  Default values allow it to be used without
   // specifying every field.
-  defineProps({
+  const props =defineProps({
     title: {
       type: String,
       default: '',
@@ -35,6 +48,15 @@
       type: String,
       default: '',
     },
+    healthScore: {
+      type: String,
+      default: '',
+    },
+    prepTime: {
+      type: String,
+      default: '',
+    },
+
     image: {
       type: String,
       default: '',
@@ -48,107 +70,165 @@
       default: '',
     },
   });
+
+  //show no_image_available.jpg if there is no image 
+const imageToShow = computed(() => {
+  return props.image? props.image: "https://upload.wikimedia.org/wikipedia/commons/1/14/No_Image_Available.jpg";
+});
+
+// Compute dynamic class for color
+const healthScoreColor = computed(() => {
+  const score = Number(props.healthScore);
+  if (isNaN(score)) return '';
+  if (score < 50) return 'red-score';
+  if (score < 75) return 'yellow-score';
+  return 'green-score';
+});
   </script>
   
+
 <style scoped>
 .card {
-  background: white;
-  border-radius: 1rem;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-  overflow: hidden;
-  transition: all 0.4s ease;
-  transform: scale(1);
-  cursor: pointer;
-  height: 100%;
-}
-
-/* Hover animation — grow slightly */
-.card:hover {
-  transform: scale(1.05);
-  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
-}
-
-/* Image reveal effect */
-.card-image {
+  position: relative;
   width: 100%;
-  height: 300px;
+  aspect-ratio: 1 / 1;
+  border-radius: 1rem;
+  overflow: hidden;
+  cursor: pointer;
+  transition: box-shadow 0.4s ease;
+  background: #000;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  border-width: 0px;
+}
+
+.card:hover {
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+}
+
+/* Image */
+.card-image {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
   object-fit: cover;
-  border-radius: 0.5rem 0.5rem 0 0;
-  transition: transform 0.5s ease, opacity 0.5s ease;
-  opacity: 0.9;
+  transition: opacity 0.5s ease;
+  border-radius: 20px;
+  border-width: 0px;
 }
 
+/* Darken on hover */
 .card:hover .card-image {
-  transform: scale(1.08);
-  opacity: 1;
+  opacity: 0.2;
+  border-radius: 20px;
+  border-width: 0px;
 }
 
-/* Title styling */
+/* Gradient overlay */
+.card-gradient {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to top, rgba(0, 0, 0, 0.6), transparent 60%);
+  z-index: 1;
+  pointer-events: none;
+  border-radius: 20px;
+  border-width: 0px;
+}
+
+/* Title (always visible) */
 .card-title {
-  font-size: 1.2rem;
-  font-weight: bold;
-  text-align: center;
-  padding: 1rem;
-  margin-top: 10px;
-  color: #1a1a1a;
+  position: absolute;
+  bottom: 1rem;
+  left: 1rem;
+  z-index: 2;
+  font-size: 1.3rem;
+  font-weight: 600;
+  color: #fff;
+  text-shadow: 0 2px 6px rgba(0, 0, 0, 0.8);
+  transition: opacity 0.4s ease;
 }
 
-/* Tags list */
-.card-tags {
+/* Overlay container (hidden by default) */
+.card-overlay {
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  opacity: 0;
+  transition: opacity 0.5s ease;
+  border-radius: 20px;
+  border-width: 0px;
+}
+
+/* Show overlay on hover */
+.card:hover .card-overlay {
+  opacity: 1;
+  border-radius: 20px;
+  border-width: 0px;
+}
+
+/* Info items (prep time & health score) */
+.info {
+  opacity: 0;
+  transform: translateY(10px);
+  transition: opacity 0.5s ease, transform 0.5s ease;
+}
+
+.card:hover .prep-time {
+  opacity: 1;
+  transform: translateY(0);
+  transition-delay: 0.2s;
+}
+
+.card:hover .health-score {
+  opacity: 1;
+  transform: translateY(0);
+  transition-delay: 0.3s;
+}
+
+/* Tags fade in one by one */
+.tags {
   list-style: none;
   padding: 0;
-  margin: 0.5rem 0 1rem 0;
+  margin-top: 1rem;
   display: flex;
   flex-wrap: wrap;
-  gap: 0.5rem;
   justify-content: center;
+  gap: 0.5rem;
 }
 
-.card-tags li {
-  background-color: var(--color-primary);
-  color: var(--color-secondary);
-  padding: 0.25rem 0.75rem;
+.tags li {
+  background: rgba(255, 255, 255, 0.2);
+  padding: 0.3rem 0.7rem;
   border-radius: 0.5rem;
-  font-size: 0.75rem;
+  font-size: 0.8rem;
+  opacity: 0;
+  transform: translateY(10px);
+  transition: opacity 0.5s ease, transform 0.5s ease;
 }
 
-/* Container for cards grid */
-.cards-container {
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: 1.5rem;
-  padding: 2rem;
+/* Show each tag sequentially */
+.card:hover .tags li {
+  opacity: 1;
+  transform: translateY(0);
 }
 
-/* Medium screens — 2 cards */
-@media (min-width: 768px) {
-  .cards-container {
-    grid-template-columns: repeat(2, 1fr);
-  }
+/* Dynamic color classes for health score */
+/* Red for scores below 50 */
+.red-score {
+  color: #ff4d4d; 
+}
+/* Yellow for 50–74 */
+.yellow-score {
+  color: #ffcc00; 
 }
 
-/* Extra-large screens — 3 cards */
-@media (min-width: 1280px) {
-  .cards-container {
-    grid-template-columns: repeat(3, 1fr);
-  }
-}
-
-/* Optional link styling */
-.card-actions {
-  margin-top: 1rem;
-  text-align: center;
-}
-
-.card-link {
-  text-decoration: none;
-  /* color: var(--color-secondary);
-  font-family: var(--font-body); */
-  /* text-decoration: underline; */
-}
-
-.card-link:hover {
-  color: var(--color-primary);
+/* Green for 75–100 */
+.green-score {
+  color: #4caf50; 
 }
 </style>
-  

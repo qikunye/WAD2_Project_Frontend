@@ -120,7 +120,8 @@ const handleSearch = async () => {
 
         <div v-else class="row g-4">
             <div class="col-12 col-md-6 col-xl-4" v-for="recipe in recipes" :key="recipe.id">
-                <ProjectCard :title="recipe.title" :image="recipe.image" :tags="recipe.dishTypes"
+                <ProjectCard :title="recipe.title" :image="recipe.image" :tags="recipe.dishTypes" 
+                :prepTime = "recipe.readyInMinutes" :healthScore="recipe.healthScore"
                     @click="$router.push({ name: 'SpecificRecipe', query: { id: recipe.id } })" class="h-100" />
             </div>
         </div>
@@ -129,6 +130,10 @@ const handleSearch = async () => {
 
 <style>
 /* In Vue, as in standard CSS, !important is a rule that gives a specific CSS property the highest priority, overriding any other conflicting styles regardless of their specificity, position, or origin */
+
+body{
+    background-color: white !important;
+}
 
 /* Ensure dropdown opens below the button */
 .dropdown-menu.show {
