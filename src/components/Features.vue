@@ -109,46 +109,46 @@ let isHovering = ref(false);
 // Feature data with corner positions for animation
 const features = [
   {
-    title: 'Recipes Finder',
-    description: 'Discover recipes based on your ingredients',
-    image: 'https://images.unsplash.com/photo-1556910103-1c02745aae4d?w=600&q=80',
-    icon: '🔍',
+    title: 'Reduce Waste',
+    description: 'Keep track of what you have and need.',
+    image: 'public/images/2e245a8ba50e4d6f2722ede5844cb232.jpg',
+    icon: '♻️',
     corner: 'top-left'
   },
   {
-    title: 'Food Tracker',
-    description: 'Monitor expiration dates',
-    image: 'https://images.unsplash.com/photo-1498837167922-ddd27525d352?w=600&q=80',
-    icon: '📦',
-    corner: 'top-right'
+    title: 'Community Support',
+    description: 'Get Inspired by the community',
+    image: 'public/images/486561da858e98fdb5007d7e85095ffc.jpg',
+    icon: '🤝',
+    corner: 'bottom-right'
   },
   {
-    title: 'Meal Planner',
-    description: 'Plan your weekly meals',
-    image: 'https://images.unsplash.com/photo-1490645935967-10de6ba17061?w=600&q=80',
+    title: 'Personalized Meal Planner',
+    description: 'Plan weekly meals that fit your budget, save time, and cut food waste.',
+    image: 'public/images/5b9268747f3cdf55cbda63a22312fc0a.jpg',
     icon: '📅',
     corner: 'left'
   },
   {
-    title: 'Shopping List',
-    description: 'Auto-generate shopping lists',
-    image: 'https://images.unsplash.com/photo-1543362906-acfc16c67564?w=600&q=80',
-    icon: '🛒',
+    title: 'Healthy Meals',
+    description: 'Plan balanced meals that suit dietary preferences.',
+    image: 'public/images/829fb22e4984a91ee658156830a481bc.jpg',
+    icon: '🥗',
     corner: 'right'
   },
   {
-    title: 'Meal Sharing',
-    description: 'Share and discover recipes',
-    image: 'https://images.unsplash.com/photo-1505935428862-770b6f24f629?w=600&q=80',
+    title: 'Community Support',
+    description: 'Connect with others, share and discover recipes',
+    image: 'public/images/6edaf1d6d2de1c0bf1c1888642a289c7.jpg',
     icon: '💬',
     corner: 'bottom-left'
   },
   {
     title: 'Save Money',
-    description: 'Reduce waste and costs',
-    image: 'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=600&q=80',
+    description: 'Plan your grocery shopping and meals to avoid overbuying and overspending.',
+    image: 'public/images/82fda315cd1e0e444bad996f4a367624.jpg',
     icon: '💰',
-    corner: 'bottom-right'
+    corner: 'top-right'
   }
 ];
 
