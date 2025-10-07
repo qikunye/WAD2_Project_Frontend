@@ -1,7 +1,7 @@
 <template>
   <div class="home-container">
     <HomeSection />
-    <Counter />
+    <Problems/>
     <Features />  
     <Benefits />
     <BackToTop />
@@ -12,7 +12,7 @@
 import { onMounted } from 'vue';
 import Navbar from '@/components/Navbar.vue';
 import HomeSection from '@/components/HomeSection.vue';
-import Counter from '@/components/Counter.vue';
+import Problems from '@/components/Problems.vue';
 import Features from '@/components/Features.vue';
 import Benefits from '@/components/Benefits.vue';
 import BackToTop from '@/components/BackToTop.vue';
