@@ -3,6 +3,8 @@ import HomePage from '../pages/HomePage.vue';
 import RegisterPage from '../pages/RegisterPage.vue';
 import LoginPage from '../pages/LoginPage.vue';
 import ProfilePage from '../pages/ProfilePage.vue';
+import RecipesPage from '../pages/Recipes.vue';
+import SpecificRecipePage from '../pages/SpecificRecipe.vue';
 import { useUserStore } from '../stores/userStore';
 
 const routes = [
@@ -10,6 +12,10 @@ const routes = [
     { path: "/register", name: "Register", component: RegisterPage },
     { path: "/login", name: "Login", component: LoginPage },
     { path: "/profile", name: "Profile", component: ProfilePage, meta: { requiresAuth: true } }, //protected route
+
+    //recipes
+    { path: "/recipes", name: "Recipes", component: RecipesPage },
+    { path: "/recipe", name: "SpecificRecipe", component: SpecificRecipePage },
 ];
 
 const router = createRouter({
