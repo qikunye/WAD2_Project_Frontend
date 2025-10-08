@@ -1,7 +1,8 @@
 <script setup>
 import ProjectCard from "../components/UI/ProjectCard.vue";
-import { ref, onMounted } from "vue";
+import { ref, onMounted, computed } from "vue";
 import axios from "axios";
+import Slider from '@vueform/slider'
 
 
 
@@ -9,6 +10,9 @@ import axios from "axios";
 const recipes = ref([]);
 const loading = ref(true);
 const error = ref(null);
+
+//for the single slider for carbs
+const carbRange = ref([0, 200]);
 
 // form fields
 const searchQuery = ref("");
@@ -20,8 +24,8 @@ const selectedExcludedIngredients = ref(""); // must be comma separated
 const selectedSortingOption = ref("");
 const selectedSortingDir = ref("");
 // single slider for selectedMinCarbs & selectedmaxCarbs
-const selectedMinCarbs = ref("");
-const selectedmaxCarbs = ref("");
+const selectedMinCarbs = computed(() => carbRange.value[0]);
+const selectedmaxCarbs = computed(() => carbRange.value[1]);
 const selectedminProtein = ref("");
 const selectedmaxProtein = ref("");
 const selectedminCalories = ref("");
@@ -88,7 +92,7 @@ const handleSearch = async () => {
                 maxFat: selectedmaxFat.value,
             },
         });
-
+        console.log(selectedMinCarbs.value);
         recipes.value = response.data.results;
         // console.log(response.data.results);
     } catch (err) {
@@ -219,12 +223,13 @@ const resetFilters = () => {
                     </div>
 
                     <!-- Nutrient sliders -->
-                    <div class="mb-3 text-start"> <label class="form-label fw-bold">Carbs (g)</label> <input
-                            type="range" min="0" max="200" v-model="selectedMinCarbs" class="form-range mb-1" /> <input
-                            type="range" min="0" max="200" v-model="selectedmaxCarbs" class="form-range" />
-                        <div class="d-flex justify-content-between small text-muted"> 
-                            <span>Min: {{ selectedMinCarbs}}</span> 
-                            <span>Max: {{ selectedmaxCarbs }}</span> </div>
+                    <div class="mb-3 text-start">
+                        <label class="form-label fw-bold">Carbs (g)</label>
+                        <Slider v-model="carbRange" :min="0" :max="200" />
+                        <div class="d-flex justify-content-between small text-muted mt-2">
+                            <span>Min: {{ carbRange[0] }}</span>
+                            <span>Max: {{ carbRange[1] }}</span>
+                        </div>
                     </div>
 
                     <div class="mb-3 text-start">

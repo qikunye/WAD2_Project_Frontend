@@ -1,5 +1,7 @@
 import { createApp } from 'vue';
 import { createPinia } from 'pinia';
+//for slider in Recipes.vue 
+import '@vueform/slider/themes/default.css'
 
 //Import Bootstrap CSS
 import 'bootstrap/dist/css/bootstrap.min.css';
