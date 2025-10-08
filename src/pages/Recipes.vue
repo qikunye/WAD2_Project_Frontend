@@ -53,9 +53,34 @@ const sortOptions = [
     "healthiness", "calories", "total-fat", "carbs", "protein"
 ]
 
+//Pagination part
+const currentPage = ref(1);
+const cardsPerPage = 9;
+
+//Getting the total number of pages
+//computed() helps track any reactive values inside (e.g. recipes.value), when recipes.value changes due to data fetched from backend, 
+// vue automatically recalculates totalPages
+const totalPages = computed(() => {
+    return Math.ceil(recipes.value.length / cardsPerPage);
+});
+
+//Slice recipes for the current page
+const paginatedRecipes = computed(() => {
+    const start = (currentPage.value - 1) * cardsPerPage;
+    const end = start + cardsPerPage;
+    return recipes.value.slice(start, end);
+});
+
+//Navigate pages
+const goToPage = (page) => {
+    if (page >= 1 && page <= totalPages.value) {
+        currentPage.value = page;
+        window.scrollTo({ top: 0, behavior: 'smooth' }); // scroll back to top
+    }
+};
 
 
-// Calls backend api to produce random recipes
+//Calls backend api to produce random recipes
 onMounted(async () => {
     try {
         const response = await axios.get("http://localhost:4000/api/v1/recipe/random");
@@ -69,7 +94,7 @@ onMounted(async () => {
     }
 });
 
-// Calls backend api to filter based on search and filters
+//Calls backend api to filter based on search and filters
 const handleSearch = async () => {
     loading.value = true;
     error.value = null;
@@ -291,13 +316,34 @@ const resetFilters = () => {
                 <div v-else-if="error" class="text-danger text-center">{{ error }}</div>
 
                 <div v-else class="row g-4">
-                    <div class="col-12 col-sm-6 col-md-4 col-lg-6 col-xl-4" v-for="recipe in recipes" :key="recipe.id">
+                    <div class="col-12 col-sm-6 col-md-4 col-lg-6 col-xl-4" v-for="recipe in paginatedRecipes"
+                        :key="recipe.id">
                         <ProjectCard :title="recipe.title" :image="recipe.image" :tags="recipe.dishTypes"
                             :prepTime="recipe.readyInMinutes" :healthScore="recipe.healthScore"
                             @click="$router.push({ name: 'SpecificRecipe', query: { id: recipe.id } })" />
                     </div>
                 </div>
+                <!-- Pagination Controls -->
+            <div v-if="totalPages > 1" class="d-flex justify-content-center align-items-center mt-4">
+                <nav>
+                    <ul class="pagination mb-0">
+                        <li class="page-item" :class="{ disabled: currentPage === 1 }">
+                            <button class="page-link" @click="goToPage(currentPage - 1)">Previous</button>
+                        </li>
+
+                        <li v-for="page in totalPages" :key="page" class="page-item"
+                            :class="{ active: page === currentPage }">
+                            <button class="page-link" @click="goToPage(page)">{{ page }}</button>
+                        </li>
+
+                        <li class="page-item" :class="{ disabled: currentPage === totalPages }">
+                            <button class="page-link" @click="goToPage(currentPage + 1)">Next</button>
+                        </li>
+                    </ul>
+                </nav>
             </div>
+            </div>
+            
         </div>
     </div>
 </template>
@@ -318,11 +364,6 @@ body {
     margin-top: 4px;
     z-index: 20 !important;
 }
-
-/* Sticky filter panel */
-/* .sticky-top {
-    position: sticky; can enable it later
-} */
 
 /* Prevent clipping of dropdown */
 .container,
@@ -359,5 +400,20 @@ input[type="range"] {
 
 .form-check-input {
     margin-top: 0;
+}
+
+.pagination {
+    gap: 4px;
+}
+
+.page-link {
+    border-radius: 8px !important;
+    color: #333;
+}
+
+.page-item.active .page-link {
+    background-color: #007bff;
+    color: white;
+    border-color: #007bff;
 }
 </style>
