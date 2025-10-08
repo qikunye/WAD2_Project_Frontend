@@ -3,6 +3,8 @@ import ProjectCard from "../components/UI/ProjectCard.vue";
 import { ref, onMounted } from "vue";
 import axios from "axios";
 
+
+
 //If you have HTML that needs to update depending on a variable value you can use a "reactive reference" with ref(initialValue)
 const recipes = ref([]);
 const loading = ref(true);
@@ -12,6 +14,20 @@ const error = ref(null);
 const searchQuery = ref("");
 const selectedCuisine = ref("");
 const selectedIntolerances = ref([]);
+const selectedDiets = ref([]);
+const selectedIncludedIngredients = ref(""); // must be comma separated 
+const selectedExcludedIngredients = ref(""); // must be comma separated 
+const selectedSortingOption = ref("");
+const selectedSortingDir = ref("");
+// single slider for selectedMinCarbs & selectedmaxCarbs
+const selectedMinCarbs = ref("");
+const selectedmaxCarbs = ref("");
+const selectedminProtein = ref("");
+const selectedmaxProtein = ref("");
+const selectedminCalories = ref("");
+const selectedmaxCalories = ref("");
+const selectedminFat = ref("");
+const selectedmaxFat = ref("");
 
 const cuisines = [
     "African", "Asian", "American", "British", "Cajun", "Caribbean", "Chinese", "Eastern European", "European", "French", "German",
@@ -22,6 +38,16 @@ const cuisines = [
 const intolerances = [
     "Dairy", "Egg", "Gluten", "Grain", "Peanut", "Seafood", "Sesame", "Shellfish", "Soy", "Sulfite", "Tree Nut", "Wheat"
 ];
+
+const diets = [
+    "Gluten Free", "Ketogenic", "Vegetarian", "Lacto-Vegetarian", "Ovo-Vegetarian", "Vegan", "Pescetarian", "Paleo", "Primal", "Low FODMAP", "Whole30"
+];
+
+const sortOptions = [
+    "healthiness", "calories", "total-fat", "carbs", "protein"
+]
+
+
 
 // Calls backend api to produce random recipes
 onMounted(async () => {
@@ -47,6 +73,19 @@ const handleSearch = async () => {
                 name: searchQuery.value,
                 cuisine: selectedCuisine.value,
                 intolerances: selectedIntolerances.value.join(","),
+                diet: selectedDiets.value.join(","),
+                includedIngredients: selectedIncludedIngredients.value,
+                excludedIngredients: selectedExcludedIngredients.value,
+                sortBy: selectedSortingOption.value,
+                sortDirection: selectedSortingDir.value,
+                minCarbs: selectedMinCarbs.value,
+                maxCarbs: selectedmaxCarbs.value,
+                minProtein: selectedminProtein.value,
+                maxProtein: selectedmaxProtein.value,
+                minCalories: selectedminCalories.value,
+                maxCalories: selectedmaxCalories.value,
+                minFat: selectedminFat.value,
+                maxFat: selectedmaxFat.value,
             },
         });
 
@@ -59,70 +98,189 @@ const handleSearch = async () => {
         loading.value = false;
     }
 };
+
+//reset filters values
+const resetFilters = () => {
+    selectedCuisine.value = "";
+    selectedDiets.value = [];
+    selectedIntolerances.value = [];
+    selectedIncludedIngredients.value = "";
+    selectedExcludedIngredients.value = "";
+    selectedSortingOption.value = "";
+    selectedSortingDir.value = "";
+    selectedMinCarbs.value = "";
+    selectedmaxCarbs.value = "";
+    selectedminProtein.value = "";
+    selectedmaxProtein.value = "";
+    selectedminCalories.value = "";
+    selectedmaxCalories.value = "";
+    selectedminFat.value = "";
+    selectedmaxFat.value = "";
+    handleSearch();
+}
 </script>
 
 <template>
-    <div class="container py-4">
+    <div class="container-fluid py-4">
         <h1 class="text-center mb-4">Recipe Finder</h1>
 
-        <div class="search-bar-wrapper position-relative z-3 mb-4">
-        <!-- Search Filters -->
-        <div class="card p-3 mb-4 shadow-sm">
-            <div class="row g-3 align-items-end">
-                <!-- Search bar -->
-                <div class="col-md-4">
-                    <label for="searchQuery" class="form-label fw-bold">Search by Name</label>
-                    <input v-model="searchQuery" type="text" id="searchQuery" placeholder="e.g. chicken pasta"
-                        class="form-control" />
-                </div>
-
-                <!-- Cuisine dropdown -->
-                <div class="col-md-4">
-                    <label for="cuisine" class="form-label fw-bold">Cuisine</label>
-                    <select v-model="selectedCuisine" id="cuisine" class="form-select">
-                        <option value="">All Cuisines</option>
-                        <option v-for="cuisine in cuisines" :key="cuisine" :value="cuisine">{{ cuisine }}</option>
-                    </select>
-                </div>
-
-                <!-- Intolerances multi-select dropdown -->
-                <div class="col-md-4">
-                    <label class="form-label fw-bold">Intolerances</label>
-                    <div class="dropdown">
-                        <button class="btn btn-outline-secondary dropdown-toggle w-100" type="button"
-                            data-bs-toggle="dropdown" aria-expanded="false">
-                            {{ selectedIntolerances.length > 0 ? selectedIntolerances.join(", ") : "Select intolerances "
-                            }}
-                        </button>
-                        <ul class="dropdown-menu p-2" style="max-height: 250px; overflow-y: auto;">
-                            <li v-for="item in intolerances" :key="item" class="form-check">
-                                <input class="form-check-input" type="checkbox" :id="item" :value="item"
-                                    v-model="selectedIntolerances" />
-                                <label class="form-check-label" :for="item">{{ item }}</label>
-                            </li>
-                        </ul>
-                    </div>
-                </div>
-
-                <!-- Search button -->
-                <div class="col-12 text-end mt-3">
-                    <button class="btn btn-primary px-4" @click="handleSearch">
-                        Search
-                    </button>
+        <!-- Top Search Bar + Search Button -->
+        <div class="row mb-4 align-items-center g-2">
+            <div class="col-12 col-md-10">
+                <div class="card p-2 shadow-sm">
+                    <input v-model="searchQuery" type="text" id="searchQuery"
+                        placeholder="Search by name e.g. chicken pasta" class="form-control border-0" />
                 </div>
             </div>
-        </div>
+            <div class="col-12 col-md-2">
+                <button class="btn btn-primary w-100 h-100" @click="handleSearch">
+                    Search
+                </button>
+            </div>
         </div>
 
-        <!-- Loading / Error / Results -->
-        <div v-if="loading" class="text-center">Loading...</div>
-        <div v-else-if="error" class="text-danger text-center">{{ error }}</div>
+        <!-- Advanced Filters (Left) + Recipe Cards (Right) -->
+        <div class="row g-4">
+            <!-- LEFT: Advanced Filters -->
+            <div class="col-12 col-lg-4 col-xl-3 col-xxl-3">
+                <div class="card p-3 shadow-sm">
+                    <h3 class="text-start">Advanced Filter</h3>
+                    <!-- Cuisine dropdown -->
+                    <div class="mb-3 text-start">
+                        <label for="cuisine" class="form-label fw-bold">Cuisine</label>
+                        <select v-model="selectedCuisine" id="cuisine" class="form-select">
+                            <option value="">All Cuisines</option>
+                            <option v-for="cuisine in cuisines" :key="cuisine" :value="cuisine">
+                                {{ cuisine }}
+                            </option>
+                        </select>
+                    </div>
 
-        <div v-else class="row g-4">
-            <div class="col-12 col-md-6 col-xl-4" v-for="recipe in recipes" :key="recipe.id">
-                <ProjectCard :title="recipe.title" :image="recipe.image" :tags="recipe.dishTypes" 
-                :prepTime = "recipe.readyInMinutes" :healthScore="recipe.healthScore"
-                    @click="$router.push({ name: 'SpecificRecipe', query: { id: recipe.id } })" class="h-100" />
+                    <!-- Diet checkboxes in 2 columns -->
+                    <div class="mb-3 text-start">
+                        <label class="form-label fw-bold">Diet</label>
+                        <div class="row">
+                            <div class="col-6" v-for="diet in diets" :key="diet">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" :id="diet" :value="diet"
+                                        v-model="selectedDiets" />
+                                    <label class="form-check-label" :for="diet">{{ diet }}</label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Intolerances checkboxes in 2 columns -->
+                    <div class="mb-3 text-start">
+                        <label class="form-label fw-bold">Intolerances</label>
+                        <div class="row">
+                            <div class="col-6" v-for="item in intolerances" :key="item">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" :id="item" :value="item"
+                                        v-model="selectedIntolerances" />
+                                    <label class="form-check-label" :for="item">{{ item }}</label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Include ingredients -->
+                    <div class="mb-3 text-start">
+                        <label for="includeIng" class="form-label fw-bold">Include Ingredients</label>
+                        <input v-model="selectedIncludedIngredients" type="text" id="includeIng"
+                            placeholder="e.g. chicken, garlic, tomato" class="form-control" />
+                        <small class="text-muted">Separate ingredients with commas.</small>
+                    </div>
+
+                    <!-- Exclude ingredients -->
+                    <div class="mb-3 text-start">
+                        <label for="excludeIng" class="form-label fw-bold">Exclude Ingredients</label>
+                        <input v-model="selectedExcludedIngredients" type="text" id="excludeIng"
+                            placeholder="e.g. nuts, shrimp" class="form-control" />
+                        <small class="text-muted">Separate ingredients with commas.</small>
+                    </div>
+
+                    <!-- Sorting options -->
+                    <div class="mb-3 text-start">
+                        <label class="form-label fw-bold">Sort By</label>
+                        <div class="d-flex gap-2">
+                            <select v-model="selectedSortingOption" class="form-select">
+                                <option value="">None</option>
+                                <option v-for="opt in sortOptions" :key="opt" :value="opt">
+                                    {{ opt }}
+                                </option>
+                            </select>
+                            <select v-model="selectedSortingDir" class="form-select">
+                                <option value="">Direction</option>
+                                <option value="asc">Ascending</option>
+                                <option value="desc">Descending</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- Nutrient sliders -->
+                    <div class="mb-3 text-start"> <label class="form-label fw-bold">Carbs (g)</label> <input
+                            type="range" min="0" max="200" v-model="selectedMinCarbs" class="form-range mb-1" /> <input
+                            type="range" min="0" max="200" v-model="selectedmaxCarbs" class="form-range" />
+                        <div class="d-flex justify-content-between small text-muted"> 
+                            <span>Min: {{ selectedMinCarbs}}</span> 
+                            <span>Max: {{ selectedmaxCarbs }}</span> </div>
+                    </div>
+
+                    <div class="mb-3 text-start">
+                        <label class="form-label fw-bold">Protein (g)</label>
+                        <input type="range" min="0" max="200" v-model="selectedminProtein" class="form-range mb-1" />
+                        <input type="range" min="0" max="200" v-model="selectedmaxProtein" class="form-range" />
+                        <div class="d-flex justify-content-between small text-muted">
+                            <span>Min: {{ selectedminProtein }}</span>
+                            <span>Max: {{ selectedmaxProtein }}</span>
+                        </div>
+                    </div>
+
+                    <div class="mb-3 text-start">
+                        <label class="form-label fw-bold">Calories (kcal)</label>
+                        <input type="range" min="0" max="1000" v-model="selectedminCalories" class="form-range mb-1" />
+                        <input type="range" min="0" max="1000" v-model="selectedmaxCalories" class="form-range" />
+                        <div class="d-flex justify-content-between small text-muted">
+                            <span>Min: {{ selectedminCalories }}</span>
+                            <span>Max: {{ selectedmaxCalories }}</span>
+                        </div>
+                    </div>
+
+                    <div class="mb-3 text-start">
+                        <label class="form-label fw-bold">Fat (g)</label>
+                        <input type="range" min="0" max="200" v-model="selectedminFat" class="form-range mb-1" />
+                        <input type="range" min="0" max="200" v-model="selectedmaxFat" class="form-range" />
+                        <div class="d-flex justify-content-between small text-muted">
+                            <span>Min: {{ selectedminFat }}</span>
+                            <span>Max: {{ selectedmaxFat }}</span>
+                        </div>
+                    </div>
+
+                    <!-- Buttons -->
+                    <div class="d-flex gap-2 mt-4">
+                        <button class="btn btn-success flex-fill" @click="handleSearch">
+                            Apply Filters
+                        </button>
+                        <button class="btn btn-outline-secondary flex-fill" @click="resetFilters">
+                            Reset
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- RIGHT: Recipe Cards -->
+            <div class="col-12 col-lg-8 col-xl-9 col-xxl-9">
+                <div v-if="loading" class="text-center">Loading...</div>
+                <div v-else-if="error" class="text-danger text-center">{{ error }}</div>
+
+                <div v-else class="row g-4">
+                    <div class="col-12 col-sm-6 col-md-4 col-lg-6 col-xl-4" v-for="recipe in recipes" :key="recipe.id">
+                        <ProjectCard :title="recipe.title" :image="recipe.image" :tags="recipe.dishTypes"
+                            :prepTime="recipe.readyInMinutes" :healthScore="recipe.healthScore"
+                            @click="$router.push({ name: 'SpecificRecipe', query: { id: recipe.id } })" />
+                    </div>
+                </div>
             </div>
         </div>
     </div>
@@ -131,25 +289,24 @@ const handleSearch = async () => {
 <style>
 /* In Vue, as in standard CSS, !important is a rule that gives a specific CSS property the highest priority, overriding any other conflicting styles regardless of their specificity, position, or origin */
 
-body{
+body {
     background-color: white !important;
 }
 
-/* Ensure dropdown opens below the button */
+/* Keep dropdown menu properly positioned */
 .dropdown-menu.show {
     position: absolute !important;
-    top: 100% !important; /* places it right below the button */
+    top: 100% !important;
     left: 0 !important;
-    transform: none !important; /* prevent Bootstrap’s auto positioning */
-    margin-top: 4px; /* small spacing */
-    z-index: 20 !important; /* ensure above other elements */
+    transform: none !important;
+    margin-top: 4px;
+    z-index: 20 !important;
 }
 
-/* Keep search bar above cards */
-.search-bar-wrapper {
-    position: relative;
-    z-index: 10;
-}
+/* Sticky filter panel */
+/* .sticky-top {
+    position: sticky; can enable it later
+} */
 
 /* Prevent clipping of dropdown */
 .container,
@@ -157,5 +314,34 @@ body{
 .col,
 .card {
     overflow: visible !important;
+}
+
+.card {
+    overflow-y: auto;
+}
+
+.form-label {
+    font-size: 0.9rem;
+}
+
+input[type="range"] {
+    cursor: pointer;
+}
+
+/* Ensure everything is left-aligned */
+.card .form-label,
+.card .form-check-label {
+    text-align: left;
+}
+
+/* Make checkboxes line up nicely */
+.form-check {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+}
+
+.form-check-input {
+    margin-top: 0;
 }
 </style>
