@@ -5,14 +5,16 @@ import axios from "axios";
 import Slider from '@vueform/slider'
 
 
-
 //If you have HTML that needs to update depending on a variable value you can use a "reactive reference" with ref(initialValue)
 const recipes = ref([]);
 const loading = ref(true);
 const error = ref(null);
 
-//for the single slider for carbs
-const carbRange = ref([0, 200]);
+//for the single sliders
+const carbRange = ref([0, 400]);
+const proteinRange = ref([0, 200]);
+const caloriesRange = ref([0, 3000]);
+const fatRange = ref([0, 200]);
 
 // form fields
 const searchQuery = ref("");
@@ -26,12 +28,12 @@ const selectedSortingDir = ref("");
 // single slider for selectedMinCarbs & selectedmaxCarbs
 const selectedMinCarbs = computed(() => carbRange.value[0]);
 const selectedmaxCarbs = computed(() => carbRange.value[1]);
-const selectedminProtein = ref("");
-const selectedmaxProtein = ref("");
-const selectedminCalories = ref("");
-const selectedmaxCalories = ref("");
-const selectedminFat = ref("");
-const selectedmaxFat = ref("");
+const selectedminProtein = computed(() => proteinRange.value[0]);
+const selectedmaxProtein = computed(() => proteinRange.value[1]);
+const selectedminCalories = computed(() => caloriesRange.value[0]);
+const selectedmaxCalories = computed(() => caloriesRange.value[1]);
+const selectedminFat = computed(() => fatRange.value[0]);
+const selectedmaxFat = computed(() => fatRange.value[1]);
 
 const cuisines = [
     "African", "Asian", "American", "British", "Cajun", "Caribbean", "Chinese", "Eastern European", "European", "French", "German",
@@ -58,6 +60,7 @@ onMounted(async () => {
     try {
         const response = await axios.get("http://localhost:4000/api/v1/recipe/random");
         recipes.value = response.data;
+        console.log(response.data);
     } catch (err) {
         error.value = "Failed to load recipes.";
         console.error(err);
@@ -72,28 +75,39 @@ const handleSearch = async () => {
     error.value = null;
 
     try {
+
+        var params = {
+            name: searchQuery.value,
+            cuisine: selectedCuisine.value,
+            intolerances: selectedIntolerances.value.join(","),
+            diet: selectedDiets.value.join(","),
+            includedIngredients: selectedIncludedIngredients.value,
+            excludedIngredients: selectedExcludedIngredients.value,
+            sortBy: selectedSortingOption.value,
+            sortDirection: selectedSortingDir.value,
+            minCarbs: selectedMinCarbs.value,
+            maxCarbs: selectedmaxCarbs.value,
+            minProtein: selectedminProtein.value,
+            maxProtein: selectedmaxProtein.value,
+            minCalories: selectedminCalories.value,
+            maxCalories: selectedmaxCalories.value,
+            minFat: selectedminFat.value,
+            maxFat: selectedmaxFat.value,
+        };
+
+        //filtering out those that are empty
+        for (let p in params) {
+            if (params[p] === "" || params[p] === null || params[p] === undefined) {
+                delete params[p];
+            }
+        }
+
         const response = await axios.get("http://localhost:4000/api/v1/recipe/search", {
-            params: {
-                name: searchQuery.value,
-                cuisine: selectedCuisine.value,
-                intolerances: selectedIntolerances.value.join(","),
-                diet: selectedDiets.value.join(","),
-                includedIngredients: selectedIncludedIngredients.value,
-                excludedIngredients: selectedExcludedIngredients.value,
-                sortBy: selectedSortingOption.value,
-                sortDirection: selectedSortingDir.value,
-                minCarbs: selectedMinCarbs.value,
-                maxCarbs: selectedmaxCarbs.value,
-                minProtein: selectedminProtein.value,
-                maxProtein: selectedmaxProtein.value,
-                minCalories: selectedminCalories.value,
-                maxCalories: selectedmaxCalories.value,
-                minFat: selectedminFat.value,
-                maxFat: selectedmaxFat.value,
-            },
+            params,
         });
-        console.log(selectedMinCarbs.value);
+
         recipes.value = response.data.results;
+        console.log(response.data.results);
         // console.log(response.data.results);
     } catch (err) {
         error.value = "Failed to fetch filtered recipes.";
@@ -224,8 +238,8 @@ const resetFilters = () => {
 
                     <!-- Nutrient sliders -->
                     <div class="mb-3 text-start">
-                        <label class="form-label fw-bold">Carbs (g)</label>
-                        <Slider v-model="carbRange" :min="0" :max="200" />
+                        <label class="form-label fw-bold" style="padding-bottom: 35px;">Carbs (g)</label>
+                        <Slider v-model="carbRange" :min="0" :max="400" />
                         <div class="d-flex justify-content-between small text-muted mt-2">
                             <span>Min: {{ carbRange[0] }}</span>
                             <span>Max: {{ carbRange[1] }}</span>
@@ -233,32 +247,29 @@ const resetFilters = () => {
                     </div>
 
                     <div class="mb-3 text-start">
-                        <label class="form-label fw-bold">Protein (g)</label>
-                        <input type="range" min="0" max="200" v-model="selectedminProtein" class="form-range mb-1" />
-                        <input type="range" min="0" max="200" v-model="selectedmaxProtein" class="form-range" />
+                        <label class="form-label fw-bold" style="padding-bottom: 35px;">Protein (g)</label>
+                        <Slider v-model="proteinRange" :min="0" :max="200" />
                         <div class="d-flex justify-content-between small text-muted">
-                            <span>Min: {{ selectedminProtein }}</span>
-                            <span>Max: {{ selectedmaxProtein }}</span>
+                            <span>Min: {{ proteinRange[0] }}</span>
+                            <span>Max: {{ proteinRange[1] }}</span>
                         </div>
                     </div>
 
                     <div class="mb-3 text-start">
-                        <label class="form-label fw-bold">Calories (kcal)</label>
-                        <input type="range" min="0" max="1000" v-model="selectedminCalories" class="form-range mb-1" />
-                        <input type="range" min="0" max="1000" v-model="selectedmaxCalories" class="form-range" />
+                        <label class="form-label fw-bold" style="padding-bottom: 35px;">Calories (kcal)</label>
+                        <Slider v-model="caloriesRange" :min="0" :max="3000" />
                         <div class="d-flex justify-content-between small text-muted">
-                            <span>Min: {{ selectedminCalories }}</span>
-                            <span>Max: {{ selectedmaxCalories }}</span>
+                            <span>Min: {{ caloriesRange[0] }}</span>
+                            <span>Max: {{ caloriesRange[1] }}</span>
                         </div>
                     </div>
 
                     <div class="mb-3 text-start">
-                        <label class="form-label fw-bold">Fat (g)</label>
-                        <input type="range" min="0" max="200" v-model="selectedminFat" class="form-range mb-1" />
-                        <input type="range" min="0" max="200" v-model="selectedmaxFat" class="form-range" />
+                        <label class="form-label fw-bold" style="padding-bottom: 35px;">Fat (g)</label>
+                        <Slider v-model="fatRange" :min="0" :max="200" />
                         <div class="d-flex justify-content-between small text-muted">
-                            <span>Min: {{ selectedminFat }}</span>
-                            <span>Max: {{ selectedmaxFat }}</span>
+                            <span>Min: {{ fatRange[0] }}</span>
+                            <span>Max: {{ fatRange[1] }}</span>
                         </div>
                     </div>
 
