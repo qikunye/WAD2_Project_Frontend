@@ -23,18 +23,77 @@
         <router-link to="/register" class="cta-button primary">Get Started</router-link>
         <button class="cta-button secondary" @click="scrollToFeatures">Learn More</button>
       </div>
+
+      <!-- Stats Counter Section -->
+      <div class="stats-section" ref="statsSection">
+        <div class="stats-container">
+          <div v-for="item in numbers" :key="item.id" class="stat" :data-index="item.id">
+            <div class="stat-circle">
+              <h2 class="stat-number" :data-target="item.number">0</h2>
+              <span class="stat-plus">+</span>
+            </div>
+            <p class="stat-title">{{ item.title }}</p>
+          </div>
+        </div>
+      </div>
     </div>
   </section>
 </template>
 
 <script setup>
-import { computed } from 'vue';
+import { computed, onMounted, ref } from 'vue';
 
 const titleWords = computed(() => 'Reducing Food Waste at Home'.split(' '));
+const statsSection = ref(null);
+
+const numbers = [
+  { id: 1, number: 30, title: 'Recipes' },
+  { id: 2, number: 15, title: 'Ingredients' },
+  { id: 3, number: 5, title: 'Meal Plans' },
+];
 
 const scrollToFeatures = () => {
   document.getElementById('features')?.scrollIntoView({ behavior: 'smooth' });
 };
+
+const animateCounter = (element, target) => {
+  let current = 0;
+  const increment = target / 50;
+  const timer = setInterval(() => {
+    current += increment;
+    if (current >= target) {
+      element.textContent = target;
+      clearInterval(timer);
+    } else {
+      element.textContent = Math.floor(current);
+    }
+  }, 30);
+};
+
+onMounted(() => {
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        // Add visible class to stats section
+        entry.target.classList.add('is-visible');
+        
+        // Animate all counters
+        const statElements = entry.target.querySelectorAll('.stat');
+        statElements.forEach(stat => {
+          const numberElement = stat.querySelector('.stat-number');
+          const target = parseInt(numberElement.getAttribute('data-target'));
+          animateCounter(numberElement, target);
+        });
+        
+        observer.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.3 });
+
+  if (statsSection.value) {
+    observer.observe(statsSection.value);
+  }
+});
 </script>
 
 <style scoped>
@@ -46,8 +105,8 @@ const scrollToFeatures = () => {
   justify-content: center;
   padding: 4rem 2rem;
   overflow: hidden;
-  width: 100%; /* Ensure full width */
-  max-width: 100vw; /* Prevent overflow */
+  width: 100%;
+  max-width: 100vw;
 }
 
 .gradient-background {
@@ -83,7 +142,7 @@ const scrollToFeatures = () => {
   height: 100%;
   z-index: 1;
   pointer-events: none;
-  overflow: hidden; /* Prevent shapes from causing overflow */
+  overflow: hidden;
 }
 
 .shape {
@@ -91,7 +150,7 @@ const scrollToFeatures = () => {
   border-radius: 50%;
   opacity: 0.15;
   animation: float 20s ease-in-out infinite;
-  will-change: transform; /* Performance optimization */
+  will-change: transform;
 }
 
 .shape-1 {
@@ -140,14 +199,14 @@ const scrollToFeatures = () => {
   width: 100%;
   margin: 0 auto;
   text-align: center;
-  padding: 0 1rem; /* Add some breathing room */
+  padding: 0 1rem;
 }
 
 .home-title {
   font-size: clamp(2rem, 5vw, 3.5rem);
   margin-bottom: 2rem;
   line-height: 1.2;
-  word-wrap: break-word; /* Prevent text overflow */
+  word-wrap: break-word;
 }
 
 .title-word {
@@ -174,7 +233,7 @@ const scrollToFeatures = () => {
   margin-bottom: 3rem;
   opacity: 0;
   animation: fadeIn 1s ease 0.6s forwards;
-  max-width: 100%; /* Prevent text overflow */
+  max-width: 100%;
 }
 
 @keyframes fadeIn {
@@ -190,6 +249,7 @@ const scrollToFeatures = () => {
   flex-wrap: wrap;
   opacity: 0;
   animation: fadeInUp 0.8s ease 0.8s forwards;
+  margin-bottom: 4rem;
 }
 
 .cta-button {
@@ -206,7 +266,7 @@ const scrollToFeatures = () => {
   display: inline-block;
   position: relative;
   overflow: hidden;
-  white-space: nowrap; /* Prevent button text wrapping */
+  white-space: nowrap;
 }
 
 .cta-button::before {
@@ -247,5 +307,137 @@ const scrollToFeatures = () => {
   background-color: var(--color-primary);
   color: var(--color-secondary);
   transform: translateY(-3px);
+}
+
+/* Stats Section - Integrated */
+.stats-section {
+  padding: 4rem 0 2rem;
+  text-align: center;
+  opacity: 0;
+  transform: translateY(30px);
+  transition: all 0.8s ease;
+}
+
+.stats-section.is-visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.stats-container {
+  display: flex;
+  justify-content: center;
+  gap: 4rem;
+  flex-wrap: wrap;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.stat {
+  text-align: center;
+  opacity: 0;
+  transform: scale(0.8);
+  animation: popIn 0.6s ease forwards;
+}
+
+.stat[data-index="1"] { animation-delay: 0.1s; }
+.stat[data-index="2"] { animation-delay: 0.3s; }
+.stat[data-index="3"] { animation-delay: 0.5s; }
+
+@keyframes popIn {
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.stat-circle {
+  position: relative;
+  width: 180px;
+  height: 180px;
+  margin: 0 auto 1.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--color-background);
+  border-radius: 50%;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  border: 4px solid var(--color-secondary);
+}
+
+.stat:hover .stat-circle {
+  transform: translateY(-10px) rotate(5deg);
+  box-shadow: 0 20px 60px rgba(244, 182, 194, 0.4);
+  border-color: var(--color-primary);
+}
+
+.stat-number {
+  font-family: var(--font-heading);
+  font-size: 3.5rem;
+  color: var(--color-primary);
+  margin: 0;
+}
+
+.stat-plus {
+  font-family: var(--font-heading);
+  font-size: 2rem;
+  color: var(--color-secondary);
+  margin-left: 0.2rem;
+}
+
+.stat-title {
+  font-family: var(--font-body);
+  font-size: 1.3rem;
+  font-weight: 600;
+  color: var(--color-primary);
+  margin: 0;
+  transition: color 0.3s ease;
+}
+
+.stat:hover .stat-title {
+  color: var(--color-secondary);
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .stats-section {
+    padding: 3rem 0 1rem;
+  }
+
+  .stats-container {
+    gap: 3rem;
+  }
+  
+  .stat-circle {
+    width: 150px;
+    height: 150px;
+  }
+  
+  .stat-number {
+    font-size: 2.5rem;
+  }
+
+  .stat-plus {
+    font-size: 1.5rem;
+  }
+
+  .stat-title {
+    font-size: 1.1rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .stats-container {
+    gap: 2.5rem;
+  }
+
+  .stat-circle {
+    width: 130px;
+    height: 130px;
+  }
+
+  .stat-number {
+    font-size: 2rem;
+  }
 }
 </style>
