@@ -107,7 +107,7 @@ let isHovering = ref(false);
 const features = [
   {
     title: 'Reduce Waste',
-    description: 'Keep track of what you have and need.',
+    description: 'Track what you have and only buy what you need.',
     image: '/images/2e245a8ba50e4d6f2722ede5844cb232.jpg',
     icon: '♻️',
     corner: 'top-left'
@@ -134,8 +134,8 @@ const features = [
     corner: 'right'
   },
   {
-    title: 'Community Support',
-    description: 'Connect with others, share and discover recipes',
+    title: 'Recipe Sharing',
+    description: 'Share your recipes and discover new favorites.',
     image: '/images/6edaf1d6d2de1c0bf1c1888642a289c7.jpg',
     icon: '💬',
     corner: 'bottom-left'
@@ -664,7 +664,7 @@ const animateOut = () => {
 
 .overlay-content h3 {
   color: #ffffff !important;
-  font-family: var(--font-heading);
+  font-family: 'Montserrat', sans-serif;
   font-size: 1.25rem;
   margin: 0 0 0.5rem 0;
   font-weight: 700;
