@@ -9,9 +9,10 @@
 <div class="card">
     <!-- Image with fallback -->
     <img
-      :src="imageToShow"
+      :src="currentImage"
       :alt="title"
       class="card-image"
+      @error="handleImageError"
     />
 
     <div class="card-gradient"></div>
@@ -36,7 +37,7 @@
 </template>
   
   <script setup>
-  import { computed } from 'vue';
+import { ref, computed, defineProps } from "vue";
   // Props for the ProjectCard.  Default values allow it to be used without
   // specifying every field.
   const props =defineProps({
@@ -71,10 +72,15 @@
     },
   });
 
-  //show no_image_available.jpg if there is no image 
-const imageToShow = computed(() => {
-  return props.image? props.image: "https://upload.wikimedia.org/wikipedia/commons/1/14/No_Image_Available.jpg";
-});
+const fallbackImage = "https://upload.wikimedia.org/wikipedia/commons/1/14/No_Image_Available.jpg";
+
+//ref to track the actual image being displayed
+const currentImage = ref(props.image || fallbackImage);
+
+//runs if image fails to load
+const handleImageError = () => {
+  currentImage.value = fallbackImage;
+};
 
 // Compute dynamic class for color
 const healthScoreColor = computed(() => {
