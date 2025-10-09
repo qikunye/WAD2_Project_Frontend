@@ -569,12 +569,50 @@ const animateOut = () => {
   will-change: transform, opacity;
 }
 
-.feature-image-1 { top: 8%; left: 4%; width: 280px; height: 200px; }
-.feature-image-2 { top: 8%; right: 4%; width: 280px; height: 200px; }
-.feature-image-3 { top: 50%; left: 1%; transform: translateY(-50%); width: 260px; height: 180px; }
-.feature-image-4 { top: 50%; right: 1%; transform: translateY(-50%); width: 260px; height: 180px; }
-.feature-image-5 { bottom: 8%; left: 4%; width: 280px; height: 200px; }
-.feature-image-6 { bottom: 8%; right: 4%; width: 280px; height: 200px; }
+/* Consistent sizing and positioning for all feature images */
+.feature-image-1 { 
+  top: 10%; 
+  left: 8%; 
+  width: 300px; 
+  height: 220px; 
+}
+
+.feature-image-2 { 
+  top: 10%; 
+  right: 8%; 
+  width: 300px; 
+  height: 220px; 
+}
+
+.feature-image-3 { 
+  top: 50%; 
+  left: 5%; 
+  transform: translateY(-50%); 
+  width: 300px; 
+  height: 220px; 
+}
+
+.feature-image-4 { 
+  top: 50%; 
+  right: 5%; 
+  transform: translateY(-50%); 
+  width: 300px; 
+  height: 220px; 
+}
+
+.feature-image-5 { 
+  bottom: 10%; 
+  left: 8%; 
+  width: 300px; 
+  height: 220px; 
+}
+
+.feature-image-6 { 
+  bottom: 10%; 
+  right: 8%; 
+  width: 300px; 
+  height: 220px; 
+}
 
 .image-wrapper {
   position: relative;
