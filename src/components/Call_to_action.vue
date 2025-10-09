@@ -4,12 +4,12 @@
     <div class="background-container" ref="bgContainer">
       <!-- Before Image (Base layer) -->
       <div class="background-image before-bg">
-        <img src="/images/call_to_action_before.png" alt="Before state">
+        <img src="/images/call_to_action_after.png" alt="Before state">
       </div>
       
       <!-- After Image (Reveal layer) -->
       <div class="background-image after-bg" ref="afterBg">
-        <img src="/images/call_to_action_after.png" alt="After state">
+        <img src="/images/call_to_action_before.png" alt="After state">
       </div>
     </div>
 
@@ -123,19 +123,18 @@ const initAnimations = () => {
   // Create a simple timeline for the wipe effect
   const tl = gsap.timeline({
     scrollTrigger: {
-      trigger: bgContainer.value,
-      start: "top top",
-      end: "+=200%", // Scroll for 2x the viewport height
-      scrub: 0.5, // Smooth scrubbing
-      pin: bgContainer.value, // Pin the background container
-      pinSpacing: false,
-      invalidateOnRefresh: true, // Recalculate on window resize
+      trigger: sectionRef.value,
+      start: "top center",
+      end: "bottom center",
+      scrub: 0.5,
+      pin: false, // Don't pin to avoid layout issues
+      invalidateOnRefresh: true,
     }
   });
 
   // Simple wipe from right to left
   tl.to(afterBg.value, {
-    clipPath: "inset(0% 0% 0% 0%)", // Reveal from right to left
+    clipPath: "inset(0% 0% 0% 0%)",
     ease: "none",
     duration: 1
   });
@@ -145,9 +144,9 @@ const initAnimations = () => {
     gsap.to(progressBar.value, {
       scaleX: 1,
       scrollTrigger: {
-        trigger: bgContainer.value,
-        start: "top top",
-        end: "+=200%",
+        trigger: sectionRef.value,
+        start: "top center",
+        end: "bottom center",
         scrub: 0.5,
       },
       transformOrigin: "left center",
@@ -161,9 +160,9 @@ const initAnimations = () => {
       opacity: 0,
       x: -50,
       scrollTrigger: {
-        trigger: bgContainer.value,
-        start: "top top",
-        end: "+=100%",
+        trigger: sectionRef.value,
+        start: "top center",
+        end: "center center",
         scrub: 0.5,
       }
     });
@@ -174,9 +173,9 @@ const initAnimations = () => {
         opacity: 1,
         x: 0,
         scrollTrigger: {
-          trigger: bgContainer.value,
-          start: "+=50%",
-          end: "+=150%",
+          trigger: sectionRef.value,
+          start: "center center",
+          end: "bottom center",
           scrub: 0.5,
         }
       }
@@ -237,19 +236,21 @@ onUnmounted(() => {
 .call-to-action-section {
   position: relative;
   width: 100%;
-  background: #000;
+  min-height: 100vh;
+  background: #fbfaf9; /* Match other sections */
+  overflow: hidden;
 }
 
-/* Scroll spacer to create scrollable area */
+/* Scroll spacer to create scrollable area within section */
 .scroll-spacer {
-  height: 200vh;
+  height: 100vh;
   position: relative;
   z-index: 1;
 }
 
 /* Background Container */
 .background-container {
-  position: fixed;
+  position: absolute; /* Changed from fixed to absolute */
   top: 0;
   left: 0;
   width: 100%;
@@ -280,7 +281,7 @@ onUnmounted(() => {
 
 /* Content Overlay */
 .content-overlay {
-  position: fixed;
+  position: absolute; /* Changed from fixed to absolute */
   top: 0;
   left: 0;
   width: 100%;

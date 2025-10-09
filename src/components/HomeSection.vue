@@ -106,7 +106,7 @@ onMounted(() => {
   padding: 4rem 2rem;
   overflow: hidden;
   width: 100%;
-  max-width: 100vw;
+  background-color: #fbfaf9; /* Consistent background */
 }
 
 .gradient-background {
@@ -119,9 +119,9 @@ onMounted(() => {
   height: 100%;
   background: linear-gradient(
     135deg,
-    rgba(244, 182, 194, 0.1) 0%,
-    rgba(28, 20, 86, 0.05) 50%,
-    rgba(244, 182, 194, 0.1) 100%
+    rgba(244, 182, 194, 0.05) 0%,
+    rgba(28, 20, 86, 0.02) 50%,
+    rgba(244, 182, 194, 0.05) 100%
   );
   animation: gradientShift 15s ease infinite;
   z-index: 0;
@@ -148,7 +148,7 @@ onMounted(() => {
 .shape {
   position: absolute;
   border-radius: 50%;
-  opacity: 0.15;
+  opacity: 0.05; /* Reduced opacity for subtlety */
   animation: float 20s ease-in-out infinite;
   will-change: transform;
 }
@@ -207,6 +207,7 @@ onMounted(() => {
   margin-bottom: 2rem;
   line-height: 1.2;
   word-wrap: break-word;
+  color: var(--color-primary);
 }
 
 .title-word {
@@ -234,6 +235,7 @@ onMounted(() => {
   opacity: 0;
   animation: fadeIn 1s ease 0.6s forwards;
   max-width: 100%;
+  color: #666;
 }
 
 @keyframes fadeIn {
@@ -289,7 +291,7 @@ onMounted(() => {
 
 .cta-button.primary {
   background-color: var(--color-primary);
-  color: var(--color-secondary);
+  color: white;
 }
 
 .cta-button.primary:hover {
@@ -305,7 +307,7 @@ onMounted(() => {
 
 .cta-button.secondary:hover {
   background-color: var(--color-primary);
-  color: var(--color-secondary);
+  color: white;
   transform: translateY(-3px);
 }
 
@@ -358,7 +360,7 @@ onMounted(() => {
   display: flex;
   align-items: center;
   justify-content: center;
-  background: var(--color-background);
+  background: white;
   border-radius: 50%;
   box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
   transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
