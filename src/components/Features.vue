@@ -18,12 +18,12 @@
       @mouseenter="handleTitleHover(true)"
       @mouseleave="handleTitleHover(false)"
     >
-      <!-- Splash background with custom image - ENLARGED -->
+      <!-- Splash background with custom image -->
       <div class="splash-background" ref="splashBackground">
         <img src="/images/splash.png" alt="Splash background" />
       </div>
 
-      <!-- Text bubbles - FIXED POSITIONING -->
+      <!-- Text bubbles -->
       <div class="text-bubble bubble-top-right" ref="bubbleTopRight">
         <p>Discover amazing features to reduce food waste</p>
       </div>
@@ -37,13 +37,11 @@
         <!-- SVG Title with animated stroke effect -->
         <div class="title-svg-wrapper" ref="titleSvgWrapper">
           <svg viewBox="0 0 1200 200" xmlns="http://www.w3.org/2000/svg" class="title-svg">
-            <!-- Define the text as a symbol -->
             <symbol id="s-text">
               <text text-anchor="middle" x="50%" y="50%" dy=".35em" class="svg-text">
                 Our Features
               </text>
             </symbol>
-            <!-- Duplicate symbols for the stroke animation effect -->
             <use class="text-stroke" href="#s-text"></use>
             <use class="text-stroke" href="#s-text"></use>
             <use class="text-stroke" href="#s-text"></use>
@@ -59,7 +57,7 @@
       </div>
     </div>
 
-    <!-- Six feature images positioned around the title - SPREAD TO CORNERS -->
+    <!-- Six feature images positioned around the title -->
     <div class="images-container" ref="imagesContainer">
       <div 
         v-for="(feature, index) in features" 
@@ -102,7 +100,6 @@ const imagesContainer = ref(null);
 const imageRefs = ref([]);
 
 let scrollTriggerInstance = null;
-let hasAnimatedIn = ref(false);
 let titleHoverTimeline = null;
 let isHovering = ref(false);
 
@@ -111,42 +108,42 @@ const features = [
   {
     title: 'Reduce Waste',
     description: 'Keep track of what you have and need.',
-    image: 'public/images/2e245a8ba50e4d6f2722ede5844cb232.jpg',
+    image: '/images/2e245a8ba50e4d6f2722ede5844cb232.jpg',
     icon: '♻️',
     corner: 'top-left'
   },
   {
     title: 'Community Support',
     description: 'Get Inspired by the community',
-    image: 'public/images/486561da858e98fdb5007d7e85095ffc.jpg',
+    image: '/images/486561da858e98fdb5007d7e85095ffc.jpg',
     icon: '🤝',
     corner: 'bottom-right'
   },
   {
     title: 'Meal Planner',
     description: 'Plan meals that fit your budget and cut food waste.',
-    image: 'public/images/5b9268747f3cdf55cbda63a22312fc0a.jpg',
+    image: '/images/5b9268747f3cdf55cbda63a22312fc0a.jpg',
     icon: '📅',
     corner: 'left'
   },
   {
     title: 'Healthy Meals',
     description: 'Plan balanced meals that suit dietary preferences.',
-    image: 'public/images/829fb22e4984a91ee658156830a481bc.jpg',
+    image: '/images/829fb22e4984a91ee658156830a481bc.jpg',
     icon: '🥗',
     corner: 'right'
   },
   {
     title: 'Community Support',
     description: 'Connect with others, share and discover recipes',
-    image: 'public/images/6edaf1d6d2de1c0bf1c1888642a289c7.jpg',
+    image: '/images/6edaf1d6d2de1c0bf1c1888642a289c7.jpg',
     icon: '💬',
     corner: 'bottom-left'
   },
   {
     title: 'Save Money',
     description: 'Plan your grocery shopping and meals to avoid overbuying and overspending.',
-    image: 'public/images/82fda315cd1e0e444bad996f4a367624.jpg',
+    image: '/images/82fda315cd1e0e444bad996f4a367624.jpg',
     icon: '💰',
     corner: 'top-right'
   }
@@ -168,7 +165,6 @@ onUnmounted(() => {
 });
 
 const initTitleHoverAnimation = () => {
-  // Set initial states for hover elements
   gsap.set(splashBackground.value, {
     scale: 0,
     opacity: 0,
@@ -185,7 +181,6 @@ const initTitleHoverAnimation = () => {
     opacity: 1
   });
 
-  // Initially show outline only
   gsap.set(titleSvgWrapper.value, {
     opacity: 1
   });
@@ -194,7 +189,6 @@ const initTitleHoverAnimation = () => {
 const handleTitleHover = (hovering) => {
   isHovering.value = hovering;
   
-  // Kill existing timeline if any
   if (titleHoverTimeline) {
     titleHoverTimeline.kill();
   }
@@ -202,20 +196,16 @@ const handleTitleHover = (hovering) => {
   titleHoverTimeline = gsap.timeline();
 
   if (hovering) {
-    // Hover IN animation
     titleHoverTimeline
-      // Splash background expands
       .to(splashBackground.value, {
         scale: 1,
         opacity: 1,
         duration: 0.6,
         ease: 'back.out(1.7)'
       }, 0)
-      // Start SVG stroke animation by adding class
       .add(() => {
         titleSvgWrapper.value?.classList.add('animating');
       }, 0)
-      // Text bubbles pop in
       .to(bubbleTopRight.value, {
         scale: 1,
         opacity: 1,
@@ -229,20 +219,16 @@ const handleTitleHover = (hovering) => {
         ease: 'back.out(1.7)'
       }, 0.4);
   } else {
-    // Hover OUT animation (reverse)
     titleHoverTimeline
-      // Stop SVG animation by removing class
       .add(() => {
         titleSvgWrapper.value?.classList.remove('animating');
       }, 0)
-      // Bubbles disappear first
       .to([bubbleTopRight.value, bubbleBottomLeft.value], {
         scale: 0,
         opacity: 0,
         duration: 0.3,
         ease: 'back.in(1.7)'
       }, 0)
-      // Splash shrinks
       .to(splashBackground.value, {
         scale: 0,
         opacity: 0,
@@ -255,27 +241,23 @@ const handleTitleHover = (hovering) => {
 const initAnimation = () => {
   if (!featuresSection.value) return;
 
-  // Set initial state - images off-screen at their corners
   gsap.set(imageRefs.value, {
     opacity: 0,
     scale: 0.3,
   });
 
-  // Set initial positions based on corner
   imageRefs.value.forEach((img, index) => {
     const corner = features[index].corner;
     const startPosition = getStartPosition(corner);
     gsap.set(img, startPosition);
   });
 
-  // Set title initial state
   gsap.set(titleContainer.value, {
     opacity: 0,
     scale: 0.8,
     y: 20
   });
 
-  // Create ScrollTrigger
   scrollTriggerInstance = ScrollTrigger.create({
     trigger: featuresSection.value,
     start: 'top 70%',
@@ -307,7 +289,6 @@ const animateIn = () => {
 
   const tl = gsap.timeline();
 
-  // Animate title first
   tl.to(titleContainer.value, {
     opacity: 1,
     scale: 1,
@@ -316,7 +297,6 @@ const animateIn = () => {
     ease: 'back.out(1.7)'
   });
 
-  // Animate images with stagger and random delays
   imageRefs.value.forEach((img, index) => {
     const randomDelay = Math.random() * 0.3;
     const randomRotation = (Math.random() - 0.5) * 10;
@@ -339,7 +319,6 @@ const animateIn = () => {
     }, 0.3 + (index * 0.08) + randomDelay);
   });
 
-  // Add floating animation after they've landed
   tl.add(() => {
     imageRefs.value.forEach((img, index) => {
       gsap.to(img, {
@@ -356,14 +335,12 @@ const animateIn = () => {
 const animateOut = () => {
   if (!titleContainer.value || imageRefs.value.length === 0) return;
 
-  // Kill any floating animations
   imageRefs.value.forEach(img => {
     gsap.killTweensOf(img);
   });
 
   const tl = gsap.timeline();
 
-  // Animate images out first
   imageRefs.value.forEach((img, index) => {
     const corner = features[index].corner;
     const endPosition = getStartPosition(corner);
@@ -379,7 +356,6 @@ const animateOut = () => {
     }, index * 0.05 + randomDelay);
   });
 
-  // Animate title out last
   tl.to(titleContainer.value, {
     opacity: 0,
     scale: 0.8,
@@ -404,7 +380,6 @@ const animateOut = () => {
   padding: 6rem 2rem;
 }
 
-/* Background decorative shapes */
 .background-shapes {
   position: absolute;
   inset: 0;
@@ -443,7 +418,6 @@ const animateOut = () => {
   transform: translate(-50%, -50%);
 }
 
-/* Title container with hover effects */
 .title-container {
   position: relative;
   z-index: 10;
@@ -454,7 +428,6 @@ const animateOut = () => {
   margin: 0 auto;
 }
 
-/* Splash background - MASSIVE SIZE for full coverage */
 .splash-background {
   position: absolute;
   top: 75%;
@@ -477,7 +450,6 @@ const animateOut = () => {
   filter: drop-shadow(0 10px 30px rgba(179, 230, 255, 0.3));
 }
 
-/* Text bubbles - FIXED POSITIONING relative to title container */
 .text-bubble {
   position: absolute;
   padding: 1.25rem 1.75rem;
@@ -488,7 +460,7 @@ const animateOut = () => {
   font-style: italic;
   max-width: 270px;
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
-  z-index: 20; /* Increased z-index to ensure visibility */
+  z-index: 20;
   pointer-events: all;
   will-change: transform, opacity;
   line-height: 1.4;
@@ -498,7 +470,6 @@ const animateOut = () => {
   margin: 0;
 }
 
-/* Top-right bubble - FIXED positioning relative to title container */
 .bubble-top-right {
   top: -90px;
   right: -100px;
@@ -508,7 +479,6 @@ const animateOut = () => {
   transform: rotate(3deg) translateY(-3%);
 }
 
-/* Bottom-left bubble - FIXED positioning relative to title container */
 .bubble-bottom-left {
   bottom: -90px;
   left: -100px;
@@ -518,18 +488,16 @@ const animateOut = () => {
   transform: rotate(-3deg) translateY(3%);
 }
 
-/* Title content wrapper */
 .title-content {
   position: relative;
   z-index: 2;
 }
 
-/* SVG Title Wrapper */
 .title-svg-wrapper {
   position: relative;
   z-index: 2;
   will-change: transform;
-  margin-bottom: 0.75rem; /* Reduced from 1.5rem */
+  margin-bottom: 0.75rem;
 }
 
 .title-svg {
@@ -540,7 +508,6 @@ const animateOut = () => {
   margin: 0 auto;
 }
 
-/* SVG Text Styling */
 .svg-text {
   font-family: 'Anton', var(--font-heading), sans-serif;
   font-size: 130px;
@@ -549,19 +516,17 @@ const animateOut = () => {
   letter-spacing: 0.02em;
 }
 
-/* Subheading - reduced max-width */
 .title-subheading {
   font-family: var(--font-body);
-  font-size: clamp(0.85rem, 2vw, 1rem); /* Fluid font size */
+  font-size: clamp(0.85rem, 2vw, 1rem);
   line-height: 1.5;
   color: #1c1456;
-  max-width: min(580px, 90%); /* Responsive max-width */
+  max-width: min(580px, 90%);
   margin: 0 auto;
   font-weight: 400;
   opacity: 0.85;
 }
 
-/* Animated stroke effect - default state (outline only) */
 .text-stroke {
   fill: none;
   stroke: #1c1456;
@@ -572,60 +537,26 @@ const animateOut = () => {
   animation: none;
 }
 
-/* Individual stroke colors and delays */
-.text-stroke:nth-child(1) {
-  stroke: #F2385A;
-}
+.text-stroke:nth-child(1) { stroke: #F2385A; }
+.text-stroke:nth-child(2) { stroke: #F5A503; }
+.text-stroke:nth-child(3) { stroke: #1c1456; }
+.text-stroke:nth-child(4) { stroke: #56D9CD; }
+.text-stroke:nth-child(5) { stroke: #f4b6c2; }
 
-.text-stroke:nth-child(2) {
-  stroke: #F5A503;
-}
-
-.text-stroke:nth-child(3) {
-  stroke: #1c1456;
-}
-
-.text-stroke:nth-child(4) {
-  stroke: #56D9CD;
-}
-
-.text-stroke:nth-child(5) {
-  stroke: #f4b6c2;
-}
-
-/* Animate strokes when hovering */
 .title-svg-wrapper.animating .text-stroke {
   animation: stroke 6s infinite linear;
 }
 
-.title-svg-wrapper.animating .text-stroke:nth-child(1) {
-  animation-delay: -1.2s;
-}
+.title-svg-wrapper.animating .text-stroke:nth-child(1) { animation-delay: -1.2s; }
+.title-svg-wrapper.animating .text-stroke:nth-child(2) { animation-delay: -2.4s; }
+.title-svg-wrapper.animating .text-stroke:nth-child(3) { animation-delay: -3.6s; }
+.title-svg-wrapper.animating .text-stroke:nth-child(4) { animation-delay: -4.8s; }
+.title-svg-wrapper.animating .text-stroke:nth-child(5) { animation-delay: -6s; }
 
-.title-svg-wrapper.animating .text-stroke:nth-child(2) {
-  animation-delay: -2.4s;
-}
-
-.title-svg-wrapper.animating .text-stroke:nth-child(3) {
-  animation-delay: -3.6s;
-}
-
-.title-svg-wrapper.animating .text-stroke:nth-child(4) {
-  animation-delay: -4.8s;
-}
-
-.title-svg-wrapper.animating .text-stroke:nth-child(5) {
-  animation-delay: -6s;
-}
-
-/* Keyframes for stroke animation */
 @keyframes stroke {
-  100% {
-    stroke-dashoffset: -400;
-  }
+  100% { stroke-dashoffset: -400; }
 }
 
-/* Images container */
 .images-container {
   position: absolute;
   inset: 0;
@@ -638,70 +569,27 @@ const animateOut = () => {
   will-change: transform, opacity;
 }
 
-/* Positioning for 6 images - SPREAD TO CORNERS for better balance */
-.feature-image-1 {
-  top: 8%;
-  left: 4%;
-  width: 280px;
-  height: 200px;
-}
+.feature-image-1 { top: 8%; left: 4%; width: 280px; height: 200px; }
+.feature-image-2 { top: 8%; right: 4%; width: 280px; height: 200px; }
+.feature-image-3 { top: 50%; left: 1%; transform: translateY(-50%); width: 260px; height: 180px; }
+.feature-image-4 { top: 50%; right: 1%; transform: translateY(-50%); width: 260px; height: 180px; }
+.feature-image-5 { bottom: 8%; left: 4%; width: 280px; height: 200px; }
+.feature-image-6 { bottom: 8%; right: 4%; width: 280px; height: 200px; }
 
-.feature-image-2 {
-  top: 8%;
-  right: 4%;
-  width: 280px;
-  height: 200px;
-}
-
-.feature-image-3 {
-  top: 50%;
-  left: 1%;
-  transform: translateY(-50%);
-  width: 260px;
-  height: 180px;
-}
-
-.feature-image-4 {
-  top: 50%;
-  right: 1%;
-  transform: translateY(-50%);
-  width: 260px;
-  height: 180px;
-}
-
-.feature-image-5 {
-  bottom: 8%;
-  left: 4%;
-  width: 280px;
-  height: 200px;
-}
-
-.feature-image-6 {
-  bottom: 8%;
-  right: 4%;
-  width: 280px;
-  height: 200px;
-}
-
-/* Image wrapper styling */
 .image-wrapper {
   position: relative;
   width: 100%;
   height: 100%;
   border-radius: 1.5rem;
   overflow: hidden;
-  box-shadow: 
-    0 10px 40px rgba(0, 0, 0, 0.15),
-    0 0 0 1px rgba(255, 255, 255, 0.2);
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15), 0 0 0 1px rgba(255, 255, 255, 0.2);
   transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
   cursor: pointer;
 }
 
 .image-wrapper:hover {
   transform: scale(1.05) translateY(-5px);
-  box-shadow: 
-    0 20px 60px rgba(0, 0, 0, 0.25),
-    0 0 0 2px var(--color-primary);
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.25), 0 0 0 2px var(--color-primary);
 }
 
 .feature-image img {
@@ -716,16 +604,10 @@ const animateOut = () => {
   transform: scale(1.1);
 }
 
-/* Image overlay */
 .image-overlay {
   position: absolute;
   inset: 0;
-  background: linear-gradient(
-    to top,
-    rgba(28, 20, 86, 0.95) 0%,
-    rgba(28, 20, 86, 0.7) 50%,
-    transparent 100%
-  );
+  background: linear-gradient(to top, rgba(28, 20, 86, 0.95) 0%, rgba(28, 20, 86, 0.7) 50%, transparent 100%);
   display: flex;
   align-items: flex-end;
   padding: 1.5rem;
@@ -741,8 +623,14 @@ const animateOut = () => {
   color: white;
   text-align: left;
 }
+
 .overlay-content h3 {
   color: #ffffff !important;
+  font-family: var(--font-heading);
+  font-size: 1.25rem;
+  margin: 0 0 0.5rem 0;
+  font-weight: 700;
+  letter-spacing: 0.02em;
 }
 
 .icon {
@@ -753,20 +641,8 @@ const animateOut = () => {
 }
 
 @keyframes bounce {
-  0%, 100% {
-    transform: translateY(0);
-  }
-  50% {
-    transform: translateY(-5px);
-  }
-}
-
-.overlay-content h3 {
-  font-family: var(--font-heading);
-  font-size: 1.25rem;
-  margin: 0 0 0.5rem 0;
-  font-weight: 700;
-  letter-spacing: 0.02em;
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-5px); }
 }
 
 .overlay-content p {
@@ -777,207 +653,39 @@ const animateOut = () => {
   line-height: 1.4;
 }
 
-/* Responsive adjustments - PROPERLY SCALED */
-@media (max-width: 1400px) {
-  .splash-background {
-    width: 800%;
-    height: 550%;
-  }
-
-  .bubble-top-right {
-    top: -80px;
-    right: -80px;
-  }
-
-  .bubble-bottom-left {
-    bottom: -80px;
-    left: -80px;
-  }
-
-  .title-svg-wrapper {
-    margin-bottom: 0.5rem;
-  }
-
-  .feature-image-1,
-  .feature-image-2 {
-    top: 10%;
-  }
-
-  .feature-image-5,
-  .feature-image-6 {
-    bottom: 10%;
-  }
-}
-
-@media (max-width: 1200px) {
-  .splash-background {
-    width: 700%;
-    height: 500%;
-  }
-
-  .feature-image-1,
-  .feature-image-2,
-  .feature-image-5,
-  .feature-image-6 {
-    width: clamp(220px, 20vw, 240px);
-    height: clamp(160px, 15vw, 170px);
-  }
-
-  .feature-image-3,
-  .feature-image-4 {
-    width: clamp(200px, 18vw, 220px);
-    height: clamp(150px, 14vw, 160px);
-  }
-
-  .text-bubble {
-    font-size: clamp(0.75rem, 1.5vw, 0.85rem);
-    padding: clamp(0.8rem, 1.5vw, 1rem) clamp(1.2rem, 2vw, 1.5rem);
-    max-width: clamp(200px, 25vw, 240px);
-  }
-
-  .bubble-top-right {
-    top: -70px;
-    right: -60px;
-  }
-
-  .bubble-bottom-left {
-    bottom: -70px;
-    left: -60px;
-  }
-
-  .svg-text {
-    font-size: clamp(80px, 10vw, 100px);
-  }
-
-  .title-svg-wrapper {
-    margin-bottom: 0.4rem;
-  }
-}
-
-@media (max-width: 1024px) {
-  .splash-background {
-    width: 600%;
-    height: 450%;
-  }
-
-  .svg-text {
-    font-size: clamp(60px, 9vw, 80px);
+/* Responsive Design */
+@media (max-width: 768px) {
+  .features-section {
+    padding: 3rem 1rem;
+    min-height: auto;
   }
 
   .title-container {
-    padding: clamp(1.5rem, 3vw, 2rem);
-  }
-
-  .title-svg-wrapper {
-    margin-bottom: 0.3rem;
-  }
-
-  .text-bubble {
-    font-size: clamp(0.7rem, 1.4vw, 0.8rem);
-    padding: clamp(0.7rem, 1.2vw, 0.9rem) clamp(1rem, 1.8vw, 1.3rem);
-    max-width: clamp(180px, 22vw, 220px);
-  }
-
-  .bubble-top-right {
-    top: -60px;
-    right: -40px;
-  }
-
-  .bubble-bottom-left {
-    bottom: -60px;
-    left: -40px;
-  }
-
-  .feature-image-1,
-  .feature-image-2 {
-    top: 12%;
-    width: clamp(200px, 25vw, 240px);
-    height: clamp(140px, 18vw, 170px);
-  }
-
-  .feature-image-3,
-  .feature-image-4 {
-    width: clamp(180px, 22vw, 220px);
-    height: clamp(130px, 16vw, 160px);
-  }
-
-  .feature-image-5,
-  .feature-image-6 {
-    bottom: 12%;
-    width: clamp(200px, 25vw, 240px);
-    height: clamp(140px, 18vw, 170px);
-  }
-}
-
-@media (max-width: 768px) {
-  .features-section {
-    padding: clamp(2rem, 4vw, 3rem) clamp(0.5rem, 2vw, 1rem);
-    min-height: auto;
-    padding-bottom: clamp(4rem, 8vw, 8rem);
+    position: relative;
+    margin-bottom: 2rem;
+    padding: 1.5rem 1rem;
   }
 
   .splash-background {
     width: 500%;
     height: 400%;
-    position: relative;
-    transform: none;
-    left: auto;
-    margin: 0 auto;
   }
 
   .svg-text {
     font-size: clamp(40px, 12vw, 60px);
   }
 
-  .title-svg-wrapper {
-    margin-bottom: 0.25rem;
-  }
-
-  .title-subheading {
-    font-size: clamp(0.75rem, 2.5vw, 0.85rem);
-    max-width: 90%;
-    line-height: 1.4;
-  }
-
-  /* Text bubbles stack on mobile */
   .text-bubble {
     position: relative !important;
-    font-size: clamp(0.7rem, 2.5vw, 0.8rem);
-    padding: clamp(0.8rem, 2vw, 1rem) clamp(1.2rem, 3vw, 1.5rem);
+    font-size: 0.75rem;
+    padding: 0.8rem 1.2rem;
     max-width: min(200px, 80vw);
-    margin: clamp(0.5rem, 2vw, 1rem) auto;
+    margin: 0.75rem auto;
     top: auto !important;
     right: auto !important;
     bottom: auto !important;
     left: auto !important;
-  }
-
-  .bubble-top-right {
-    transform: rotate(0deg);
-    order: 1;
-  }
-
-  .bubble-bottom-left {
-    transform: rotate(0deg);
-    order: 3;
-  }
-
-  .splash-background img {
-    order: 2;
-  }
-
-  /* Stack images vertically on mobile */
-  .feature-image {
-    position: relative !important;
-    width: 100% !important;
-    max-width: min(350px, 90vw);
-    height: clamp(180px, 40vw, 200px) !important;
-    margin: clamp(0.5rem, 2vw, 1rem) auto;
-    left: 50% !important;
-    right: auto !important;
-    top: auto !important;
-    bottom: auto !important;
-    transform: translateX(-50%) !important;
+    transform: none !important;
   }
 
   .images-container {
@@ -985,31 +693,25 @@ const animateOut = () => {
     display: flex;
     flex-direction: column;
     align-items: center;
-    margin-top: clamp(2rem, 5vw, 3rem);
+    margin-top: 2rem;
     pointer-events: all;
-    gap: clamp(0.5rem, 2vw, 1rem);
+    gap: 1rem;
   }
 
-  .title-container {
-    position: relative;
-    margin-bottom: clamp(1rem, 3vw, 2rem);
-    padding: clamp(1.5rem, 3vw, 2rem) clamp(0.5rem, 2vw, 1rem);
-  }
-
-  .overlay-content h3 {
-    font-size: clamp(1rem, 3vw, 1.1rem);
-  }
-
-  .overlay-content p {
-    font-size: clamp(0.8rem, 2.5vw, 0.85rem);
-  }
-
-  .icon {
-    font-size: clamp(1.75rem, 5vw, 2rem);
+  .feature-image {
+    position: relative !important;
+    width: 100% !important;
+    max-width: min(350px, 90vw);
+    height: 200px !important;
+    margin: 0.5rem auto;
+    left: 50% !important;
+    right: auto !important;
+    top: auto !important;
+    bottom: auto !important;
+    transform: translateX(-50%) !important;
   }
 }
 
-/* Prevent layout shift during animation */
 .feature-image,
 .splash-background,
 .text-bubble,
@@ -1020,7 +722,6 @@ const animateOut = () => {
   perspective: 1000px;
 }
 
-/* Accessibility */
 .feature-image:focus-visible {
   outline: 3px solid var(--color-primary);
   outline-offset: 4px;
@@ -1030,4 +731,5 @@ const animateOut = () => {
   outline: 3px solid var(--color-primary);
   outline-offset: 8px;
   border-radius: 1rem;
-}</style>
+}
+</style>
