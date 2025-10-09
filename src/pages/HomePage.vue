@@ -3,8 +3,8 @@
     <HomeSection />
     <Problems/>
     <Features />  
-    <Benefits />
-    <BackToTop />
+    <Call_to_action />
+
   </div>
 </template>
 
@@ -14,8 +14,9 @@ import Navbar from '@/components/Navbar.vue';
 import HomeSection from '@/components/HomeSection.vue';
 import Problems from '@/components/Problems.vue';
 import Features from '@/components/Features.vue';
-import Benefits from '@/components/Benefits.vue';
-import BackToTop from '@/components/BackToTop.vue';
+import Call_to_action from '@/components/Call_to_action.vue';
+
+
 
 onMounted(() => {
   const observerOptions = {
