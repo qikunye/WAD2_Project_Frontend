@@ -480,7 +480,7 @@ img {
 .recipe-summary-card {
     background: linear-gradient(
         135deg, 
-        rgba(255, 255, 255, 0.95) 0%,     /* strong white */
+        rgba(255, 255, 255, 1) 0%,     /* strong white */
         rgba(var(--color-accent), 0.15) 40%, 
         rgba(var(--color-accent), 0.25) 100%
     );
