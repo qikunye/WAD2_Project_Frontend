@@ -122,9 +122,9 @@ async function handleLogin() {
 }
 
 .food-1 {
-  left: 5%;
+  left: 2%;
   top: 20%;
-  width: 300px;
+  width: 220px;
   animation: floatSlow 12s ease-in-out infinite alternate;
 }
 .food-2 {
@@ -205,7 +205,7 @@ async function handleLogin() {
   backdrop-filter: blur(6px) saturate(120%);
   -webkit-backdrop-filter: blur(6px) saturate(120%);
   align-items: stretch;
-  z-index: 1; /* above food layer */
+  z-index: 1;
 }
 
 /* Left image */
