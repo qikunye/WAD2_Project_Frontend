@@ -85,8 +85,8 @@ const showAfter = ref(false);
 
 const currentImage = computed(() => {
   return showAfter.value 
-    ? '/images/call_to_action_before.png'  // After image (cleaner)
-    : '/images/call_to_action_after.png';   // Before image (wasteful)
+    ? '/images/call_to_action_after.png'  // After image (cleaner)
+    : '/images/call_to_action_before.png';   // Before image (wasteful)
 });
 
 const handleScroll = () => {
