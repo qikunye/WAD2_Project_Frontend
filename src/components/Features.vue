@@ -108,42 +108,42 @@ const features = [
   {
     title: 'Reduce Waste',
     description: 'Track what you have and only buy what you need.',
-    image: '/images/2e245a8ba50e4d6f2722ede5844cb232.jpg',
+    image: '/images/featurespic1.jpg',
     icon: '♻️',
     corner: 'top-left'
   },
   {
     title: 'Community Support',
     description: 'Get Inspired by the community',
-    image: '/images/486561da858e98fdb5007d7e85095ffc.jpg',
+    image: '/images/featurespic3.jpg',
     icon: '🤝',
     corner: 'bottom-right'
   },
   {
     title: 'Meal Planner',
     description: 'Plan meals that fit your budget and cut food waste.',
-    image: '/images/5b9268747f3cdf55cbda63a22312fc0a.jpg',
+    image: '/images/hoverpic2.jpg',
     icon: '📅',
     corner: 'left'
   },
   {
     title: 'Healthy Meals',
     description: 'Plan balanced meals that suit dietary preferences.',
-    image: '/images/829fb22e4984a91ee658156830a481bc.jpg',
+    image: '/images/hoverpic5.jpg',
     icon: '🥗',
     corner: 'right'
   },
   {
     title: 'Recipe Sharing',
     description: 'Share your recipes and discover new favorites.',
-    image: '/images/6edaf1d6d2de1c0bf1c1888642a289c7.jpg',
+    image: '/images/hoverpic4.jpg',
     icon: '💬',
     corner: 'bottom-left'
   },
   {
     title: 'Save Money',
     description: 'Plan your grocery shopping and meals to avoid overbuying and overspending.',
-    image: '/images/82fda315cd1e0e444bad996f4a367624.jpg',
+    image: '/images/featurespic2.jpg',
     icon: '💰',
     corner: 'top-right'
   }
