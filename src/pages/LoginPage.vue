@@ -45,21 +45,24 @@ const password = ref("");
 
 async function handleLogin() {
   try {
-    const res = await axios.post("http://localhost:4000/api/v1/user/login", {
-      email: email.value,
-      password: password.value,
-    }, {
-        withCredentials: true
-    });
+    const res = await axios.post(
+      "http://localhost:4000/api/v1/users/login",
+      {
+        email: email.value,
+        password: password.value,
+      },
+      {
+        withCredentials: true,
+      }
+    );
 
-    router.push('/profile');
+    router.push("/profile");
   } catch (err) {
     console.error("Login failed:", err.response?.data || err.message);
     alert(err.response?.data?.message || "Login failed. Please try again.");
   }
 }
 </script>
-
 
 <style scoped>
 .login-page {
