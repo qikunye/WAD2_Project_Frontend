@@ -1,27 +1,52 @@
 <template>
-  <section id="home" class="home-section">
-    <div class="gradient-background"></div>
-    <div class="floating-shapes">
-      <div class="shape shape-1"></div>
-      <div class="shape shape-2"></div>
-      <div class="shape shape-3"></div>
+  <section 
+    id="home" 
+    class="home-section"
+    @mousemove="handleMouseMove"
+    @mouseenter="isHovering = true"
+    @mouseleave="handleMouseLeave"
+    ref="homeSection"
+  >
+    <!-- Hover Images - Multiple instances -->
+    <div 
+      v-for="image in activeImages"
+      :key="image.id"
+      class="hover-image"
+      :class="{ 'fading-out': image.fadingOut }"
+      :style="{ left: `${image.x}px`, top: `${image.y}px` }"
+    >
+      <img :src="image.src" alt="Interactive element" />
     </div>
+
+    <!-- Main Container -->
     <div class="home-container">
-      <h1 class="home-title">
-        <span class="title-word" v-for="(word, index) in titleWords" :key="index" 
-              :style="{ animationDelay: `${index * 0.1}s` }">
-          {{ word }}
-        </span>
-      </h1>
-      <p class="home-description">
-        According to the statistics, a significant amount of food wastage comes from households, 
-        where people often overbuy, forget what they have at home, or struggle to use up ingredients 
-        before they spoil. When dietary restrictions are involved, meal planning becomes even more 
-        challenging which leads to edible food being thrown away instead of enjoyed.
-      </p>
-      <div class="cta-buttons">
-        <router-link to="/register" class="cta-button primary">Get Started</router-link>
-        <button class="cta-button secondary" @click="scrollToFeatures">Learn More</button>
+      <!-- Bold Title with Icons -->
+      <div class="title-wrapper" ref="titleWrapper">
+        <h1 class="main-title">
+          <span class="title-line-1">
+            Beyond the bin
+            <!-- Embed the first section image directly in the first line -->
+            <img src="/images/homesection_pic1.png" alt="Discover" class="inline-icon" />
+          </span>
+          <span class="title-line-2">A food waste initiative</span>
+
+          <!-- Yellow Icon (Bottom Left of Title) -->
+          <button 
+            class="corner-icon-button"
+            @click="handleCornerIconClick"
+            aria-label="Peace sign"
+          >
+            <img src="/images/homesection_pic2.png" alt="Peace" />
+          </button>
+        </h1>
+      </div>
+
+      <!-- Subtitle/Description -->
+      <div class="description-wrapper">
+        <div class="divider-line"></div>
+        <p class="subtitle">
+          Find out what drives us and how we bring a second life for leftovers.
+        </p>
       </div>
 
       <!-- Stats Counter Section -->
@@ -37,15 +62,39 @@
         </div>
       </div>
     </div>
+
+    <!-- The side label has been removed as per updated design -->
   </section>
 </template>
 
 <script setup>
-import { computed, onMounted, ref } from 'vue';
+import { ref, computed, onMounted, onUnmounted } from 'vue';
 
-const titleWords = computed(() => 'Reducing Food Waste at Home'.split(' '));
+const homeSection = ref(null);
 const statsSection = ref(null);
+const titleWrapper = ref(null);
+const isHovering = ref(false);
+const currentImageIndex = ref(0);
+const activeImages = ref([]);
+const imageIdCounter = ref(0);
 
+let spawnTimer = null;
+
+// 10 predefined hover images
+const hoverImages = [
+  '/images/hoverpic1.jpg',
+  '/images/hoverpic2.jpg',
+  '/images/hoverpic3.jpg',
+  '/images/hoverpic4.jpg',
+  '/images/hoverpic5.jpg',
+  '/images/hoverpic6.jpg',
+  '/images/hoverpic7.jpg',
+  '/images/hoverpic8.jpg',
+  '/images/hoverpic9.jpg',
+  '/images/hoverpic10.jpg',
+];
+
+// Stats data
 const numbers = [
   { id: 1, number: 30, title: 'Recipes' },
   { id: 2, number: 15, title: 'Ingredients' },
@@ -54,6 +103,69 @@ const numbers = [
 
 const scrollToFeatures = () => {
   document.getElementById('features')?.scrollIntoView({ behavior: 'smooth' });
+};
+
+const spawnImage = (x, y) => {
+  const imageId = imageIdCounter.value++;
+  const imageSrc = hoverImages[currentImageIndex.value];
+  
+  // Create new image object
+  const newImage = {
+    id: imageId,
+    x: x,
+    y: y,
+    src: imageSrc,
+    fadingOut: false
+  };
+  
+  activeImages.value.push(newImage);
+  
+  // Move to next image in sequence
+  currentImageIndex.value = (currentImageIndex.value + 1) % hoverImages.length;
+  
+  // Start fade out after 0.7 seconds (fade takes 0.3s)
+  setTimeout(() => {
+    const image = activeImages.value.find(img => img.id === imageId);
+    if (image) {
+      image.fadingOut = true;
+    }
+  }, 700);
+  
+  // Remove after 1 second total
+  setTimeout(() => {
+    activeImages.value = activeImages.value.filter(img => img.id !== imageId);
+  }, 1000);
+};
+
+const handleMouseMove = (e) => {
+  if (!isHovering.value) return;
+
+  const rect = homeSection.value.getBoundingClientRect();
+  const x = e.clientX - rect.left;
+  const y = e.clientY - rect.top;
+
+  // Spawn image every 0.1 seconds (100ms)
+  if (!spawnTimer) {
+    spawnImage(x, y);
+    
+    spawnTimer = setTimeout(() => {
+      spawnTimer = null;
+    }, 100);
+  }
+};
+
+const handleMouseLeave = () => {
+  isHovering.value = false;
+  clearTimeout(spawnTimer);
+  spawnTimer = null;
+  // Clear all active images
+  activeImages.value = [];
+};
+
+
+const handleCornerIconClick = () => {
+  console.log('Corner icon clicked - Peace!');
+  // Add your custom action here
 };
 
 const animateCounter = (element, target) => {
@@ -74,10 +186,8 @@ onMounted(() => {
   const observer = new IntersectionObserver((entries) => {
     entries.forEach(entry => {
       if (entry.isIntersecting) {
-        // Add visible class to stats section
         entry.target.classList.add('is-visible');
         
-        // Animate all counters
         const statElements = entry.target.querySelectorAll('.stat');
         statElements.forEach(stat => {
           const numberElement = stat.querySelector('.stat-number');
@@ -94,224 +204,168 @@ onMounted(() => {
     observer.observe(statsSection.value);
   }
 });
+
+onUnmounted(() => {
+  clearTimeout(spawnTimer);
+  activeImages.value = [];
+});
 </script>
 
 <style scoped>
 .home-section {
   position: relative;
-  min-height: 90vh;
+  min-height: 100vh;
   display: flex;
   align-items: center;
   justify-content: center;
   padding: 4rem 2rem;
+  background-color: #e5e4e2; /* Light warm grey like EISLAB */
   overflow: hidden;
-  width: 100%;
-  background-color: #fbfaf9; /* Consistent background */
+  cursor: crosshair;
 }
 
-.gradient-background {
+/* Hover Images - Multiple instances */
+.hover-image {
   position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  width: 100%;
-  height: 100%;
-  background: linear-gradient(
-    135deg,
-    rgba(244, 182, 194, 0.05) 0%,
-    rgba(28, 20, 86, 0.02) 50%,
-    rgba(244, 182, 194, 0.05) 100%
-  );
-  animation: gradientShift 15s ease infinite;
-  z-index: 0;
-}
-
-@keyframes gradientShift {
-  0%, 100% { opacity: 1; transform: scale(1); }
-  50% { opacity: 0.8; transform: scale(1.1); }
-}
-
-.floating-shapes {
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  width: 100%;
-  height: 100%;
-  z-index: 1;
-  pointer-events: none;
-  overflow: hidden;
-}
-
-.shape {
-  position: absolute;
-  border-radius: 50%;
-  opacity: 0.05; /* Reduced opacity for subtlety */
-  animation: float 20s ease-in-out infinite;
-  will-change: transform;
-}
-
-.shape-1 {
-  width: 300px;
-  height: 300px;
-  background: var(--color-secondary);
-  top: 10%;
-  left: 10%;
-  animation-delay: 0s;
-}
-
-.shape-2 {
-  width: 200px;
-  height: 200px;
-  background: var(--color-primary);
-  top: 60%;
-  right: 15%;
-  animation-delay: 5s;
-}
-
-.shape-3 {
   width: 150px;
   height: 150px;
-  background: var(--color-accent);
-  bottom: 20%;
-  left: 60%;
-  animation-delay: 10s;
+  pointer-events: none;
+  z-index: 100;
+  transform: translate(-50%, -50%) scale(1);
+  will-change: transform, opacity;
+  opacity: 1;
+  transition: opacity 0.3s ease-out, transform 0.3s ease-out;
 }
 
-@keyframes float {
-  0%, 100% {
-    transform: translate(0, 0) rotate(0deg);
-  }
-  33% {
-    transform: translate(30px, -30px) rotate(120deg);
-  }
-  66% {
-    transform: translate(-20px, 20px) rotate(240deg);
-  }
+.hover-image.fading-out {
+  opacity: 0;
+  transform: translate(-50%, -50%) scale(0.8);
 }
 
+.hover-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  filter: drop-shadow(0 10px 30px rgba(0, 0, 0, 0.2));
+}
+
+/* Main Container */
 .home-container {
   position: relative;
   z-index: 2;
-  max-width: 900px;
+  max-width: 1400px;
   width: 100%;
   margin: 0 auto;
   text-align: center;
-  padding: 0 1rem;
+  padding: 0 2rem;
 }
 
-.home-title {
-  font-size: clamp(2rem, 5vw, 3.5rem);
-  margin-bottom: 2rem;
-  line-height: 1.2;
-  word-wrap: break-word;
-  color: var(--color-primary);
-}
-
-.title-word {
-  display: inline-block;
-  margin: 0 0.25em;
-  opacity: 0;
-  animation: fadeInUp 0.8s ease forwards;
-}
-
-@keyframes fadeInUp {
-  from {
-    opacity: 0;
-    transform: translateY(30px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-.home-description {
-  font-size: 1.125rem;
-  line-height: 1.8;
-  margin-bottom: 3rem;
-  opacity: 0;
-  animation: fadeIn 1s ease 0.6s forwards;
-  max-width: 100%;
-  color: #666;
-}
-
-@keyframes fadeIn {
-  to {
-    opacity: 1;
-  }
-}
-
-.cta-buttons {
-  display: flex;
-  gap: 1.5rem;
-  justify-content: center;
-  flex-wrap: wrap;
-  opacity: 0;
-  animation: fadeInUp 0.8s ease 0.8s forwards;
-  margin-bottom: 4rem;
-}
-
-.cta-button {
-  padding: 1rem 2.5rem;
-  border-radius: 50px;
-  font-family: var(--font-heading);
-  font-size: 1rem;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  border: 2px solid transparent;
-  text-decoration: none;
-  display: inline-block;
+/* Title Wrapper */
+.title-wrapper {
   position: relative;
-  overflow: hidden;
-  white-space: nowrap;
+  margin-bottom: 3rem;
 }
 
-.cta-button::before {
-  content: '';
+/* Bold Main Title - EISLAB Style */
+.main-title {
+  position: relative;
+  font-family: var(--font-heading);
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: -0.02em;
+  line-height: 0.85;
+  color: #1c1456; /* Deep purple/blue */
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.title-line-1 {
+  font-size: clamp(3rem, 12vw, 10rem);
+  display: block;
+}
+
+.title-line-2 {
+  /* Make the second line smaller than the first line */
+  font-size: clamp(2rem, 8vw, 6rem);
+  display: block;
+}
+
+/* Circular Icon Inside Title (Top Right) */
+/* Embedded icon within the first line of the title */
+.inline-icon {
+  display: inline-block;
+  width: 1em;
+  height: 1em;
+  margin-left: 0.5rem;
+  vertical-align: middle;
+}
+
+/* Yellow Corner Icon - REPOSITIONED to bottom-left of title */
+.corner-icon-button {
   position: absolute;
-  top: 50%;
-  left: 50%;
-  width: 0;
-  height: 0;
+  bottom: -60px; /* 30px below title + half button height */
+  left: 0;
+  width: 100px;
+  height: 100px;
   border-radius: 50%;
-  background: rgba(255, 255, 255, 0.3);
-  transform: translate(-50%, -50%);
-  transition: width 0.6s, height 0.6s;
+  background: linear-gradient(135deg, #f7e273 0%, #ffd966 100%);
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
+  transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  z-index: 10;
 }
 
-.cta-button:hover::before {
-  width: 300px;
-  height: 300px;
+.corner-icon-button:hover {
+  transform: scale(1.15) rotate(-10deg);
+  box-shadow: 0 15px 50px rgba(0, 0, 0, 0.25);
 }
 
-.cta-button.primary {
-  background-color: var(--color-primary);
-  color: white;
+.corner-icon-button img {
+  width: 50%;
+  height: 50%;
+  object-fit: contain;
 }
 
-.cta-button.primary:hover {
-  transform: translateY(-3px);
-  box-shadow: 0 10px 30px rgba(28, 20, 86, 0.3);
+/* Description Wrapper */
+.description-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.5rem;
+  margin-bottom: 3rem;
+  margin-top: 5rem; /* Extra space to account for repositioned yellow icon */
 }
 
-.cta-button.secondary {
-  background-color: transparent;
-  color: var(--color-primary);
-  border-color: var(--color-primary);
+.divider-line {
+  width: 2px;
+  height: 80px;
+  background: linear-gradient(
+    to bottom,
+    transparent 0%,
+    #1c1456 50%,
+    transparent 100%
+  );
 }
 
-.cta-button.secondary:hover {
-  background-color: var(--color-primary);
-  color: white;
-  transform: translateY(-3px);
+.subtitle {
+  font-family: var(--font-body);
+  font-size: clamp(1rem, 2.5vw, 1.3rem);
+  color: #1c1456;
+  max-width: 600px;
+  line-height: 1.6;
+  font-weight: 400;
 }
 
-/* Stats Section - Integrated */
+/* Side Label (like EISLAB's red sidebar) */
+/* The side label styles have been removed as the label has been omitted */
+
+/* Stats Section - UPDATED STYLING */
 .stats-section {
   padding: 4rem 0 2rem;
   text-align: center;
@@ -352,6 +406,7 @@ onMounted(() => {
   }
 }
 
+/* Counter Bubble - UPDATED COLORS */
 .stat-circle {
   position: relative;
   width: 180px;
@@ -360,17 +415,17 @@ onMounted(() => {
   display: flex;
   align-items: center;
   justify-content: center;
-  background: white;
+  background: #e5e4e2; /* Match section background */
   border-radius: 50%;
   box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
   transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-  border: 4px solid var(--color-secondary);
+  border: 4px solid #1c1456; /* Dark blue heading color */
 }
 
 .stat:hover .stat-circle {
   transform: translateY(-10px) rotate(5deg);
-  box-shadow: 0 20px 60px rgba(244, 182, 194, 0.4);
-  border-color: var(--color-primary);
+  box-shadow: 0 20px 60px rgba(28, 20, 86, 0.4);
+  border-color: #1c1456;
 }
 
 .stat-number {
@@ -401,7 +456,43 @@ onMounted(() => {
 }
 
 /* Responsive Design */
+@media (max-width: 1200px) {
+  /* Adjustments for large screens removed unused title-icon-button and side-label */
+}
+
 @media (max-width: 768px) {
+  .home-section {
+    padding: 3rem 1rem;
+  }
+
+  .title-line-1,
+  .title-line-2 {
+    font-size: clamp(2rem, 10vw, 5rem);
+  }
+
+  /* Removed styling for title-icon-button */
+  .corner-icon-button {
+    width: 70px;
+    height: 70px;
+    bottom: -50px;
+    left: 0;
+  }
+
+  .description-wrapper {
+    margin-top: 4rem;
+  }
+
+  .divider-line {
+    height: 60px;
+  }
+
+  /* Side label removed from the layout entirely */
+
+  .hover-image {
+    width: 100px;
+    height: 100px;
+  }
+
   .stats-section {
     padding: 3rem 0 1rem;
   }
@@ -429,6 +520,27 @@ onMounted(() => {
 }
 
 @media (max-width: 480px) {
+  .title-line-1,
+  .title-line-2 {
+    font-size: clamp(1.8rem, 9vw, 3.5rem);
+  }
+
+  /* Removed styling for title-icon-button */
+  .corner-icon-button {
+    width: 60px;
+    height: 60px;
+    bottom: -40px;
+  }
+
+  .description-wrapper {
+    margin-top: 3rem;
+  }
+
+  .hover-image {
+    width: 80px;
+    height: 80px;
+  }
+
   .stats-container {
     gap: 2.5rem;
   }
@@ -441,5 +553,20 @@ onMounted(() => {
   .stat-number {
     font-size: 2rem;
   }
+}
+
+/* Performance Optimizations */
+.hover-image,
+.corner-icon-button {
+  -webkit-backface-visibility: hidden;
+  backface-visibility: hidden;
+  -webkit-perspective: 1000px;
+  perspective: 1000px;
+}
+
+/* Accessibility */
+.corner-icon-button:focus-visible {
+  outline: 3px solid var(--color-primary);
+  outline-offset: 4px;
 }
 </style>

@@ -664,7 +664,7 @@ const animateOut = () => {
 
 .overlay-content h3 {
   color: #ffffff !important;
-  font-family: 'Montserrat', sans-serif;
+  font-family: var(--font-heading2);
   font-size: 1.25rem;
   margin: 0 0 0.5rem 0;
   font-weight: 700;
