@@ -571,11 +571,7 @@ img {
 
 /* === Summary Card Styling === */
 .recipe-summary-card {
-    background: linear-gradient(135deg,
-            rgba(255, 255, 255, 1) 0%,
-            /* strong white */
-            rgba(var(--color-accent), 0.15) 40%,
-            rgba(var(--color-accent), 0.25) 100%);
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.6), rgba(230, 74, 25, 0.08));
     border: 1.5px solid rgba(230, 74, 25, 0.25);
     /* lighter outline */
     border-radius: 1rem;
