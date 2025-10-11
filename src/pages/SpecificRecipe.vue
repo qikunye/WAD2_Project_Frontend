@@ -12,13 +12,13 @@ const recipeId = route.query.id; //read ?id= from URL
 var recipeInfo = ref({});
 
 const API_KEY = import.meta.env.SPOON_APIKEY;
+var displayedNutritionStats =ref([]);
 
 //get specific recipe details
 onMounted(async () => {
     //if there is no id, then redirect to recipes page
     if (!recipeId) {
         router.push({ name: 'Recipes' });
-
     }
 
     try {
@@ -30,11 +30,26 @@ onMounted(async () => {
         });
         // console.log("Fetched recipe:", response.data);
         recipeInfo.value = response.data;
+
+        //assigning nutrition stats
+        const nutrients = recipeInfo.value?.nutrition?.nutrients || [];
+        displayedNutritionStats.value = nutrients.slice(0, 12).filter(n => n.name !== "Alcohol %");
+
         console.log("Fetched recipe from recipeInfo:", recipeInfo);
+
     } catch (err) {
         console.error("Failed to load recipe:", err);
     }
 });
+
+//get alcohol percentage 
+//find() returns the value of the first element that passes a test
+function getAlcoholPercent(nutrients) {
+    const alcoholPercent = nutrients.find(function(nutrient){
+        nutrient.name == "Alcohol %";
+    });
+    return alcoholPercent ? alcoholPercent.amount : 0;
+}
 
 function addToMealPlan() {
     if (!userStore.isLoggedIn) {
@@ -149,6 +164,83 @@ function addToMealPlan() {
                 <p v-html="recipeInfo.summary" class="summary-text mb-0 px-4 pb-4"></p>
             </div>
 
+            <!-- Nutrition Facts -->
+            <div class="card nutrition-card border-0 shadow-sm p-4 mb-4">
+                <div class="d-flex align-items-center mb-3">
+                    <div class="icon-circle-nutrition">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="#000000"
+                            stroke-linecap="round" stroke-linejoin="round" id="Apple--Streamline-Lucide" height="24"
+                            width="24">
+                            <desc>
+                                Apple Streamline Icon: https://streamlinehq.com
+                            </desc>
+                            <path
+                                d="M12 20.94c1.5 0 2.75 1.06 4 1.06 3 0 6 -8 6 -12.22A4.91 4.91 0 0 0 17 5c-2.22 0 -4 1.44 -5 2 -1 -0.56 -2.78 -2 -5 -2a4.9 4.9 0 0 0 -5 4.78C2 14 5 22 8 22c1.25 0 2.5 -1.06 4 -1.06Z"
+                                stroke-width="2"></path>
+                            <path d="M10 2c1 0.5 2 2 2 5" stroke-width="2"></path>
+                        </svg>
+                    </div>
+                    <h5 class="nutrition-title mb-0 ms-3">Nutrition Facts</h5>
+                    <span class="ms-auto badge rounded-pill nutrition-badge">Per Serving</span>
+                </div>
+
+                <!-- Caloric Breakdown -->
+                <div class="caloric-breakdown-section p-4 my-4 rounded-4 shadow-sm">
+                    <h4 class="breakdown-title mb-4">Caloric Breakdown</h4>
+                    <div class="nutrition-breakdown mb-3 d-flex justify-content-around text-center p-3">
+                        <div>
+                            <div class="circle carb">{{ recipeInfo.nutrition.caloricBreakdown.percentCarbs }}%</div>
+                            <div>Carbs</div>
+                        </div>
+                        <div>
+                            <div class="circle fat">{{ recipeInfo.nutrition.caloricBreakdown.percentFat }}%</div>
+                            <div>Fat</div>
+                        </div>
+                        <div>
+                            <div class="circle protein">{{ recipeInfo.nutrition.caloricBreakdown.percentProtein }}%
+                            </div>
+                            <div>Protein</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Nutrition Stats -->
+                <div class="row g-3 nutrition-stats">
+                    <!-- slice nutrition array from index 0 to 11, which includes Calories, Fat, Saturated Fat, Carbohydrates, Net Carbohydrates, 
+                    Sugar, Cholesterol, Sodium, Alcohol, Alcohol %, Protein -->
+                    <!-- recipeInfo.nutrition.nutrients.slice(0, 12) -->
+                    <div class="col-6 col-md-4 justify-content-start" v-for="nutrient in displayedNutritionStats"
+                        :key="nutrient.name">
+
+                        <div v-if="nutrient.name !== 'Alcohol %'"
+                            class="nutrient-item d-flex justify-content-between align-items-center">
+                            <span class="nutrient-name">{{ nutrient.name }}</span>
+                            <span class="nutrient-value">
+                                <span v-if="nutrient.name === 'Alcohol'">
+                                    {{ nutrient.amount }}{{ nutrient.unit }} ({{
+                                    getAlcoholPercent(recipeInfo.nutrition.nutrients) }}%)
+                                </span>
+                                <span v-else>
+                                    {{ nutrient.amount }}{{ nutrient.unit }}
+                                </span>
+                            </span>
+                        </div>
+
+                    </div>
+                </div>
+
+                <!-- Vitamins & Minerals -->
+                <!-- <div v-if="recipeInfo.nutrition.good && recipeInfo.nutrition.good.length" class="mt-3 pt-2 border-top">
+                    <div class="fw-semibold text-muted mb-2">High in Vitamins &amp; Minerals</div>
+                    <div class="d-flex flex-wrap gap-2">
+                        <span v-for="vit in recipeInfo.nutrition.good.slice(0, 4)" :key="vit.title"
+                            class="badge vitamin-badge">
+                            {{ vit.title }}: {{ vit.percentOfDailyNeeds }}% DV
+                        </span>
+                    </div>
+                </div> -->
+            </div>
+
             <!-- Ingredients & Instructions -->
             <div class="row g-4">
                 <!-- Ingredients -->
@@ -205,7 +297,8 @@ function addToMealPlan() {
                                     <path d="m21 6 0 13" stroke-width="2"></path>
                                 </svg>
                             </div>
-                            <h5 class="fw-bold mb-0 ms-3 text-left"  style="font-family: var(--font-body);">Instructions</h5>
+                            <h5 class="fw-bold mb-0 ms-3 text-left" style="font-family: var(--font-body);">Instructions
+                            </h5>
                         </div>
 
                         <ol class="ps-3 instructions-list">
@@ -478,12 +571,11 @@ img {
 
 /* === Summary Card Styling === */
 .recipe-summary-card {
-    background: linear-gradient(
-        135deg, 
-        rgba(255, 255, 255, 1) 0%,     /* strong white */
-        rgba(var(--color-accent), 0.15) 40%, 
-        rgba(var(--color-accent), 0.25) 100%
-    );
+    background: linear-gradient(135deg,
+            rgba(255, 255, 255, 1) 0%,
+            /* strong white */
+            rgba(var(--color-accent), 0.15) 40%,
+            rgba(var(--color-accent), 0.25) 100%);
     border: 1.5px solid rgba(230, 74, 25, 0.25);
     /* lighter outline */
     border-radius: 1rem;
@@ -688,4 +780,104 @@ img {
     animation: shake 0.4s ease;
 }
 
+/* Nutrition Card */
+.breakdown-title{
+    font-family: var(--font-body);
+    text-align: left;
+    color:#7d7d7d;
+    font-size: 18px;
+}
+
+.nutrition-card {
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.9), rgba(244, 182, 194, 0.15));
+    border: 2px solid rgba(244, 182, 194, 0.4);
+    border-radius: 1rem;
+}
+
+.icon-circle-nutrition {
+    width: 42px;
+    height: 42px;
+    border-radius: 50%;
+    background-color: rgba(244, 182, 194, 0.3);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.nutrition-title {
+    font-weight: 700;
+    color: #1c1456;
+}
+
+.nutrition-badge {
+    background-color: #f4b6c2;
+    color: #1c1456;
+    font-size: 0.8rem;
+    padding: 0.4rem 0.75rem;
+    font-weight: 600;
+}
+
+/* Caloric breakdown circles */
+.nutrition-breakdown .circle {
+    width: 70px;
+    height: 70px;
+    border-radius: 50%;
+    font-weight: 700;
+    color: white;
+    line-height: 70px;
+    margin-bottom: 5px;
+}
+
+.circle.carb { background-color: #e64a19; }
+.circle.fat { background-color: #f4b6c2; color: #fff; }
+.circle.protein { background-color: #1c1456; }
+
+/* Nutrient list */
+.nutrition-title{
+    font-family:var(--font-body);
+}
+
+.nutrition-stats {
+    color: #1c1456;
+    font-family: var(--font-body);
+}
+
+.caloric-breakdown-section {
+    background: linear-gradient(135deg, #fbe6e9 0%, #fff6f6 50%, #fbe6e9 100%);
+    border: 1px solid rgba(244, 182, 194, 0.4);
+    border-radius: 1rem;
+}
+
+.nutrient-item {
+    border-radius: 0.5rem;
+    padding: 0.4rem 0.6rem;
+    transition: background 0.2s ease;
+}
+
+.nutrient-item:hover {
+    background-color: rgba(244, 182, 194, 0.25);
+}
+
+.nutrient-name {
+    font-weight: 600;
+    color: #e64a19;
+}
+
+.nutrient-value {
+    font-weight: 500;
+}
+
+.nutrient-item.justify-content-between .nutrient-value {
+  margin-left: auto; /* keeps everything else on the right */
+}
+
+/* Vitamins badges */
+.vitamin-badge {
+    background-color: #e64a19;
+    color: white;
+    border-radius: 2rem;
+    padding: 0.4rem 0.8rem;
+    font-size: 0.85rem;
+    font-weight: 600;
+}
 </style>
