@@ -22,7 +22,7 @@
 </template>
 
 <script setup>
-import { reactive, onMounted  } from "vue";
+import { reactive, onMounted } from "vue";
 import { useRouter } from "vue-router";
 import { useUserStore } from "../stores/userStore";
 import axios from "axios";
@@ -39,7 +39,7 @@ const user = reactive({
 
 async function fetchUser() {
   try {
-    const res = await axios.get("http://localhost:4000/api/v1/user/me", {
+    const res = await axios.get("http://localhost:4000/api/v1/users/me", {
       withCredentials: true,
     });
     Object.assign(user, res.data.user);
@@ -54,7 +54,7 @@ onMounted(fetchUser);
 async function handleLogout() {
   try {
     await axios.post(
-      "http://localhost:4000/api/v1/user/logout",
+      "http://localhost:4000/api/v1/users/logout",
       {},
       { withCredentials: true }
     );

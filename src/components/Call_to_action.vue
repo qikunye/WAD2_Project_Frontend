@@ -1,56 +1,60 @@
 <template>
   <section id="call_to_action" class="call-to-action-section" ref="sectionRef">
-    <!-- Background Images Container -->
-    <div class="background-container" ref="bgContainer">
-      <!-- Before Image (Base layer) -->
-      <div class="background-image before-bg">
-        <img src="/images/call_to_action_before.png" alt="Before state">
-      </div>
-      
-      <!-- After Image (Reveal layer) -->
-      <div class="background-image after-bg" ref="afterBg">
-        <img src="/images/call_to_action_after.png" alt="After state">
-      </div>
-    </div>
+    <!-- Background Image Container with Transition -->
+    <transition name="image-fade" mode="out-in">
+      <div 
+        :key="showAfter ? 'after' : 'before'"
+        class="background-image"
+        :style="{ backgroundImage: `url(${currentImage})` }"
+      ></div>
+    </transition>
 
     <!-- Content Overlay -->
     <div class="content-overlay">
       <div class="content-wrapper">
         <!-- Main Title -->
-        <div class="hero-content" ref="heroContent">
+        <div class="hero-content">
           <h1 class="main-title">
             <span class="title-line">Transform</span>
             <span class="title-line">Your Impact</span>
           </h1>
           
           <p class="subtitle">
-            Scroll to witness the journey from waste to sustainability
+            See the journey from waste to sustainability
           </p>
         </div>
 
-        <!-- Transformation Labels -->
-        <div class="transformation-labels">
-          <div class="label label-before" ref="labelBefore">
-            <span>BEFORE</span>
-          </div>
-          <div class="label label-after" ref="labelAfter">
-            <span>AFTER</span>
-          </div>
+        <!-- Before/After Toggle Buttons -->
+        <div class="toggle-container">
+          <button 
+            @click="showAfter = false" 
+            class="toggle-button"
+            :class="{ active: !showAfter }"
+          >
+            <span class="button-icon">🗑️</span>
+            <span class="button-text">BEFORE</span>
+          </button>
+          
+          <div class="toggle-divider"></div>
+          
+          <button 
+            @click="showAfter = true" 
+            class="toggle-button"
+            :class="{ active: showAfter }"
+          >
+            <span class="button-icon">🌱</span>
+            <span class="button-text">AFTER</span>
+          </button>
         </div>
 
         <!-- Call to Action -->
-        <div class="cta-content" ref="ctaContent">
-          <h2>The Future We're Building Together</h2>
-          <p>Join thousands who are already making a difference—one meal, one choice, one day at a time.</p>
+        <div class="cta-content">
+          <h2>{{ showAfter ? "The Future We're Building Together" : "The Challenge We Face Today" }}</h2>
+          <p>{{ showAfter ? "Join thousands who are already making a difference—one meal, one choice, one day at a time." : "Food waste is a growing problem, but together we can change that." }}</p>
           
           <button @click="handleStartJourney" class="cta-button">
             Start Your Journey
           </button>
-        </div>
-
-        <!-- Scroll Progress Indicator -->
-        <div class="scroll-progress">
-          <div class="progress-bar" ref="progressBar"></div>
         </div>
       </div>
     </div>
@@ -66,34 +70,25 @@
         ↑
       </button>
     </transition>
-
-    <!-- Spacer for scroll -->
-    <div class="scroll-spacer"></div>
   </section>
 </template>
 
 <script setup>
-import { ref, onMounted, onUnmounted, nextTick } from 'vue';
+import { ref, computed, onMounted, onUnmounted } from 'vue';
 import { useRouter } from 'vue-router';
-import { gsap } from 'gsap';
-import { ScrollTrigger } from 'gsap/ScrollTrigger';
-
-gsap.registerPlugin(ScrollTrigger);
 
 const router = useRouter();
 
-// Refs
 const sectionRef = ref(null);
-const bgContainer = ref(null);
-const afterBg = ref(null);
-const heroContent = ref(null);
-const labelBefore = ref(null);
-const labelAfter = ref(null);
-const ctaContent = ref(null);
-const progressBar = ref(null);
 const showBackToTop = ref(false);
+const showAfter = ref(false);
 
-// Handle scroll for back to top button
+const currentImage = computed(() => {
+  return showAfter.value 
+    ? '/images/call_to_action_after.png'  // After image (cleaner)
+    : '/images/call_to_action_before.png';   // Before image (wasteful)
+});
+
 const handleScroll = () => {
   showBackToTop.value = window.scrollY > 300;
 };
@@ -109,127 +104,12 @@ const handleStartJourney = () => {
   router.push('/login');
 };
 
-// Initialize animations
-const initAnimations = () => {
-  // Make sure DOM is ready
-  if (!sectionRef.value || !afterBg.value) return;
-
-  // Kill any existing ScrollTriggers to prevent conflicts
-  ScrollTrigger.getAll().forEach(st => st.kill());
-  
-  // Refresh ScrollTrigger to recalculate positions
-  ScrollTrigger.refresh();
-
-  // Create a simple timeline for the wipe effect
-  const tl = gsap.timeline({
-    scrollTrigger: {
-      trigger: bgContainer.value,
-      start: "top top",
-      end: "+=200%", // Scroll for 2x the viewport height
-      scrub: 0.5, // Smooth scrubbing
-      pin: bgContainer.value, // Pin the background container
-      pinSpacing: false,
-      invalidateOnRefresh: true, // Recalculate on window resize
-    }
-  });
-
-  // Simple wipe from right to left
-  tl.to(afterBg.value, {
-    clipPath: "inset(0% 0% 0% 0%)", // Reveal from right to left
-    ease: "none",
-    duration: 1
-  });
-
-  // Progress bar
-  if (progressBar.value) {
-    gsap.to(progressBar.value, {
-      scaleX: 1,
-      scrollTrigger: {
-        trigger: bgContainer.value,
-        start: "top top",
-        end: "+=200%",
-        scrub: 0.5,
-      },
-      transformOrigin: "left center",
-      ease: "none"
-    });
-  }
-
-  // Labels animation
-  if (labelBefore.value && labelAfter.value) {
-    gsap.to(labelBefore.value, {
-      opacity: 0,
-      x: -50,
-      scrollTrigger: {
-        trigger: bgContainer.value,
-        start: "top top",
-        end: "+=100%",
-        scrub: 0.5,
-      }
-    });
-
-    gsap.fromTo(labelAfter.value, 
-      { opacity: 0, x: 50 },
-      {
-        opacity: 1,
-        x: 0,
-        scrollTrigger: {
-          trigger: bgContainer.value,
-          start: "+=50%",
-          end: "+=150%",
-          scrub: 0.5,
-        }
-      }
-    );
-  }
-
-  // Content animations
-  if (heroContent.value) {
-    gsap.from(heroContent.value.children, {
-      y: 50,
-      opacity: 0,
-      duration: 1.2,
-      stagger: 0.3,
-      ease: "power3.out",
-      scrollTrigger: {
-        trigger: heroContent.value,
-        start: "top 80%",
-        toggleActions: "play none none reverse"
-      }
-    });
-  }
-
-  if (ctaContent.value) {
-    gsap.from(ctaContent.value.children, {
-      y: 30,
-      opacity: 0,
-      duration: 1,
-      stagger: 0.2,
-      ease: "power3.out",
-      scrollTrigger: {
-        trigger: ctaContent.value,
-        start: "top 85%",
-        toggleActions: "play none none reverse"
-      }
-    });
-  }
-};
-
 onMounted(() => {
   window.addEventListener('scroll', handleScroll);
-  
-  // Wait for next tick and images to load
-  nextTick(() => {
-    // Give time for everything to render
-    setTimeout(() => {
-      initAnimations();
-    }, 300);
-  });
 });
 
 onUnmounted(() => {
   window.removeEventListener('scroll', handleScroll);
-  ScrollTrigger.getAll().forEach(trigger => trigger.kill());
 });
 </script>
 
@@ -237,55 +117,51 @@ onUnmounted(() => {
 .call-to-action-section {
   position: relative;
   width: 100%;
-  background: #000;
+  min-height: 100vh;
+  background: #fbfaf9;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
-/* Scroll spacer to create scrollable area */
-.scroll-spacer {
-  height: 200vh;
-  position: relative;
-  z-index: 1;
-}
-
-/* Background Container */
-.background-container {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100vh;
-  z-index: 2;
-}
-
+/* Background Image */
 .background-image {
   position: absolute;
   top: 0;
   left: 0;
   width: 100%;
   height: 100%;
-}
-
-.background-image img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
   filter: brightness(0.6);
+  z-index: 1;
 }
 
-/* After image with clip-path for reveal */
-.after-bg {
-  clip-path: inset(0% 0% 0% 100%); /* Initially hidden (clipped from left) */
-  z-index: 2;
+/* Image transition animation */
+.image-fade-enter-active,
+.image-fade-leave-active {
+  transition: opacity 0.8s ease, transform 0.8s ease;
+}
+
+.image-fade-enter-from {
+  opacity: 0;
+  transform: scale(1.05);
+}
+
+.image-fade-leave-to {
+  opacity: 0;
+  transform: scale(0.95);
 }
 
 /* Content Overlay */
 .content-overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
+  position: relative;
   width: 100%;
-  height: 100vh;
-  z-index: 3;
+  height: 100%;
+  min-height: 100vh;
+  z-index: 2;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -295,20 +171,30 @@ onUnmounted(() => {
     rgba(0, 0, 0, 0.1) 50%,
     rgba(0, 0, 0, 0.4) 100%
   );
-  pointer-events: none;
+  padding: 4rem 2rem;
 }
 
 .content-wrapper {
   width: 100%;
   max-width: 1200px;
-  padding: 2rem;
   text-align: center;
-  pointer-events: auto;
 }
 
 /* Hero Content */
 .hero-content {
-  margin-bottom: 4rem;
+  margin-bottom: 3rem;
+  animation: fadeInUp 0.8s ease forwards;
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 .main-title {
@@ -336,44 +222,81 @@ onUnmounted(() => {
   text-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
 }
 
-/* Transformation Labels */
-.transformation-labels {
-  position: absolute;
-  top: 50%;
-  left: 0;
-  right: 0;
-  transform: translateY(-50%);
+/* Toggle Container */
+.toggle-container {
   display: flex;
-  justify-content: space-between;
-  padding: 0 3rem;
-  pointer-events: none;
-}
-
-.label {
-  padding: 1rem 2rem;
-  background: rgba(0, 0, 0, 0.7);
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  margin: 3rem auto;
+  max-width: 500px;
+  background: rgba(0, 0, 0, 0.5);
   backdrop-filter: blur(10px);
-  border: 2px solid rgba(255, 255, 255, 0.2);
   border-radius: 50px;
-}
-
-.label span {
-  font-family: var(--font-heading);
-  font-size: clamp(1rem, 2vw, 1.5rem);
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.1em;
-  color: white;
-}
-
-.label-after {
+  padding: 0.5rem;
+  animation: fadeInUp 0.8s ease 0.2s forwards;
   opacity: 0;
+}
+
+.toggle-button {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+  padding: 1rem 2rem;
+  border: none;
+  border-radius: 50px;
+  background: transparent;
+  color: rgba(255, 255, 255, 0.7);
+  font-family: var(--font-heading);
+  font-size: 1.1rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.toggle-button:hover {
+  color: white;
+  transform: scale(1.02);
+}
+
+.toggle-button.active {
+  background: linear-gradient(135deg, var(--color-primary), var(--color-secondary));
+  color: white;
+  box-shadow: 0 5px 20px rgba(242, 56, 90, 0.4);
+}
+
+.button-icon {
+  font-size: 1.5rem;
+  transition: transform 0.3s ease;
+}
+
+.toggle-button.active .button-icon {
+  animation: bounce 0.6s ease;
+}
+
+@keyframes bounce {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-5px); }
+}
+
+.button-text {
+  white-space: nowrap;
+}
+
+.toggle-divider {
+  width: 2px;
+  height: 30px;
+  background: rgba(255, 255, 255, 0.3);
 }
 
 /* CTA Content */
 .cta-content {
-  position: relative;
   margin-top: 4rem;
+  animation: fadeInUp 0.8s ease 0.4s forwards;
+  opacity: 0;
 }
 
 .cta-content h2 {
@@ -382,6 +305,7 @@ onUnmounted(() => {
   color: white;
   margin-bottom: 1rem;
   text-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
+  transition: all 0.3s ease;
 }
 
 .cta-content p {
@@ -392,6 +316,7 @@ onUnmounted(() => {
   margin: 0 auto 2.5rem;
   line-height: 1.6;
   text-shadow: 0 1px 5px rgba(0, 0, 0, 0.5);
+  transition: all 0.3s ease;
 }
 
 .cta-button {
@@ -414,24 +339,6 @@ onUnmounted(() => {
   transform: translateY(-3px);
   box-shadow: 0 15px 40px rgba(242, 56, 90, 0.5);
   background: linear-gradient(135deg, var(--color-secondary), var(--color-accent));
-}
-
-/* Scroll Progress */
-.scroll-progress {
-  position: fixed;
-  bottom: 0;
-  left: 0;
-  width: 100%;
-  height: 4px;
-  background: rgba(255, 255, 255, 0.1);
-  z-index: 10;
-}
-
-.progress-bar {
-  height: 100%;
-  background: linear-gradient(90deg, var(--color-primary), var(--color-secondary));
-  transform-origin: left;
-  transform: scaleX(0);
 }
 
 /* Back to Top Button */
@@ -463,7 +370,7 @@ onUnmounted(() => {
   box-shadow: 0 6px 30px rgba(0, 0, 0, 0.3);
 }
 
-/* Transitions */
+/* Fade Transition for Back to Top */
 .fade-enter-active,
 .fade-leave-active {
   transition: opacity 0.3s, transform 0.3s;
@@ -477,24 +384,38 @@ onUnmounted(() => {
 
 /* Responsive Design */
 @media (max-width: 768px) {
-  .scroll-spacer {
-    height: 150vh;
-  }
-
-  .content-wrapper {
-    padding: 1.5rem;
+  .content-overlay {
+    padding: 2rem 1.5rem;
   }
 
   .hero-content {
-    margin-bottom: 3rem;
+    margin-bottom: 2rem;
   }
 
-  .transformation-labels {
-    padding: 0 1.5rem;
+  .toggle-container {
+    flex-direction: column;
+    gap: 0.5rem;
+    padding: 0.75rem;
+    max-width: 300px;
   }
 
-  .label {
-    padding: 0.75rem 1.5rem;
+  .toggle-divider {
+    width: 80%;
+    height: 2px;
+  }
+
+  .toggle-button {
+    width: 100%;
+    padding: 0.875rem 1.5rem;
+    font-size: 1rem;
+  }
+
+  .button-icon {
+    font-size: 1.25rem;
+  }
+
+  .cta-content {
+    margin-top: 2.5rem;
   }
 
   .cta-button {
@@ -515,14 +436,14 @@ onUnmounted(() => {
     margin-bottom: 1rem;
   }
 
-  .transformation-labels {
-    flex-direction: column;
-    align-items: center;
-    gap: 1rem;
+  .toggle-container {
+    max-width: 280px;
   }
 
-  .cta-content {
-    margin-top: 3rem;
+  .toggle-button {
+    padding: 0.75rem 1.25rem;
+    font-size: 0.95rem;
+    gap: 0.5rem;
   }
 
   .cta-button {

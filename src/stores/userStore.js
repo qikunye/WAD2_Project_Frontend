@@ -9,7 +9,7 @@ export const useUserStore = defineStore("user", {
     actions: {
         async fetchUser() {
             try {
-                const res = await axios.get('http://localhost:4000/api/v1/user/me', { withCredentials: true });
+                const res = await axios.get('http://localhost:4000/api/v1/users/me', { withCredentials: true });
                 if (res.data.success) {
                     this.isLoggedIn = true;
                     this.user = res.data.user;
