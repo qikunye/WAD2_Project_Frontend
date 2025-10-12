@@ -25,7 +25,9 @@
       <p class="info prep-time">Time Needed: {{ prepTime }} mins</p>
       <!-- class="info health-score"-> these are static classes — they’re always applied.
       :class="healthScoreColor" → this is a dynamic class that Vue adds on top, based on the computed value. -->
-      <p class="info health-score" :class="healthScoreColor" >Health Score: {{ healthScore }} / 100</p>
+      <p class="info serving-time">Serving(s): {{ servings }}</p>
+      <p  v-if="healthScore !== '' && healthScore !== null && healthScore !== undefined" class="info health-score" 
+      :class="healthScoreColor" >Health Score: {{ healthScore }} / 100</p>
 
       <ul v-if="tags && tags.length" class="tags">
         <li v-for="(tag, index) in tags" :key="index" :style="{ transitionDelay: `${0.4 + index * 0.15}s` }">
@@ -57,6 +59,11 @@ import { ref, computed, defineProps } from "vue";
       type: String,
       default: '',
     },
+    servings: {
+      type: String,
+      default: '',
+    },
+
 
     image: {
       type: String,
@@ -134,7 +141,7 @@ const healthScoreColor = computed(() => {
 .card-gradient {
   position: absolute;
   inset: 0;
-  background: linear-gradient(to top, rgba(0, 0, 0, 0.6), transparent 60%);
+  background: linear-gradient(to top, rgba(0, 0, 0, 0.6), transparent 60%) !important; 
   z-index: 1;
   pointer-events: none;
   border-radius: 20px;
@@ -190,10 +197,16 @@ const healthScoreColor = computed(() => {
   transition-delay: 0.2s;
 }
 
-.card:hover .health-score {
+.card:hover .serving-time {
   opacity: 1;
   transform: translateY(0);
   transition-delay: 0.3s;
+}
+
+.card:hover .health-score {
+  opacity: 1;
+  transform: translateY(0);
+  transition-delay: 0.4s;
 }
 
 /* Tags fade in one by one */

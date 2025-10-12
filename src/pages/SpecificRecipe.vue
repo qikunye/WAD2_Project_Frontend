@@ -10,6 +10,7 @@ const router = useRouter();
 const userStore = useUserStore();
 const recipeId = route.query.id; //read ?id= from URL
 var recipeInfo = ref({});
+var similarRecipesInfo = ref({});
 
 const API_KEY = import.meta.env.SPOON_APIKEY;
 var displayedNutritionStats =ref([]);
@@ -35,12 +36,26 @@ onMounted(async () => {
         const nutrients = recipeInfo.value?.nutrition?.nutrients || [];
         displayedNutritionStats.value = nutrients.slice(0, 12).filter(n => n.name !== "Alcohol %");
 
-        console.log("Fetched recipe from recipeInfo:", recipeInfo);
+        //getting similar recipes
+        const similarRecipeResponse = await axios.get(`http://localhost:4000/api/v1/recipe/similarRecipe`, {
+            params: {
+                apiKey: API_KEY,
+                id: recipeId
+            }
+        });
+        similarRecipesInfo.value = similarRecipeResponse.data;
+
+        console.log("Fetched recipe from recipeInfo:", recipeInfo.value);
+        console.log("Fetched recipe from similarRecipesInfo:", similarRecipesInfo.value);
 
     } catch (err) {
         console.error("Failed to load recipe:", err);
     }
 });
+//image unavailiable
+function onImageError(event) {
+  event.target.src = "https://upload.wikimedia.org/wikipedia/commons/1/14/No_Image_Available.jpg";
+}
 
 //get alcohol percentage 
 //find() returns the value of the first element that passes a test
@@ -49,6 +64,13 @@ function getAlcoholPercent(nutrients) {
         nutrient.name == "Alcohol %";
     });
     return alcoholPercent ? alcoholPercent.amount : 0;
+}
+
+//reload page for similar recipe
+function redirectToRecipe(id) {
+    router.push({ name: 'SpecificRecipe', query: { id } }).then(() => {
+        window.location.reload()
+    })
 }
 
 function addToMealPlan() {
@@ -101,8 +123,8 @@ function addToMealPlan() {
                 <!-- Image -->
                 <div class="col-12 col-lg-7">
                     <div class="border-0 shadow-sm overflow-hidden rounded-4">
-                        <img :src="recipeInfo.image" :alt="recipeInfo.title"
-                            class="img-fluid w-100 h-100 object-fit-cover" />
+                        <img :src="recipeInfo.image"
+                            :alt="recipeInfo.title" class="img-fluid w-100 h-100 object-fit-cover" @error="onImageError"/>
                     </div>
                 </div>
 
@@ -188,7 +210,7 @@ function addToMealPlan() {
                             <path d="M6.161 17.009 18 17" stroke-width="2"></path>
                         </svg>
                     </div>
-                    <h5 class="summary-title mb-0 ms-3">About This Recipe</h5>
+                    <h4 class="summary-title mb-1 mt-0 ms-3">About This Recipe</h4>
                 </div>
 
                 <p v-html="recipeInfo.summary" class="summary-text mb-0 px-4 pb-4"></p>
@@ -210,7 +232,8 @@ function addToMealPlan() {
                             <path d="M10 2c1 0.5 2 2 2 5" stroke-width="2"></path>
                         </svg>
                     </div>
-                    <h5 class="nutrition-title mb-0 ms-3">Nutrition Facts</h5>
+                    <h4 class="nutrition-title mb-0 ms-3" style="font-family: var(--font-heading2);">Nutrition Facts
+                    </h4>
                     <span class="ms-auto badge rounded-pill nutrition-badge">Per Serving</span>
                     <span class="badge rounded-pill health-badge">
                         Health Score: {{ recipeInfo.healthScore }}/100
@@ -300,7 +323,7 @@ function addToMealPlan() {
                                     <path d="M13 11v-0.5a2.5 2.5 0 1 0 -5 0v0.5" stroke-width="2"></path>
                                 </svg>
                             </div>
-                            <h5 class="fw-bold mb-0 ms-3" style="font-family: var(--font-body);">Ingredients</h5>
+                            <h4 class="fw-bold mb-0 ms-3" style="font-family: var(--font-heading2);">Ingredients</h4>
                         </div>
 
                         <ul class="ingredients-list">
@@ -330,8 +353,8 @@ function addToMealPlan() {
                                     <path d="m21 6 0 13" stroke-width="2"></path>
                                 </svg>
                             </div>
-                            <h5 class="fw-bold mb-0 ms-3 text-left" style="font-family: var(--font-body);">Instructions
-                            </h5>
+                            <h4 class="fw-bold mb-0 ms-3 text-left" style="font-family: var(--font-heading2);">
+                                Instructions</h4>
                         </div>
 
                         <ol class="ps-3 instructions-list">
@@ -375,7 +398,42 @@ function addToMealPlan() {
                     </svg>
                 </a>
             </div>
+            <!-- Similar Recipes -->
+            <div class="similar-section mt-5 container">
+                <!-- Header -->
+                <div class="d-flex align-items-center mb-3">
+                    <div class="icon-circle-similar">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14"
+                            id="Multiple-Stars--Streamline-Flex-Remix" height="20" width="20">
+                            <desc>
+                                Multiple Stars Streamline Icon: https://streamlinehq.com
+                            </desc>
+                            <g id="multiple-stars--reward-rating-rate-social-star-media-favorite-like-stars-spark">
+                                <path id="Union" fill="#e64a19" fill-rule="evenodd"
+                                    d="M1.96318 0.38238c0.40066 -0.50984 1.16609 -0.50984 1.56675 0 0.24043 0.305952 0.41917 0.66392 0.51885 1.06197 0.39806 0.09969 0.75602 0.27842 1.06198 0.51886 0.50984 0.40066 0.50984 1.16609 0 1.56675 -0.30595 0.24043 -0.6639 0.41917 -1.06195 0.51885 -0.09968 0.39806 -0.27842 0.75602 -0.51885 1.06197 -0.40066 0.50984 -1.16609 0.50984 -1.56675 0 -0.24044 -0.30595 -0.41917 -0.66391 -0.51886 -1.06197 -0.39805 -0.09968 -0.756018 -0.27842 -1.06197 -0.51885 -0.50984 -0.40066 -0.50984 -1.16609 0 -1.56675 0.305947 -0.24043 0.66389 -0.41917 1.06195 -0.51886 0.09968 -0.39805 0.27841 -0.756018 0.51885 -1.06197Zm7.82664 2.34554c-0.08385 -0.10671 -0.23401 -0.10671 -0.31786 0 -0.35621 0.45327 -0.59881 1.01134 -0.67661 1.65758 -0.03443 0.28598 -0.25984 0.51139 -0.54582 0.54582 -0.64623 0.0778 -1.20425 0.32039 -1.65754 0.67661 -0.1067 0.08385 -0.1067 0.23401 0 0.31786 0.45328 0.35621 1.01134 0.59881 1.65759 0.67661 0.28597 0.03443 0.51138 0.25984 0.54581 0.54582 0.0778 0.64624 0.3204 1.20431 0.67661 1.65758 0.08386 0.10671 0.23401 0.10671 0.31787 0 0.35623 -0.45327 0.59883 -1.01134 0.67663 -1.65758 0.0344 -0.28598 0.2598 -0.51139 0.5458 -0.54582 0.6462 -0.0778 1.2042 -0.32039 1.6575 -0.67661 0.1067 -0.08385 0.1067 -0.23401 0 -0.31786 -0.4532 -0.35621 -1.0113 -0.59881 -1.6576 -0.67661 -0.2859 -0.03443 -0.5113 -0.25984 -0.5458 -0.54582 -0.0778 -0.64624 -0.3204 -1.20431 -0.67658 -1.65758Zm0.98288 -0.77237c0.4069 0.51791 0.7033 1.12991 0.8553 1.81421 0.6843 0.15194 1.2963 0.44834 1.8142 0.85534 0.7435 0.58432 0.7435 1.69919 0 2.28352 -0.5179 0.40699 -1.1299 0.70339 -1.8142 0.85534 -0.1519 0.6843 -0.4483 1.2963 -0.8553 1.81421 -0.5843 0.74353 -1.6992 0.74353 -2.28353 0 -0.407 -0.51791 -0.70339 -1.12991 -0.85533 -1.81421 -0.68431 -0.15195 -1.29631 -0.44834 -1.81421 -0.85534 -0.74356 -0.58433 -0.74356 -1.6992 0 -2.28352 0.51789 -0.407 1.12986 -0.70339 1.81416 -0.85534 0.15194 -0.6843 0.44834 -1.2963 0.85534 -1.81421 0.58432 -0.74355 1.69917 -0.74355 2.28357 0ZM3.65058 7.91636c-0.00453 0.00216 -0.0112 0.00634 -0.0191 0.0164 -0.2764 0.35171 -0.46525 0.78528 -0.52594 1.28936 -0.03443 0.28597 -0.25984 0.51138 -0.54581 0.54581 -0.50407 0.06069 -0.9376 0.24957 -1.28933 0.52597 -0.01005 0.0079 -0.01424 0.0145 -0.0164 0.0191 -0.00252 0.0053 -0.004 0.0115 -0.004 0.0182 0 0.0067 0.00148 0.0129 0.004 0.0182 0.00216 0.0045 0.00635 0.0112 0.0164 0.0191 0.35172 0.2764 0.78528 0.4653 1.28937 0.5259 0.28597 0.0345 0.51138 0.2599 0.54581 0.5459 0.06069 0.504 0.24954 0.9376 0.52594 1.2893 0.0079 0.0101 0.01457 0.0143 0.0191 0.0164 0.00528 0.0025 0.01149 0.004 0.01821 0.004 0.00673 0 0.01293 -0.0015 0.01821 -0.004 0.00454 -0.0021 0.01121 -0.0063 0.01911 -0.0164 0.2764 -0.3517 0.46525 -0.7853 0.52594 -1.2893 0.03442 -0.286 0.25984 -0.5114 0.54581 -0.5459 0.50407 -0.0606 0.9376 -0.2495 1.28932 -0.5259 0.01006 -0.0079 0.01425 -0.0146 0.01641 -0.0191 0.00251 -0.0053 0.004 -0.0115 0.004 -0.0182 0 -0.0067 -0.00149 -0.0129 -0.004 -0.0182 -0.00216 -0.0046 -0.00635 -0.0112 -0.01641 -0.0191 -0.35171 -0.2764 -0.78528 -0.46528 -1.28936 -0.52597 -0.28597 -0.03443 -0.51138 -0.25984 -0.54581 -0.54581 -0.06069 -0.50408 -0.24954 -0.93765 -0.52594 -1.28936 -0.0079 -0.01006 -0.01457 -0.01424 -0.0191 -0.0164 -0.00529 -0.00252 -0.01149 -0.00401 -0.01821 -0.00401 -0.00673 0 -0.01293 0.00149 -0.01822 0.00401Zm-1.00193 -0.75597c0.52185 -0.66405 1.51844 -0.66405 2.04029 0 0.32734 0.41654 0.56919 0.90534 0.70088 1.44978 0.54443 0.13169 1.03323 0.37353 1.44977 0.70087 0.66405 0.52185 0.66405 1.51846 0 2.04026 -0.41653 0.3274 -0.9053 0.5692 -1.44974 0.7009 -0.13169 0.5444 -0.37354 1.0332 -0.70087 1.4498 -0.52185 0.664 -1.51844 0.664 -2.04029 0 -0.32734 -0.4166 -0.56919 -0.9054 -0.70088 -1.4498 -0.54444 -0.1317 -1.033236 -0.3735 -1.44977 -0.7009 -0.664053 -0.5218 -0.664053 -1.51841 0 -2.04026 0.416528 -0.32733 0.9053 -0.56918 1.44974 -0.70087 0.13168 -0.54444 0.37353 -1.03324 0.70087 -1.44978Z"
+                                    clip-rule="evenodd" stroke-width="1"></path>
+                            </g>
+                        </svg>
+                    </div>
+                    <h3 class="fw-bold mb-0 ms-3" style="font-family: var(--font-heading2); color:#1c1456;">
+                        Similar Recipes
+                    </h3>
+                </div>
+
+                <!-- Cards Grid -->
+
+                <div class="row g-4">
+                    <div v-for="(recipe, index) in similarRecipesInfo" :key="recipe.id" class="col-6 col-md-4 col-lg-3"
+                        @click="redirectToRecipe(recipe.id)" style="cursor: pointer;">
+
+                        <ProjectCard :title="recipe.title"
+                            :image="'https://img.spoonacular.com/recipes/' + recipe.image"
+                            :prepTime="recipe.readyInMinutes" :servings="recipe.servings" />
+                    </div>
+                </div>
+            </div>
         </div>
+
     </div>
 </template>
 
@@ -445,7 +503,10 @@ function addToMealPlan() {
     /* keep content above fades */
 }
 
-.card {
+.nutrition-card,
+.ingredients-card,
+.instructions-card,
+.source-card {
     background-color: white;
     border-radius: 1rem;
 }
@@ -672,9 +733,8 @@ img {
 
 .summary-title {
     color: var(--color-accent);
-    font-family: var(--font-body);
+    font-family: var(--font-heading2);
     font-weight: 700;
-    font-size: 1.2rem;
 }
 
 .summary-text {
@@ -949,5 +1009,41 @@ img {
     padding: 0.4rem 0.8rem;
     font-size: 0.85rem;
     font-weight: 600;
+}
+
+/* ======= Similar recipes section ========*/
+.icon-circle-similar {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background-color: rgba(230, 74, 25, 0.15);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Responsive grid sizing */
+@media (min-width: 992px) {
+  /* Large screen (≥992px): 5 per row */
+  .col-lg-2 {
+    flex: 0 0 auto;
+    width: 20%;
+  }
+}
+
+@media (min-width: 768px) and (max-width: 991.98px) {
+  /* Medium screen (3 per row) */
+  .col-md-4 {
+    flex: 0 0 auto;
+    width: 33.3333%;
+  }
+}
+
+@media (max-width: 767.98px) {
+  /* Small screen (2 per row) */
+  .col-6 {
+    flex: 0 0 auto;
+    width: 50%;
+  }
 }
 </style>

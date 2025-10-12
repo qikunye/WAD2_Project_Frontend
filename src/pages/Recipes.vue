@@ -319,7 +319,7 @@ const resetFilters = () => {
                     <div class="col-12 col-sm-6 col-md-4 col-lg-6 col-xl-4" v-for="recipe in paginatedRecipes"
                         :key="recipe.id">
                         <ProjectCard :title="recipe.title" :image="recipe.image" :tags="recipe.dishTypes"
-                            :prepTime="recipe.readyInMinutes" :healthScore="recipe.healthScore"
+                            :prepTime="recipe.readyInMinutes" :servings="recipe.servings" :healthScore="recipe.healthScore"
                             @click="$router.push({ name: 'SpecificRecipe', query: { id: recipe.id } })" />
                     </div>
                 </div>
