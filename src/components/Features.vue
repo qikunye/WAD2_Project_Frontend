@@ -691,22 +691,111 @@ const animateOut = () => {
   line-height: 1.4;
 }
 
-/* Responsive Design */
-@media (max-width: 768px) {
+
+
+/* Responsive Design - Mobile and Tablet (7-row layout) */
+@media (max-width: 1024px) {
   .features-section {
     padding: 3rem 1rem;
     min-height: auto;
+    display: grid;
+    grid-template-rows: repeat(7, auto);
+    gap: 1.5rem;
+    align-items: center;
+    justify-items: center;
   }
 
   .title-container {
     position: relative;
-    margin-bottom: 2rem;
+    grid-row: 4;
+    margin: 0;
     padding: 1.5rem 1rem;
+    width: 100%;
+    max-width: 600px;
   }
 
   .splash-background {
-    width: 500%;
-    height: 400%;
+    width: clamp(500px, 110vw, 1100px);
+    height: clamp(350px, 75vw, 750px);
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+  }
+
+  .svg-text {
+    font-size: clamp(45px, 10vw, 80px);
+  }
+
+  .text-bubble {
+    font-size: clamp(0.75rem, 1.8vw, 0.88rem);
+    padding: clamp(0.7rem, 1.8vw, 1.1rem) clamp(1rem, 2.2vw, 1.5rem);
+    max-width: clamp(180px, 35vw, 240px);
+  }
+
+  .bubble-top-right {
+    top: clamp(-50px, -8.5vw, -75px);
+    right: clamp(-40px, -7.5vw, -80px);
+  }
+
+  .bubble-bottom-left {
+    bottom: clamp(-50px, -8.5vw, -75px);
+    left: clamp(-40px, -7.5vw, -80px);
+  }
+
+  .background-shapes {
+    display: none;
+  }
+
+  .images-container {
+    position: static;
+    display: contents;
+    pointer-events: all;
+  }
+
+  .feature-image {
+    position: relative !important;
+    width: 100% !important;
+    max-width: min(400px, 90vw);
+    height: clamp(180px, 25vw, 220px) !important;
+    margin: 0 auto;
+    left: auto !important;
+    right: auto !important;
+    top: auto !important;
+    bottom: auto !important;
+    transform: none !important;
+  }
+
+  /* Assign specific grid rows for the 7-row layout */
+  .feature-image-1 { 
+    grid-row: 1;
+  }
+
+  .feature-image-2 { 
+    grid-row: 2;
+  }
+
+  .feature-image-3 { 
+    grid-row: 3;
+  }
+
+  .feature-image-4 { 
+    grid-row: 5;
+  }
+
+  .feature-image-5 { 
+    grid-row: 6;
+  }
+
+  .feature-image-6 { 
+    grid-row: 7;
+  }
+}
+
+/* Small mobile specific adjustments */
+@media (max-width: 640px) {
+  .splash-background {
+    width: clamp(400px, 95vw, 600px);
+    height: clamp(300px, 70vw, 450px);
   }
 
   .svg-text {
@@ -714,60 +803,24 @@ const animateOut = () => {
   }
 
   .text-bubble {
-    position: relative !important;
-    font-size: 0.75rem;
-    padding: 0.8rem 1.2rem;
-    max-width: min(200px, 80vw);
-    margin: 0.75rem auto;
-    top: auto !important;
-    right: auto !important;
-    bottom: auto !important;
-    left: auto !important;
-    transform: none !important;
+    font-size: clamp(0.7rem, 2vw, 0.8rem);
+    padding: clamp(0.6rem, 1.5vw, 0.9rem) clamp(0.8rem, 2vw, 1.2rem);
+    max-width: clamp(160px, 40vw, 200px);
   }
 
-  .images-container {
-    position: relative;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    margin-top: 2rem;
-    pointer-events: all;
-    gap: 1rem;
+  .bubble-top-right {
+    top: clamp(-35px, -7vw, -50px);
+    right: clamp(-30px, -6vw, -45px);
+  }
+
+  .bubble-bottom-left {
+    bottom: clamp(-35px, -7vw, -50px);
+    left: clamp(-30px, -6vw, -45px);
   }
 
   .feature-image {
-    position: relative !important;
-    width: 100% !important;
     max-width: min(350px, 90vw);
-    height: 200px !important;
-    margin: 0.5rem auto;
-    left: 50% !important;
-    right: auto !important;
-    top: auto !important;
-    bottom: auto !important;
-    transform: translateX(-50%) !important;
+    height: 180px !important;
   }
-}
-
-.feature-image,
-.splash-background,
-.text-bubble,
-.title-svg-wrapper {
-  -webkit-backface-visibility: hidden;
-  backface-visibility: hidden;
-  -webkit-perspective: 1000px;
-  perspective: 1000px;
-}
-
-.feature-image:focus-visible {
-  outline: 3px solid var(--color-primary);
-  outline-offset: 4px;
-}
-
-.title-container:focus-visible {
-  outline: 3px solid var(--color-primary);
-  outline-offset: 8px;
-  border-radius: 1rem;
 }
 </style>

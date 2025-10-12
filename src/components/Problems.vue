@@ -6,116 +6,122 @@
       <div class="shape shape-2"></div>
     </div>
 
-    <!-- Back Button (Top Left) -->
-    <button 
-      class="nav-button back-button" 
-      @click="previousSlide"
-      @mouseenter="isHoveringNav = true"
-      @mouseleave="isHoveringNav = false"
-    >
-      <div class="nav-thumbnail">
-        <img :src="slides[previousIndex].thumbnail" :alt="slides[previousIndex].title" />
-      </div>
-      <span class="nav-text">
-        <span class="nav-arrow">←</span>
-        BACK
-      </span>
-    </button>
+    <!-- Main Container with Flexbox for responsive stacking -->
+    <div class="problems-wrapper">
+      <!-- Back Button (Top Left) -->
+      <button 
+        class="nav-button back-button" 
+        @click="previousSlide"
+        @mouseenter="isHoveringNav = true"
+        @mouseleave="isHoveringNav = false"
+      >
+        <div class="nav-thumbnail">
+          <img :src="slides[previousIndex].thumbnail" :alt="slides[previousIndex].title" />
+        </div>
+        <span class="nav-text">
+          <span class="nav-arrow">←</span>
+          BACK
+        </span>
+      </button>
 
-    <!-- Main Carousel Container -->
-    <div class="carousel-container">
-      <!-- Progress Ring Container -->
-      <div class="progress-ring-container">
-        <!-- Progress Ring SVG -->
-        <svg class="progress-ring" viewBox="0 0 600 600">
-          <circle
-            class="progress-ring-background"
-            cx="300"
-            cy="300"
-            r="290"
-            fill="none"
-            stroke="#e5e4e2"
-            stroke-width="8"
-          />
-          <circle
-            class="progress-ring-progress"
-            cx="300"
-            cy="300"
-            r="290"
-            fill="none"
-            stroke="#1c1456"
-            stroke-width="8"
-            :stroke-dasharray="circumference"
-            :stroke-dashoffset="progressOffset"
-            transform="rotate(-90 300 300)"
-          />
-        </svg>
-        
-        <!-- Circular Image Container (inside the ring) -->
-        <div class="image-circle" :class="{ 'hovering': isHoveringNav }">
-          <transition name="fade-scale" mode="out-in">
-            <img 
-              :key="currentIndex" 
-              :src="slides[currentIndex].image" 
-              :alt="slides[currentIndex].title"
-              class="circle-image"
+      <!-- Carousel Container -->
+      <div class="carousel-container">
+        <!-- Progress Ring Container -->
+        <div class="progress-ring-container">
+          <!-- Progress Ring SVG -->
+          <svg class="progress-ring" viewBox="0 0 600 600">
+            <circle
+              class="progress-ring-background"
+              cx="300"
+              cy="300"
+              r="290"
+              fill="none"
+              stroke="#e5e4e2"
+              stroke-width="8"
             />
+            <circle
+              class="progress-ring-progress"
+              cx="300"
+              cy="300"
+              r="290"
+              fill="none"
+              stroke="#1c1456"
+              stroke-width="8"
+              :stroke-dasharray="circumference"
+              :stroke-dashoffset="progressOffset"
+              transform="rotate(-90 300 300)"
+            />
+          </svg>
+          
+          <!-- Circular Image Container (inside the ring) -->
+          <div class="image-circle" :class="{ 'hovering': isHoveringNav }">
+            <transition name="fade-scale" mode="out-in">
+              <img 
+                :key="currentIndex" 
+                :src="slides[currentIndex].image" 
+                :alt="slides[currentIndex].title"
+                class="circle-image"
+              />
+            </transition>
+          </div>
+        </div>
+
+        <!-- Curved Title -->
+        <div class="curved-title">
+          <svg viewBox="0 0 800 200" xmlns="http://www.w3.org/2000/svg">
+            <path
+              id="curve"
+              d="M 50,150 Q 400,50 750,150"
+              fill="none"
+            />
+            <text class="title-text">
+              <textPath href="#curve" startOffset="50%" text-anchor="middle">
+                {{ slides[currentIndex].title }}
+              </textPath>
+            </text>
+          </svg>
+        </div>
+      </div>
+
+      <!-- Bottom Content Container (stacks on smaller screens) -->
+      <div class="bottom-content">
+        <!-- Description Box -->
+        <div class="description-box">
+          <transition name="fade" mode="out-in">
+            <div :key="currentIndex" class="description-content">
+              <h3>{{ slides[currentIndex].subtitle }}</h3>
+              <p>{{ slides[currentIndex].description }}</p>
+            </div>
           </transition>
         </div>
+
+        <!-- Further Button -->
+        <button 
+          class="nav-button further-button" 
+          @click="nextSlide"
+          @mouseenter="isHoveringNav = true"
+          @mouseleave="isHoveringNav = false"
+        >
+          <span class="nav-text">
+            FURTHER
+            <span class="nav-arrow">→</span>
+          </span>
+          <div class="nav-thumbnail">
+            <img :src="slides[nextIndex].thumbnail" :alt="slides[nextIndex].title" />
+          </div>
+        </button>
       </div>
 
-      <!-- Curved Title -->
-      <div class="curved-title">
-        <svg viewBox="0 0 800 200" xmlns="http://www.w3.org/2000/svg">
-          <path
-            id="curve"
-            d="M 50,150 Q 400,50 750,150"
-            fill="none"
-          />
-          <text class="title-text">
-            <textPath href="#curve" startOffset="50%" text-anchor="middle">
-              {{ slides[currentIndex].title }}
-            </textPath>
-          </text>
-        </svg>
+      <!-- Slide Indicators -->
+      <div class="slide-indicators">
+        <button
+          v-for="(slide, index) in slides"
+          :key="index"
+          class="indicator"
+          :class="{ active: index === currentIndex }"
+          @click="goToSlide(index)"
+        ></button>
       </div>
-    </div>
-
-    <!-- Description Text (Bottom Left) - NO OVERLAP, NO WHITE BG -->
-    <div class="description-box">
-      <transition name="fade" mode="out-in">
-        <div :key="currentIndex" class="description-content">
-          <h3>{{ slides[currentIndex].subtitle }}</h3>
-          <p>{{ slides[currentIndex].description }}</p>
-        </div>
-      </transition>
-    </div>
-
-    <!-- Further Button (Bottom Right) -->
-    <button 
-      class="nav-button further-button" 
-      @click="nextSlide"
-      @mouseenter="isHoveringNav = true"
-      @mouseleave="isHoveringNav = false"
-    >
-      <span class="nav-text">
-        FURTHER
-        <span class="nav-arrow">→</span>
-      </span>
-      <div class="nav-thumbnail">
-        <img :src="slides[nextIndex].thumbnail" :alt="slides[nextIndex].title" />
-      </div>
-    </button>
-
-    <!-- Slide Indicators -->
-    <div class="slide-indicators">
-      <button
-        v-for="(slide, index) in slides"
-        :key="index"
-        class="indicator"
-        :class="{ active: index === currentIndex }"
-        @click="goToSlide(index)"
-      ></button>
     </div>
   </section>
 </template>
@@ -155,8 +161,8 @@ const isHoveringNav = ref(false);
 
 // Timer variables
 let progressInterval = null;
-const SLIDE_DURATION = 10000; // 10 seconds
-const PROGRESS_INTERVAL = 16; // ~60fps for smooth animation
+const SLIDE_DURATION = 10000;
+const PROGRESS_INTERVAL = 16;
 
 // Computed properties
 const previousIndex = computed(() => 
@@ -167,7 +173,6 @@ const nextIndex = computed(() =>
   (currentIndex.value + 1) % slides.length
 );
 
-// Progress ring calculations (radius = 290)
 const circumference = computed(() => 2 * Math.PI * 290);
 
 const progressOffset = computed(() => {
@@ -248,7 +253,7 @@ onUnmounted(() => {
 .shape-1 {
   width: 500px;
   height: 500px;
-  background: var(--color-secondary);
+  background: var(--color-secondary, #f4b6c2);
   top: -100px;
   left: -100px;
 }
@@ -256,14 +261,24 @@ onUnmounted(() => {
 .shape-2 {
   width: 400px;
   height: 400px;
-  background: var(--color-primary);
+  background: var(--color-primary, #1c1456);
   bottom: -100px;
   right: -100px;
 }
 
+/* Main wrapper for responsive layout */
+.problems-wrapper {
+  position: relative;
+  width: 100%;
+  max-width: 1600px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2rem;
+}
+
 /* Navigation Buttons */
 .nav-button {
-  position: absolute;
   display: flex;
   align-items: center;
   gap: 1rem;
@@ -274,16 +289,23 @@ onUnmounted(() => {
   z-index: 100;
 }
 
-.back-button {
-  top: 6rem;
-  left: 4rem;
-  flex-direction: row;
+/* Desktop positioning (xl and above) */
+@media (min-width: 1280px) {
+  .back-button {
+    position: absolute;
+    top: 2rem;
+    left: 2rem;
+    flex-direction: row;
+  }
 }
 
-.further-button {
-  bottom: 8rem;
-  right: 4rem;
-  flex-direction: row-reverse;
+/* Mobile/Tablet positioning */
+@media (max-width: 1279px) {
+  .back-button {
+    align-self: flex-start;
+    flex-direction: row;
+    margin-bottom: 1rem;
+  }
 }
 
 .nav-thumbnail {
@@ -291,8 +313,9 @@ onUnmounted(() => {
   height: 80px;
   border-radius: 50%;
   overflow: hidden;
-  border: 3px solid var(--color-primary);
+  border: 3px solid var(--color-primary, #1c1456);
   transition: all 0.3s ease;
+  flex-shrink: 0;
 }
 
 .nav-thumbnail img {
@@ -303,7 +326,7 @@ onUnmounted(() => {
 }
 
 .nav-button:hover .nav-thumbnail {
-  border-color: var(--color-secondary);
+  border-color: var(--color-secondary, #f4b6c2);
   transform: scale(1.1);
 }
 
@@ -312,10 +335,10 @@ onUnmounted(() => {
 }
 
 .nav-text {
-  font-family: var(--font-heading);
+  font-family: var(--font-heading, 'Anton', sans-serif);
   font-size: 1.5rem;
   font-weight: 700;
-  color: var(--color-primary);
+  color: var(--color-primary, #1c1456);
   text-transform: uppercase;
   letter-spacing: 0.05em;
   display: flex;
@@ -330,8 +353,7 @@ onUnmounted(() => {
 }
 
 .nav-button:hover .nav-arrow {
-  color: var(--color-secondary);
-  transform: translateX(0);
+  color: var(--color-secondary, #f4b6c2);
 }
 
 .back-button:hover .nav-arrow {
@@ -346,23 +368,26 @@ onUnmounted(() => {
 .carousel-container {
   position: relative;
   width: 800px;
+  max-width: 100%;
   height: 800px;
   display: flex;
   align-items: center;
   justify-content: center;
+  flex-shrink: 0;
 }
 
 /* Progress Ring Container */
 .progress-ring-container {
   position: relative;
   width: 600px;
+  max-width: 100%;
   height: 600px;
   display: flex;
   align-items: center;
   justify-content: center;
 }
 
-/* Progress Ring SVG - VISIBLE OUTER RING */
+/* Progress Ring SVG */
 .progress-ring {
   position: absolute;
   width: 100%;
@@ -382,10 +407,11 @@ onUnmounted(() => {
   opacity: 0.9;
 }
 
-/* Image Circle - INSIDE THE RING */
+/* Image Circle */
 .image-circle {
   position: relative;
   width: 550px;
+  max-width: 90%;
   height: 550px;
   border-radius: 50%;
   overflow: hidden;
@@ -417,7 +443,7 @@ onUnmounted(() => {
 }
 
 .title-text {
-  font-family: var(--font-heading);
+  font-family: var(--font-heading, 'Anton', sans-serif);
   font-size: 5rem;
   font-weight: 900;
   fill: #1c1456;
@@ -425,45 +451,105 @@ onUnmounted(() => {
   letter-spacing: 0.05em;
 }
 
-/* Description Box - NO WHITE BG, SHIFTED LEFT */
-.description-box {
-  position: absolute;
-  bottom: 6rem;
-  left: 2rem;  /* Shifted more to the left */
-  max-width: 420px;  /* Slightly narrower to avoid overlap */
-  background: transparent;  /* Removed white background */
-  padding: 2rem;
+/* Bottom Content Container - responsive stacking */
+.bottom-content {
+  width: 100%;
+  display: flex;
+  align-items: flex-start;
+  gap: 2rem;
   z-index: 50;
 }
 
+/* Desktop layout (xl and above) */
+@media (min-width: 1280px) {
+  .bottom-content {
+    position: absolute;
+    bottom: 4rem;
+    left: 2rem;
+    right: 2rem;
+    justify-content: space-between;
+  }
+  
+  .description-box {
+    max-width: 380px;
+  }
+  
+  .further-button {
+    position: absolute;
+    bottom: 2rem;
+    right: 2rem;
+    flex-direction: row-reverse;
+  }
+}
+
+/* Larger screens - more space for description */
+@media (min-width: 1536px) {
+  .description-box {
+    max-width: 450px;
+  }
+}
+
+/* Tablet/Mobile layout (below xl) */
+@media (max-width: 1279px) {
+  .bottom-content {
+    flex-direction: column;
+    align-items: center;
+    gap: 2rem;
+    margin-top: 2rem;
+  }
+  
+  .description-box {
+    max-width: 100%;
+    width: 100%;
+  }
+  
+  .further-button {
+    align-self: center;
+    flex-direction: row-reverse;
+  }
+}
+
+/* Description Box */
+.description-box {
+  background: rgba(255, 255, 255, 0.95);
+  padding: 2rem;
+  border-radius: 1rem;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+}
+
 .description-content h3 {
-  font-family: var(--font-heading);
+  font-family: var(--font-heading, 'Anton', sans-serif);
   font-size: 1.3rem;
-  color: var(--color-primary);
+  color: var(--color-primary, #1c1456);
   margin-bottom: 0.5rem;
   text-transform: uppercase;
-  text-shadow: 0 2px 4px rgba(255, 255, 255, 0.8);  /* Added subtle white shadow for readability */
 }
 
 .description-content p {
-  font-family: var(--font-body);
-  font-size: 0.85rem;
+  font-family: var(--font-body, 'Poppins', sans-serif);
+  font-size: 0.95rem;
   line-height: 1.6;
-  color: #1c1456;  /* Darker color for better contrast */
+  color: #1c1456;
   margin: 0;
-  font-weight: 500;  /* Slightly bolder for readability */
-  text-shadow: 0 1px 3px rgba(255, 255, 255, 0.7);  /* Subtle white shadow */
+  font-weight: 400;
 }
 
 /* Slide Indicators */
 .slide-indicators {
-  position: absolute;
-  bottom: 2rem;
-  left: 50%;
-  transform: translateX(-50%);
   display: flex;
   gap: 1rem;
   z-index: 100;
+  margin-top: 1rem;
+}
+
+@media (min-width: 1280px) {
+  .slide-indicators {
+    position: absolute;
+    bottom: 2rem;
+    left: 50%;
+    transform: translateX(-50%);
+    margin-top: 0;
+  }
 }
 
 .indicator {
@@ -477,12 +563,12 @@ onUnmounted(() => {
 }
 
 .indicator.active {
-  background: var(--color-primary);
+  background: var(--color-primary, #1c1456);
   transform: scale(1.3);
 }
 
 .indicator:hover {
-  background: var(--color-secondary);
+  background: var(--color-secondary, #f4b6c2);
 }
 
 /* Transitions */
@@ -511,46 +597,7 @@ onUnmounted(() => {
   opacity: 0;
 }
 
-/* Responsive Design */
-@media (max-width: 1400px) {
-  .carousel-container {
-    width: 700px;
-    height: 700px;
-  }
-
-  .progress-ring-container {
-    width: 530px;
-    height: 530px;
-  }
-
-  .image-circle {
-    width: 480px;
-    height: 480px;
-  }
-
-  .title-text {
-    font-size: 4.5rem;
-  }
-
-  .curved-title {
-    top: -30px;
-  }
-
-  .back-button {
-    left: 2rem;
-  }
-
-  .further-button {
-    right: 2rem;
-    bottom: 6rem;
-  }
-
-  .description-box {
-    left: 1rem;
-    max-width: 380px;
-  }
-}
-
+/* Responsive adjustments for smaller carousel */
 @media (max-width: 1024px) {
   .carousel-container {
     width: 600px;
@@ -571,10 +618,6 @@ onUnmounted(() => {
     font-size: 3.5rem;
   }
 
-  .curved-title {
-    top: -25px;
-  }
-
   .nav-thumbnail {
     width: 60px;
     height: 60px;
@@ -582,23 +625,6 @@ onUnmounted(() => {
 
   .nav-text {
     font-size: 1.2rem;
-  }
-
-  .description-box {
-    max-width: 350px;
-    padding: 1.5rem;
-  }
-
-  .description-content h3 {
-    font-size: 1.1rem;
-  }
-
-  .description-content p {
-    font-size: 0.8rem;
-  }
-
-  .further-button {
-    bottom: 5rem;
   }
 }
 
@@ -623,16 +649,6 @@ onUnmounted(() => {
     height: 320px;
   }
 
-  .back-button {
-    top: 2rem;
-    left: 1rem;
-  }
-
-  .further-button {
-    bottom: 12rem;
-    right: 1rem;
-  }
-
   .nav-thumbnail {
     width: 50px;
     height: 50px;
@@ -642,37 +658,16 @@ onUnmounted(() => {
     font-size: 1rem;
   }
 
-  .description-box {
-    position: relative;
-    bottom: auto;
-    left: auto;
-    margin-top: 2rem;
-    max-width: 100%;
-    background: rgba(255, 255, 255, 0.95);  /* Restore background on mobile for readability */
-    border-radius: 1rem;
-    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
-  }
-
-  .description-content h3,
-  .description-content p {
-    text-shadow: none;  /* Remove text shadow on mobile */
-  }
-
   .title-text {
     font-size: 2.5rem;
   }
 
-  .curved-title {
-    top: -20px;
-  }
-
   .description-content h3 {
-    font-size: 1rem;
+    font-size: 1.1rem;
   }
 
   .description-content p {
-    font-size: 0.75rem;
-    font-weight: 400;
+    font-size: 0.85rem;
   }
 }
 
@@ -704,32 +699,28 @@ onUnmounted(() => {
     font-size: 1.8rem;
   }
 
-  .curved-title {
-    top: -15px;
-  }
-
   .description-content h3 {
-    font-size: 0.95rem;
+    font-size: 1rem;
   }
 
   .description-content p {
-    font-size: 0.7rem;
+    font-size: 0.75rem;
   }
 
-  .further-button {
-    bottom: 10rem;
+  .description-box {
+    padding: 1.5rem;
   }
 }
 
 /* Accessibility */
 .nav-button:focus-visible {
-  outline: 3px solid var(--color-primary);
+  outline: 3px solid var(--color-primary, #1c1456);
   outline-offset: 4px;
   border-radius: 50%;
 }
 
 .indicator:focus-visible {
-  outline: 2px solid var(--color-primary);
+  outline: 2px solid var(--color-primary, #1c1456);
   outline-offset: 4px;
 }
 </style>

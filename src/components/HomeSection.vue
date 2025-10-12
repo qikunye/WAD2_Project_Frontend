@@ -24,9 +24,7 @@
       <div class="title-wrapper" ref="titleWrapper">
         <h1 class="main-title">
           <span class="title-line-1">
-            Beyond the bin
-            <!-- Embed the first section image directly in the first line -->
-            <img src="/images/homesection_pic1.png" alt="Discover" class="inline-icon" />
+            <span>Beyond the b</span><img src="/images/homesection_pic1.png" alt="Discover" class="inline-icon" /><span>n</span>
           </span>
           <span class="title-line-2">A food waste initiative</span>
 
@@ -62,13 +60,11 @@
         </div>
       </div>
     </div>
-
-    <!-- The side label has been removed as per updated design -->
   </section>
 </template>
 
 <script setup>
-import { ref, computed, onMounted, onUnmounted } from 'vue';
+import { ref, onMounted, onUnmounted } from 'vue';
 
 const homeSection = ref(null);
 const statsSection = ref(null);
@@ -101,19 +97,19 @@ const numbers = [
   { id: 3, number: 5, title: 'Meal Plans' },
 ];
 
-const scrollToFeatures = () => {
-  document.getElementById('features')?.scrollIntoView({ behavior: 'smooth' });
-};
-
 const spawnImage = (x, y) => {
   const imageId = imageIdCounter.value++;
   const imageSrc = hoverImages[currentImageIndex.value];
   
+  // Offset the image position (20px right, 20px down from cursor)
+  const offsetX = x + 20;
+  const offsetY = y + 20;
+  
   // Create new image object
   const newImage = {
     id: imageId,
-    x: x,
-    y: y,
+    x: offsetX,
+    y: offsetY,
     src: imageSrc,
     fadingOut: false
   };
@@ -162,10 +158,8 @@ const handleMouseLeave = () => {
   activeImages.value = [];
 };
 
-
 const handleCornerIconClick = () => {
   console.log('Corner icon clicked - Peace!');
-  // Add your custom action here
 };
 
 const animateCounter = (element, target) => {
@@ -219,27 +213,46 @@ onUnmounted(() => {
   align-items: center;
   justify-content: center;
   padding: 4rem 2rem;
-  background-color: #e5e4e2; /* Light warm grey like EISLAB */
+  background-color: #e5e4e2;
   overflow: hidden;
   cursor: crosshair;
 }
 
-/* Hover Images - Multiple instances */
+/* Hover Images - Multiple instances with elegant entrance animation */
 .hover-image {
   position: absolute;
-  width: 150px;
-  height: 150px;
+  width: 180px;
+  height: 180px;
   pointer-events: none;
   z-index: 100;
   transform: translate(-50%, -50%) scale(1);
   will-change: transform, opacity;
   opacity: 1;
-  transition: opacity 0.3s ease-out, transform 0.3s ease-out;
+  animation: elegantEntrance 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+  transition: opacity 0.4s ease-out, transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+@keyframes elegantEntrance {
+  0% {
+    transform: translate(-50%, -50%) scale(0.3) translateY(20px);
+    opacity: 0;
+  }
+  50% {
+    transform: translate(-50%, -50%) scale(1.08) translateY(-3px) rotate(2deg);
+    opacity: 0.9;
+  }
+  75% {
+    transform: translate(-50%, -50%) scale(0.97) translateY(1px) rotate(-1deg);
+  }
+  100% {
+    transform: translate(-50%, -50%) scale(1) translateY(0) rotate(0deg);
+    opacity: 1;
+  }
 }
 
 .hover-image.fading-out {
   opacity: 0;
-  transform: translate(-50%, -50%) scale(0.8);
+  transform: translate(-50%, -50%) scale(0.85) translateY(-10px) rotate(3deg);
 }
 
 .hover-image img {
@@ -274,38 +287,40 @@ onUnmounted(() => {
   text-transform: uppercase;
   letter-spacing: -0.02em;
   line-height: 0.85;
-  color: #1c1456; /* Deep purple/blue */
+  color: #1c1456;
   margin: 0;
   display: flex;
   flex-direction: column;
+  align-items: center;
   gap: 0.5rem;
 }
 
 .title-line-1 {
   font-size: clamp(3rem, 12vw, 10rem);
-  display: block;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .title-line-2 {
-  /* Make the second line smaller than the first line */
   font-size: clamp(2rem, 8vw, 6rem);
   display: block;
 }
 
-/* Circular Icon Inside Title (Top Right) */
 /* Embedded icon within the first line of the title */
 .inline-icon {
   display: inline-block;
-  width: 1em;
-  height: 1em;
-  margin-left: 0.5rem;
+  width: 0.85em;
+  height: 0.85em;
+  margin: 0 -0.05em;
   vertical-align: middle;
+  transform: translateY(-0.05em);
 }
 
 /* Yellow Corner Icon - REPOSITIONED to bottom-left of title */
 .corner-icon-button {
   position: absolute;
-  bottom: -60px; /* 30px below title + half button height */
+  bottom: -60px;
   left: 0;
   width: 100px;
   height: 100px;
@@ -339,7 +354,7 @@ onUnmounted(() => {
   align-items: center;
   gap: 1.5rem;
   margin-bottom: 3rem;
-  margin-top: 5rem; /* Extra space to account for repositioned yellow icon */
+  margin-top: 5rem;
 }
 
 .divider-line {
@@ -361,9 +376,6 @@ onUnmounted(() => {
   line-height: 1.6;
   font-weight: 400;
 }
-
-/* Side Label (like EISLAB's red sidebar) */
-/* The side label styles have been removed as the label has been omitted */
 
 /* Stats Section - UPDATED STYLING */
 .stats-section {
@@ -415,11 +427,11 @@ onUnmounted(() => {
   display: flex;
   align-items: center;
   justify-content: center;
-  background: #e5e4e2; /* Match section background */
+  background: #e5e4e2;
   border-radius: 50%;
   box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
   transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-  border: 4px solid #1c1456; /* Dark blue heading color */
+  border: 4px solid #1c1456;
 }
 
 .stat:hover .stat-circle {
@@ -456,10 +468,6 @@ onUnmounted(() => {
 }
 
 /* Responsive Design */
-@media (max-width: 1200px) {
-  /* Adjustments for large screens removed unused title-icon-button and side-label */
-}
-
 @media (max-width: 768px) {
   .home-section {
     padding: 3rem 1rem;
@@ -470,7 +478,6 @@ onUnmounted(() => {
     font-size: clamp(2rem, 10vw, 5rem);
   }
 
-  /* Removed styling for title-icon-button */
   .corner-icon-button {
     width: 70px;
     height: 70px;
@@ -486,11 +493,9 @@ onUnmounted(() => {
     height: 60px;
   }
 
-  /* Side label removed from the layout entirely */
-
   .hover-image {
-    width: 100px;
-    height: 100px;
+    width: 140px;
+    height: 140px;
   }
 
   .stats-section {
@@ -525,7 +530,6 @@ onUnmounted(() => {
     font-size: clamp(1.8rem, 9vw, 3.5rem);
   }
 
-  /* Removed styling for title-icon-button */
   .corner-icon-button {
     width: 60px;
     height: 60px;
@@ -537,8 +541,8 @@ onUnmounted(() => {
   }
 
   .hover-image {
-    width: 80px;
-    height: 80px;
+    width: 120px;
+    height: 120px;
   }
 
   .stats-container {
