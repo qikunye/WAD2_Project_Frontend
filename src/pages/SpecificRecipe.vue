@@ -66,6 +66,36 @@ function addToMealPlan() {
     <div class="page-bg">
         <div class="center-fade"></div>
         <div class="container py-4" v-if="recipeInfo.id">
+            <!-- navigation pane  -->
+            <nav class="breadcrumb-nav d-flex align-items-center mb-4">
+                <!-- Home link -->
+                <router-link to="/HomePage" class="breadcrumb-link d-flex align-items-center">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14"
+                        id="Home-2--Streamline-Flex-Remix" height="16" width="16">
+                        <desc>
+                            Home 2 Streamline Icon: https://streamlinehq.com
+                        </desc>
+                        <g id="home-2--door-entrance-home-house-roof-round-shelter">
+                            <path id="Union" fill="#6c757d" fill-rule="evenodd"
+                                d="M6.03912 1.29344c0.57216 -0.391256 1.34969 -0.391255 1.92185 0.00001l0.66359 0.4538C10.5854 3.0882 12.2688 4.73532 13.5937 6.61339l0.2128 0.30177c0.2605 0.36924 0.2421 0.81368 0.039 1.14648 -0.1988 0.32568 -0.5622 0.53396 -0.974 0.53396h-0.5675c0.0299 0.92818 -0.0225 2.042 -0.1597 2.8438 -0.1615 0.9442 -1.0346 1.5606 -1.964 1.5606H3.81978c-0.92942 0 -1.8025 -0.6164 -1.964 -1.5606 -0.13714 -0.8018 -0.18956 -1.91562 -0.15971 -2.8438h-0.56759c-0.411809 0 -0.775219 -0.20828 -0.97402 -0.53397 -0.2031409 -0.3328 -0.221512 -0.77724 0.038966 -1.14648l0.212916 -0.30182C1.73118 4.7353 3.41457 3.08821 5.37544 1.7473l0.66368 -0.45386Zm1.21624 1.03182c-0.14673 -0.10035 -0.36391 -0.10035 -0.51065 0l-0.66368 0.45385c-1.84254 1.26 -3.41751 2.80301 -4.65326 4.55477l-0.00828 0.01172h0.93931c0.17565 0 0.34319 0.07391 0.4616 0.20364 0.11842 0.12972 0.17679 0.30328 0.16081 0.4782 -0.08317 0.91082 -0.04588 2.30936 0.10668 3.20126 0.04338 0.2536 0.31516 0.5213 0.73189 0.5213h1.2625V9.33509c0 -1.05907 0.85854 -1.91761 1.91761 -1.91761 1.05906 0 1.9176 0.85854 1.9176 1.91761V11.75h1.26281c0.4167 0 0.6885 -0.2677 0.7319 -0.5213 0.1526 -0.8919 0.1899 -2.29044 0.1067 -3.20126 -0.016 -0.17492 0.0424 -0.34848 0.1608 -0.47821 0.1184 -0.12972 0.2859 -0.20363 0.4616 -0.20363h0.9392l-0.0083 -0.01167c-1.2357 -1.7518 -2.81069 -3.29484 -4.65324 -4.55487l-0.6636 -0.4538Z"
+                                clip-rule="evenodd" stroke-width="1"></path>
+                        </g>
+                    </svg>
+                    <span class="ms-2">Home</span>
+                </router-link>
+
+                <span class="breadcrumb-separator mx-2">&gt;</span>
+
+                <!-- Recipes link -->
+                <router-link to="/Recipes" class="breadcrumb-link">
+                    Recipes
+                </router-link>
+
+                <span class="breadcrumb-separator mx-2">&gt;</span>
+
+                <!-- Current recipe title -->
+                <span class="breadcrumb-current">{{ recipeInfo.title }}</span>
+            </nav>
             <!-- Top Section -->
             <div class="row g-4 mb-4">
                 <!-- Image -->
@@ -182,6 +212,9 @@ function addToMealPlan() {
                     </div>
                     <h5 class="nutrition-title mb-0 ms-3">Nutrition Facts</h5>
                     <span class="ms-auto badge rounded-pill nutrition-badge">Per Serving</span>
+                    <span class="badge rounded-pill health-badge">
+                        Health Score: {{ recipeInfo.healthScore }}/100
+                    </span>
                 </div>
 
                 <!-- Caloric Breakdown -->
@@ -449,6 +482,36 @@ ol li {
 .glass {
     background: rgba(255, 255, 255, 0.1);
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+}
+
+/* === Breadcrumb Navigation === */
+.breadcrumb-nav {
+    font-family: var(--font-body);
+    font-size: 1.2rem;
+    color: #6c757d;
+    /* muted grey */
+}
+
+.breadcrumb-link {
+    color: #6c757d;
+    text-decoration: none;
+    font-weight: 500;
+    transition: color 0.2s ease;
+}
+
+.breadcrumb-link:hover {
+    color: #e64a19;
+    /* orange accent on hover */
+}
+
+.breadcrumb-separator {
+    color: #999;
+    font-weight: 500;
+}
+
+.breadcrumb-current {
+    color: #1c1456;
+    font-weight: 600;
 }
 
 /* Gradient styles */
@@ -811,6 +874,17 @@ img {
     font-size: 0.8rem;
     padding: 0.4rem 0.75rem;
     font-weight: 600;
+}
+
+.health-badge {
+  background-color: #e64a19;
+  color: white;
+  font-size: 0.8rem;
+  font-weight: 600;
+  padding: 0.45rem 0.9rem;
+  border: none;
+  box-shadow: 0 2px 6px rgba(230, 74, 25, 0.25);
+  margin-left: 10px;
 }
 
 /* Caloric breakdown circles */
