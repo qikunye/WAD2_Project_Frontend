@@ -69,7 +69,7 @@ function addToMealPlan() {
             <!-- navigation pane  -->
             <nav class="breadcrumb-nav d-flex align-items-center mb-4">
                 <!-- Home link -->
-                <router-link to="/HomePage" class="breadcrumb-link d-flex align-items-center">
+                <router-link to="/" class="breadcrumb-link d-flex align-items-center">
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14"
                         id="Home-2--Streamline-Flex-Remix" height="16" width="16">
                         <desc>
@@ -87,7 +87,7 @@ function addToMealPlan() {
                 <span class="breadcrumb-separator mx-2">&gt;</span>
 
                 <!-- Recipes link -->
-                <router-link to="/Recipes" class="breadcrumb-link">
+                <router-link to="/recipes" class="breadcrumb-link">
                     Recipes
                 </router-link>
 
