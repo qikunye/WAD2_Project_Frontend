@@ -189,8 +189,49 @@ const resetFilters = () => {
 </script>
 
 <template>
-    <div class="container-fluid py-4">
-        <h1 class="text-center mb-4">Recipe Finder</h1>
+    <div class="container-fluid">
+        <!-- Hero Section -->
+        <section class="hero-section">
+            <div class="hero-content">
+                <h1 class="hero-title">DISCOVER</h1>
+                <h2 class="hero-subtitle">RECIPES</h2>
+            </div>
+
+            <!-- Floating Icons -->
+            <div class="floating-icons">
+                <div class="icon icon1">
+                    <!-- Example SVG pizza slice -->
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" stroke="#1c1456"
+                        stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                        class="feather feather-pie-chart">
+                        <path d="M21.21 15.89A10 10 0 0 1 8.11 2.79 10 10 0 0 0 12 22a10 10 0 0 0 9.21-6.11z" />
+                        <path d="M22 12A10 10 0 0 1 12 2v10z" />
+                    </svg>
+                </div>
+                <div class="icon icon2">
+                    <!-- Example SVG cookie -->
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" stroke="#ffffff"
+                        stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-circle">
+                        <circle cx="12" cy="12" r="10" />
+                    </svg>
+                </div>
+                <div class="icon icon3">
+                    <!-- Example SVG chef hat -->
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" stroke="#ffffff"
+                        stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-award">
+                        <circle cx="12" cy="8" r="7" />
+                        <polyline points="8 21 12 17 16 21" />
+                    </svg>
+                </div>
+                <div class="icon icon4">
+                    <!-- Example SVG greek psi -->
+                    <span class="psi">ψ</span>
+                </div>
+            </div>
+
+            <!-- Curved White Background -->
+            <div class="hero-curve"></div>
+        </section>
 
         <!-- Top Search Bar + Search Button -->
         <div class="search-bar-box">
@@ -235,12 +276,12 @@ const resetFilters = () => {
                         <label class="filter-label">Diet Preferences</label>
                         <div class="filter-box">
                             <div class="" v-for="diet in diets" :key="diet">
-                                    <div class="form-check">
-                                        <input class="form-check-input" type="checkbox" :id="diet" :value="diet"
-                                            v-model="selectedDiets" />
-                                        <label class="form-check-label" :for="diet">{{ diet }}</label>
-                                    </div>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" :id="diet" :value="diet"
+                                        v-model="selectedDiets" />
+                                    <label class="form-check-label" :for="diet">{{ diet }}</label>
                                 </div>
+                            </div>
                         </div>
                     </div>
 
@@ -340,8 +381,8 @@ const resetFilters = () => {
                 <div v-else-if="error" class="text-danger text-center">{{ error }}</div>
 
                 <div v-else class="row g-4">
-                    <div class="col-12 col-md-6 col-lg-6 col-xl-4 col-xxl-4 recipe-col" v-for="recipe in paginatedRecipes"
-                        :key="recipe.id">
+                    <div class="col-12 col-md-6 col-lg-6 col-xl-4 col-xxl-4 recipe-col"
+                        v-for="recipe in paginatedRecipes" :key="recipe.id">
                         <ProjectCard :title="recipe.title" :image="recipe.image" :tags="recipe.dishTypes"
                             :prepTime="recipe.readyInMinutes" :servings="recipe.servings"
                             :healthScore="recipe.healthScore"
@@ -392,10 +433,108 @@ const resetFilters = () => {
   }
 }
 
-/* body {
+body {
     background-color: white !important;
-} */
- 
+}
+
+/* ===== Hero Section ===== */
+.hero-section {
+  position: relative;
+  background: #e7e7e7;
+  text-align: center;
+    margin-top: 0;   /* remove spacing above */
+  padding-top: 2rem; /* control spacing with padding instead */
+  padding-bottom: 140px;
+  overflow: hidden;
+  width: 100vw;          /* full viewport width */
+  margin-left: calc(50% - 50vw); /* remove container margins */
+}
+
+/* Title */
+.hero-title {
+  color: #1c1456;
+  font-weight: 900;
+  font-size: 4rem;
+  letter-spacing: 2px;
+  margin: 0;
+  z-index: 2;
+  position: relative;
+}
+
+/* Subtitle with gradient */
+.hero-subtitle {
+  font-weight: 900;
+  font-size: 3rem;
+  background: linear-gradient(to right, #e64a19, #f4b6c2, #e64a19);
+  background-clip: text;              /* standard */
+  -webkit-background-clip: text;      /* Safari / Chrome fallback */
+  -webkit-text-fill-color: transparent;
+  margin-top: 0.2rem;
+  position: relative;
+  z-index: 2;
+}
+
+/* Floating icons */
+.floating-icons {
+  position: absolute;
+  top: 30px;
+  left: 0;
+  right: 0;
+  width: 100%;
+  height: 100px;
+  pointer-events: none;
+}
+
+.icon {
+  position: absolute;
+  background: #f4b6c2;
+  border-radius: 50%;
+  padding: 14px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+
+.icon svg {
+  width: 28px;
+  height: 28px;
+}
+
+/* Individual icon positions */
+.icon1 { left: 10%; top: 0; }
+.icon2 { left: 30%; top: -10px; background: #e64a19; }
+.icon3 { right: 15%; top: -5px; background: #e64a19; }
+.icon4 { right: 30%; top: -15px; background: #f4b6c2; font-size: 24px; color: #1c1456; font-weight: bold; }
+
+/* Curve at the bottom */
+.hero-curve {
+  position: absolute;
+  bottom: -1px;
+  left: 0;
+  width: 100vw;
+  height: 180px;
+  background: white;
+  border-top-left-radius: 100% 50px;
+  border-top-right-radius: 100% 50px;
+  z-index: 1;
+  left: 0;
+  margin: 0;
+}
+
+@keyframes floaty {
+  0% { transform: translateY(0px); }
+  50% { transform: translateY(-10px); }
+  100% { transform: translateY(0px); }
+}
+
+.icon {
+  animation: floaty 4s ease-in-out infinite;
+}
+
+.icon2 { animation-delay: 0.5s; }
+.icon3 { animation-delay: 1s; }
+.icon4 { animation-delay: 1.5s; }
 
 /* Keep dropdown menu properly positioned */
 .dropdown-menu.show {
