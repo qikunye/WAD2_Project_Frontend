@@ -376,6 +376,32 @@ onUnmounted(() => {
   flex-shrink: 0;
 }
 
+/* Reduce carousel size at xl to prevent overlap */
+@media (min-width: 1280px) and (max-width: 1535px) {
+  .carousel-container {
+    width: 700px;
+    height: 700px;
+  }
+  
+  .progress-ring-container {
+    width: 520px;
+    height: 520px;
+  }
+  
+  .image-circle {
+    width: 470px;
+    height: 470px;
+  }
+  
+  .title-text {
+    font-size: 4.2rem;
+  }
+  
+  .curved-title {
+    top: -35px;
+  }
+}
+
 /* Progress Ring Container */
 .progress-ring-container {
   position: relative;
@@ -499,8 +525,8 @@ onUnmounted(() => {
   }
   
   .description-box {
-    max-width: 100%;
-    width: 100%;
+    max-width: 75%;
+    width: 75%;
   }
   
   .further-button {
