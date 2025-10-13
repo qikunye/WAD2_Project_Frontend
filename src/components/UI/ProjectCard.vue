@@ -29,11 +29,11 @@
       <p  v-if="healthScore !== '' && healthScore !== null && healthScore !== undefined" class="info health-score" 
       :class="healthScoreColor" >Health Score: {{ healthScore }} / 100</p>
 
-      <ul v-if="tags && tags.length" class="tags">
+      <!-- <ul v-if="tags && tags.length" class="tags">
         <li v-for="(tag, index) in tags" :key="index" :style="{ transitionDelay: `${0.4 + index * 0.15}s` }">
           #{{ tag }}
         </li>
-      </ul>
+      </ul> -->
     </div>
   </div>
 </template>
@@ -153,6 +153,7 @@ const healthScoreColor = computed(() => {
   position: absolute;
   bottom: 1rem;
   left: 1rem;
+  font-family: var(--font-heading2);
   z-index: 2;
   font-size: 1.3rem;
   font-weight: 600;
