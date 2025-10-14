@@ -1,6 +1,6 @@
 <script setup>
 import ProjectCard from "../components/UI/ProjectCard.vue";
-import { ref, onMounted,onUnmounted, computed } from "vue";
+import { ref, onMounted, onUnmounted, computed } from "vue";
 import axios from "axios";
 import Slider from '@vueform/slider'
 
@@ -80,7 +80,7 @@ const updateCardsPerPage = () => {
 //computed() helps track any reactive values inside (e.g. recipes.value), when recipes.value changes due to data fetched from backend, 
 // vue automatically recalculates totalPages
 const totalPages = computed(() => {
-  return Math.ceil(recipes.value.length / cardsPerPage.value);
+    return Math.ceil(recipes.value.length / cardsPerPage.value);
 });
 
 //Slice recipes for the current page
@@ -200,32 +200,63 @@ const resetFilters = () => {
             <!-- Floating Icons -->
             <div class="floating-icons">
                 <div class="icon icon1">
-                    <!-- Example SVG pizza slice -->
-                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" stroke="#1c1456"
-                        stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
-                        class="feather feather-pie-chart">
-                        <path d="M21.21 15.89A10 10 0 0 1 8.11 2.79 10 10 0 0 0 12 22a10 10 0 0 0 9.21-6.11z" />
-                        <path d="M22 12A10 10 0 0 1 12 2v10z" />
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="#1c1456"
+                        stroke-linecap="round" stroke-linejoin="round" id="Chef-Hat--Streamline-Tabler" height="24"
+                        width="24">
+                        <desc>
+                            Chef Hat Streamline Icon: https://streamlinehq.com
+                        </desc>
+                        <path
+                            d="M12 3c1.918 0 3.52 1.35 3.91 3.151A4 4 0 0 1 18 13.874L18 21H6v-7.126a4 4 0 1 1 2.092 -7.723A4 4 0 0 1 12 3z"
+                            stroke-width="2"></path>
+                        <path d="M6.161 17.009 18 17" stroke-width="2"></path>
                     </svg>
                 </div>
                 <div class="icon icon2">
-                    <!-- Example SVG cookie -->
-                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" stroke="#ffffff"
-                        stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-circle">
-                        <circle cx="12" cy="12" r="10" />
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="#ffffff"
+                        stroke-linecap="round" stroke-linejoin="round" id="Apple--Streamline-Lucide" height="24"
+                        width="24">
+                        <desc>
+                            Apple Streamline Icon: https://streamlinehq.com
+                        </desc>
+                        <path
+                            d="M12 20.94c1.5 0 2.75 1.06 4 1.06 3 0 6 -8 6 -12.22A4.91 4.91 0 0 0 17 5c-2.22 0 -4 1.44 -5 2 -1 -0.56 -2.78 -2 -5 -2a4.9 4.9 0 0 0 -5 4.78C2 14 5 22 8 22c1.25 0 2.5 -1.06 4 -1.06Z"
+                            stroke-width="2"></path>
+                        <path d="M10 2c1 0.5 2 2 2 5" stroke-width="2"></path>
                     </svg>
                 </div>
                 <div class="icon icon3">
-                    <!-- Example SVG chef hat -->
-                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" stroke="#ffffff"
-                        stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-award">
-                        <circle cx="12" cy="8" r="7" />
-                        <polyline points="8 21 12 17 16 21" />
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"
+                        id="Food-Delivery-Find-Restuarant--Streamline-Ultimate" height="24" width="24">
+                        <desc>
+                            Food Delivery Find Restuarant Streamline Icon: https://streamlinehq.com
+                        </desc>
+                        <g>
+                            <path
+                                d="m23.66 22.24 -5 -5a10.52 10.52 0 1 0 -1.41 1.41l5 5a1 1 0 0 0 1.42 0 1 1 0 0 0 -0.01 -1.41ZM2.05 10.57a8.52 8.52 0 1 1 8.52 8.52 8.53 8.53 0 0 1 -8.52 -8.52Z"
+                                fill="#ffffff" stroke-width="1"></path>
+                            <path
+                                d="M7.27 5.22a3 3 0 0 0 -2.67 3.2 3.18 3.18 0 0 0 1.92 3.07v3.61a0.75 0.75 0 0 0 1.5 0v-3.61A3.17 3.17 0 0 0 10 8.42a3 3 0 0 0 -2.73 -3.2Z"
+                                fill="#ffffff" stroke-width="1"></path>
+                            <path
+                                d="M15.72 5.22A0.74 0.74 0 0 0 15 6v3.4c0 0.18 -0.22 0.41 -0.58 0.55V6a0.75 0.75 0 1 0 -1.5 0v4c-0.37 -0.14 -0.59 -0.37 -0.59 -0.55V6a0.75 0.75 0 1 0 -1.5 0v3.4a2.34 2.34 0 0 0 2.09 2.11v3.59a0.75 0.75 0 1 0 1.5 0v-3.59a2.34 2.34 0 0 0 2.05 -2.11V6a0.75 0.75 0 0 0 -0.75 -0.78Z"
+                                fill="#ffffff" stroke-width="1"></path>
+                        </g>
                     </svg>
                 </div>
                 <div class="icon icon4">
-                    <!-- Example SVG greek psi -->
-                    <span class="psi">ψ</span>
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="#000000"
+                        stroke-linecap="round" stroke-linejoin="round" id="Book--Streamline-Tabler" height="24"
+                        width="24">
+                        <desc>
+                            Book Streamline Icon: https://streamlinehq.com
+                        </desc>
+                        <path d="M3 19a9 9 0 0 1 9 0 9 9 0 0 1 9 0" stroke-width="2"></path>
+                        <path d="M3 6a9 9 0 0 1 9 0 9 9 0 0 1 9 0" stroke-width="2"></path>
+                        <path d="m3 6 0 13" stroke-width="2"></path>
+                        <path d="m12 6 0 13" stroke-width="2"></path>
+                        <path d="m21 6 0 13" stroke-width="2"></path>
+                    </svg>
                 </div>
             </div>
 
@@ -420,17 +451,17 @@ const resetFilters = () => {
 
 /* adjust the number of ProjectCards per row  */
 @media (min-width: 1700px) {
-  .recipe-col {
-    flex: 0 0 25%;
-    max-width: 25%;
-  }
+    .recipe-col {
+        flex: 0 0 25%;
+        max-width: 25%;
+    }
 }
 
 @media (max-width: 767px) {
-  .recipe-col {
-    flex: 0 0 100%;
-    max-width: 100%;
-  }
+    .recipe-col {
+        flex: 0 0 100%;
+        max-width: 100%;
+    }
 }
 
 body {
@@ -439,102 +470,147 @@ body {
 
 /* ===== Hero Section ===== */
 .hero-section {
-  position: relative;
-  background: #e7e7e7;
-  text-align: center;
-    margin-top: 0;   /* remove spacing above */
-  padding-top: 2rem; /* control spacing with padding instead */
-  padding-bottom: 140px;
-  overflow: hidden;
-  width: 100vw;          /* full viewport width */
-  margin-left: calc(50% - 50vw); /* remove container margins */
+    position: relative;
+    background: #e7e7e7;
+    text-align: center;
+    margin-top: 0;
+    /* remove spacing above */
+    padding-top: 6rem;
+    /* control spacing with padding instead */
+    padding-bottom: 140px;
+    overflow: hidden;
+    width: 100vw;
+    /* full viewport width */
+    margin-left: calc(50% - 50vw);
+    /* remove container margins */
 }
 
 /* Title */
 .hero-title {
-  color: #1c1456;
-  font-weight: 900;
-  font-size: 4rem;
-  letter-spacing: 2px;
-  margin: 0;
-  z-index: 2;
-  position: relative;
+    color: #1c1456;
+    font-weight: 900;
+    font-size: 6rem;
+    letter-spacing: 2px;
+    margin: 0;
+    top:65px;
+    z-index: 2;
+    position: relative;
 }
 
 /* Subtitle with gradient */
 .hero-subtitle {
-  font-weight: 900;
-  font-size: 3rem;
-  background: linear-gradient(to right, #e64a19, #f4b6c2, #e64a19);
-  background-clip: text;              /* standard */
-  -webkit-background-clip: text;      /* Safari / Chrome fallback */
-  -webkit-text-fill-color: transparent;
-  margin-top: 0.2rem;
-  position: relative;
-  z-index: 2;
+    font-weight: 900;
+    font-size: 5rem;
+    background: linear-gradient(to right, #ea5b2f, #f4b6c2, #e64a19);
+    /* standard */
+    background-clip: text;
+    /* Safari / Chrome fallback */
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    margin-top: 0.2rem;
+    position: relative;
+    top:65px;
+    z-index: 2;
 }
 
 /* Floating icons */
 .floating-icons {
-  position: absolute;
-  top: 30px;
-  left: 0;
-  right: 0;
-  width: 100%;
-  height: 100px;
-  pointer-events: none;
+    position: absolute;
+    top: 30px;
+    left: 0;
+    right: 0;
+    width: 100%;
+    height: 100px;
+    pointer-events: none;
 }
 
 .icon {
-  position: absolute;
-  background: #f4b6c2;
-  border-radius: 50%;
-  padding: 14px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    position: absolute;
+    background: #f4b6c2;
+    border-radius: 50%;
+    padding: 14px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
 }
 
 .icon svg {
-  width: 28px;
-  height: 28px;
+    width: 28px;
+    height: 28px;
 }
 
 /* Individual icon positions */
-.icon1 { left: 10%; top: 0; }
-.icon2 { left: 30%; top: -10px; background: #e64a19; }
-.icon3 { right: 15%; top: -5px; background: #e64a19; }
-.icon4 { right: 30%; top: -15px; background: #f4b6c2; font-size: 24px; color: #1c1456; font-weight: bold; }
+.icon1 {
+    left: 10%;
+    top: 90%;
+}
+
+.icon2 {
+    left: 30%;
+    top: 40%;
+    background: #e64a19;
+}
+
+.icon3 {
+    right: 12%;
+    top: 65%;
+    background: #e64a19;
+}
+
+.icon4 {
+    right: 30%;
+    top: 40%;
+    background: #f4b6c2;
+    font-size: 24px;
+    color: #1c1456;
+    font-weight: bold;
+}
 
 /* Curve at the bottom */
 .hero-curve {
-  position: absolute;
-  bottom: -1px;
-  left: 0;
-  width: 100vw;
-  height: 180px;
-  background: white;
-  border-top-left-radius: 100% 50px;
-  border-top-right-radius: 100% 50px;
-  z-index: 1;
-  left: 0;
-  margin: 0;
+    position: absolute;
+    bottom: -1px;
+    left: 0;
+    width: 100vw;
+    height: 180px;
+    background: white;
+    border-top-left-radius: 100% 50px;
+    border-top-right-radius: 100% 50px;
+    z-index: 1;
+    left: 0;
+    margin: 0;
 }
 
 @keyframes floaty {
-  0% { transform: translateY(0px); }
-  50% { transform: translateY(-10px); }
-  100% { transform: translateY(0px); }
+    0% {
+        transform: translateY(0px);
+    }
+
+    50% {
+        transform: translateY(-10px);
+    }
+
+    100% {
+        transform: translateY(0px);
+    }
 }
 
 .icon {
-  animation: floaty 4s ease-in-out infinite;
+    animation: floaty 4s ease-in-out infinite;
 }
 
-.icon2 { animation-delay: 0.5s; }
-.icon3 { animation-delay: 1s; }
-.icon4 { animation-delay: 1.5s; }
+.icon2 {
+    animation-delay: 0.5s;
+}
+
+.icon3 {
+    animation-delay: 1s;
+}
+
+.icon4 {
+    animation-delay: 1.5s;
+}
 
 /* Keep dropdown menu properly positioned */
 .dropdown-menu.show {
@@ -737,18 +813,64 @@ input[type="range"] {
 
 /* ===== Pagination ===== */
 .pagination {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: #ffffff;
+    border-radius: 16px;
+    padding: 0.4rem 0.6rem;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
     gap: 4px;
+    border: 1px solid #eee;
 }
 
+/* Each page item (numbers + arrows) */
+.page-item {
+    list-style: none;
+}
+
+/* The clickable button */
 .page-link {
-    border-radius: 8px !important;
-    color: #333;
+    background: transparent;
+    border: none;
+    color: #999;
+    font-weight: 600;
+    font-size: 1rem;
+    border-radius: 10px;
+    padding: 0.5rem 0.9rem;
+    transition: all 0.2s ease;
 }
 
+/* Hover: light grey highlight */
+.page-link:hover {
+    background-color: #f6f6f6;
+    color: #555;
+}
+
+/* Active page */
 .page-item.active .page-link {
-    background-color: #007bff;
-    color: white;
-    border-color: #007bff;
+    background: transparent;
+    color: #e64a19;
+    font-weight: 700;
+}
+
+/* Disabled arrows */
+.page-item.disabled .page-link {
+    opacity: 0.4;
+    cursor: not-allowed;
+}
+
+/* Arrows (Previous/Next) styling */
+.page-link svg,
+.page-link i {
+    font-size: 1.2rem;
+    vertical-align: middle;
+}
+
+/* Optional: remove blue focus outline on click */
+.page-link:focus {
+    outline: none;
+    box-shadow: none;
 }
 
 /* === Search box === */
