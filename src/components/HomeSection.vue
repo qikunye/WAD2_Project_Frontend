@@ -7,6 +7,21 @@
     @mouseleave="handleMouseLeave"
     ref="homeSection"
   >
+    <!-- Video Background -->
+    <video
+      class="video-background"
+      autoplay
+      loop
+      muted
+      playsinline
+    >
+      <source src="/images/waste_management.mov" type="video/mp4">
+      Your browser does not support the video tag.
+    </video>
+    
+    <!-- Overlay for better text readability -->
+    <div class="video-overlay"></div>
+
     <!-- Hover Images - Multiple instances -->
     <div 
       v-for="image in activeImages"
@@ -20,43 +35,42 @@
 
     <!-- Main Container -->
     <div class="home-container">
-      <!-- Bold Title with Icons -->
-      <div class="title-wrapper" ref="titleWrapper">
+      <!-- Bold Title with Icon -->
+      <div class="title-wrapper">
         <h1 class="main-title">
           <span class="title-line-1">
             <span>Beyond the b</span><img src="/images/homesection_pic1.png" alt="Discover" class="inline-icon" /><span>n</span>
           </span>
-          <span class="title-line-2">A food waste initiative</span>
-
-          <!-- Yellow Icon (Bottom Left of Title) -->
-          <button 
-            class="corner-icon-button"
-            @click="handleCornerIconClick"
-            aria-label="Peace sign"
-          >
-            <img src="/images/homesection_pic2.png" alt="Peace" />
-          </button>
         </h1>
+        
+        <!-- Typewriter Subtitle -->
+        <div class="subtitle-wrapper">
+          <h2 class="typewriter-subtitle" ref="typewriterText">
+            <span class="typed-text">{{ displayedText }}</span>
+            <span class="cursor" :class="{ 'blinking': isTypingComplete }">|</span>
+          </h2>
+        </div>
       </div>
 
-      <!-- Subtitle/Description -->
-      <div class="description-wrapper">
+      <!-- Divider Line -->
+      <div class="divider-wrapper">
         <div class="divider-line"></div>
-        <p class="subtitle">
-          Find out what drives us and how we bring a second life for leftovers.
-        </p>
       </div>
 
-      <!-- Stats Counter Section -->
+      <!-- Stats Sentence Section -->
       <div class="stats-section" ref="statsSection">
-        <div class="stats-container">
-          <div v-for="item in numbers" :key="item.id" class="stat" :data-index="item.id">
-            <div class="stat-circle">
-              <h2 class="stat-number" :data-target="item.number">0</h2>
-              <span class="stat-plus">+</span>
-            </div>
-            <p class="stat-title">{{ item.title }}</p>
-          </div>
+        <p class="stats-sentence">
+          Our platform gives you access to over 
+          <span class="stat-highlight" data-index="0">30+</span> recipes, 
+          <span class="stat-highlight" data-index="1">15+</span> ingredients, and 
+          <span class="stat-highlight" data-index="2">5+</span> meal plans.
+        </p>
+        
+        <!-- Bottom Description -->
+        <div class="description-wrapper">
+          <p class="subtitle">
+            Find out what drives us and how we bring a second life to leftovers.
+          </p>
         </div>
       </div>
     </div>
@@ -68,11 +82,16 @@ import { ref, onMounted, onUnmounted } from 'vue';
 
 const homeSection = ref(null);
 const statsSection = ref(null);
-const titleWrapper = ref(null);
+const typewriterText = ref(null);
 const isHovering = ref(false);
 const currentImageIndex = ref(0);
 const activeImages = ref([]);
 const imageIdCounter = ref(0);
+
+// Typewriter animation state
+const displayedText = ref('');
+const isTypingComplete = ref(false);
+const fullText = 'A Food Waste Initiative';
 
 let spawnTimer = null;
 
@@ -88,13 +107,6 @@ const hoverImages = [
   '/images/hoverpic8.jpg',
   '/images/hoverpic9.jpg',
   '/images/hoverpic10.jpg',
-];
-
-// Stats data
-const numbers = [
-  { id: 1, number: 30, title: 'Recipes' },
-  { id: 2, number: 15, title: 'Ingredients' },
-  { id: 3, number: 5, title: 'Meal Plans' },
 ];
 
 const spawnImage = (x, y) => {
@@ -119,7 +131,7 @@ const spawnImage = (x, y) => {
   // Move to next image in sequence
   currentImageIndex.value = (currentImageIndex.value + 1) % hoverImages.length;
   
-  // Start fade out after 0.7 seconds (fade takes 0.3s)
+  // Start fade out after 0.7 seconds
   setTimeout(() => {
     const image = activeImages.value.find(img => img.id === imageId);
     if (image) {
@@ -140,7 +152,7 @@ const handleMouseMove = (e) => {
   const x = e.clientX - rect.left;
   const y = e.clientY - rect.top;
 
-  // Spawn image every 0.1 seconds (100ms)
+  // Spawn image every 0.1 seconds
   if (!spawnTimer) {
     spawnImage(x, y);
     
@@ -154,41 +166,47 @@ const handleMouseLeave = () => {
   isHovering.value = false;
   clearTimeout(spawnTimer);
   spawnTimer = null;
-  // Clear all active images
   activeImages.value = [];
 };
 
-const handleCornerIconClick = () => {
-  console.log('Corner icon clicked - Peace!');
+// Typewriter animation
+const typeWriter = () => {
+  let charIndex = 0;
+  
+  const type = () => {
+    if (charIndex < fullText.length) {
+      displayedText.value += fullText.charAt(charIndex);
+      charIndex++;
+      setTimeout(type, 80); // Typing speed
+    } else {
+      isTypingComplete.value = true;
+    }
+  };
+  
+  // Start typing after a short delay
+  setTimeout(type, 500);
 };
 
-const animateCounter = (element, target) => {
-  let current = 0;
-  const increment = target / 50;
-  const timer = setInterval(() => {
-    current += increment;
-    if (current >= target) {
-      element.textContent = target;
-      clearInterval(timer);
-    } else {
-      element.textContent = Math.floor(current);
-    }
-  }, 30);
+// Animate stat highlights
+const animateStatHighlights = () => {
+  const highlights = document.querySelectorAll('.stat-highlight');
+  highlights.forEach((highlight, index) => {
+    setTimeout(() => {
+      highlight.classList.add('animate');
+    }, 200 + (index * 150)); // Stagger the animations
+  });
 };
 
 onMounted(() => {
+  // Start typewriter animation
+  typeWriter();
+  
+  // Animate stats when section becomes visible
   const observer = new IntersectionObserver((entries) => {
     entries.forEach(entry => {
       if (entry.isIntersecting) {
         entry.target.classList.add('is-visible');
-        
-        const statElements = entry.target.querySelectorAll('.stat');
-        statElements.forEach(stat => {
-          const numberElement = stat.querySelector('.stat-number');
-          const target = parseInt(numberElement.getAttribute('data-target'));
-          animateCounter(numberElement, target);
-        });
-        
+        animateStatHighlights();
         observer.unobserve(entry.target);
       }
     });
@@ -213,12 +231,38 @@ onUnmounted(() => {
   align-items: center;
   justify-content: center;
   padding: 4rem 2rem;
-  background-color: #e5e4e2;
   overflow: hidden;
   cursor: crosshair;
 }
 
-/* Hover Images - Multiple instances with elegant entrance animation */
+/* Video Background */
+.video-background {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  z-index: 0;
+}
+
+/* Overlay for text readability */
+.video-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    to bottom,
+    rgba(28, 20, 86, 0.7) 0%,
+    rgba(28, 20, 86, 0.5) 50%,
+    rgba(28, 20, 86, 0.7) 100%
+  );
+  z-index: 1;
+}
+
+/* Hover Images */
 .hover-image {
   position: absolute;
   width: 180px;
@@ -259,7 +303,7 @@ onUnmounted(() => {
   width: 100%;
   height: 100%;
   object-fit: contain;
-  filter: drop-shadow(0 10px 30px rgba(0, 0, 0, 0.2));
+  filter: drop-shadow(0 10px 30px rgba(0, 0, 0, 0.3));
 }
 
 /* Main Container */
@@ -279,7 +323,7 @@ onUnmounted(() => {
   margin-bottom: 3rem;
 }
 
-/* Bold Main Title - EISLAB Style */
+/* Main Title */
 .main-title {
   position: relative;
   font-family: var(--font-heading);
@@ -287,12 +331,9 @@ onUnmounted(() => {
   text-transform: uppercase;
   letter-spacing: -0.02em;
   line-height: 0.85;
-  color: #1c1456;
-  margin: 0;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 0.5rem;
+  color: #ffffff;
+  margin: 0 0 2rem 0;
+  text-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
 }
 
 .title-line-1 {
@@ -302,12 +343,7 @@ onUnmounted(() => {
   justify-content: center;
 }
 
-.title-line-2 {
-  font-size: clamp(2rem, 8vw, 6rem);
-  display: block;
-}
-
-/* Embedded icon within the first line of the title */
+/* Embedded icon */
 .inline-icon {
   display: inline-block;
   width: 0.85em;
@@ -315,46 +351,49 @@ onUnmounted(() => {
   margin: 0 -0.05em;
   vertical-align: middle;
   transform: translateY(-0.05em);
+  filter: brightness(0) invert(1);
 }
 
-/* Yellow Corner Icon - REPOSITIONED to bottom-left of title */
-.corner-icon-button {
-  position: absolute;
-  bottom: -60px;
-  left: 0;
-  width: 100px;
-  height: 100px;
-  border-radius: 50%;
-  background: linear-gradient(135deg, #f7e273 0%, #ffd966 100%);
-  border: none;
-  cursor: pointer;
+/* Typewriter Subtitle */
+.subtitle-wrapper {
+  margin-top: 1.5rem;
+}
+
+.typewriter-subtitle {
+  font-family: var(--font-body);
+  font-size: clamp(1.5rem, 4vw, 3rem);
+  color: #ffffff;
+  font-weight: 400;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  margin: 0;
+  text-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
+}
+
+.typed-text {
+  display: inline-block;
+}
+
+.cursor {
+  display: inline-block;
+  margin-left: 0.1em;
+  animation: none;
+}
+
+.cursor.blinking {
+  animation: blink 1s infinite;
+}
+
+@keyframes blink {
+  0%, 49% { opacity: 1; }
+  50%, 100% { opacity: 0; }
+}
+
+/* Divider */
+.divider-wrapper {
   display: flex;
-  align-items: center;
   justify-content: center;
-  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
-  transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-  z-index: 10;
-}
-
-.corner-icon-button:hover {
-  transform: scale(1.15) rotate(-10deg);
-  box-shadow: 0 15px 50px rgba(0, 0, 0, 0.25);
-}
-
-.corner-icon-button img {
-  width: 50%;
-  height: 50%;
-  object-fit: contain;
-}
-
-/* Description Wrapper */
-.description-wrapper {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 1.5rem;
-  margin-bottom: 3rem;
-  margin-top: 5rem;
+  margin: 4rem 0;
 }
 
 .divider-line {
@@ -363,23 +402,14 @@ onUnmounted(() => {
   background: linear-gradient(
     to bottom,
     transparent 0%,
-    #1c1456 50%,
+    rgba(255, 255, 255, 0.8) 50%,
     transparent 100%
   );
 }
 
-.subtitle {
-  font-family: var(--font-body);
-  font-size: clamp(1rem, 2.5vw, 1.3rem);
-  color: #1c1456;
-  max-width: 600px;
-  line-height: 1.6;
-  font-weight: 400;
-}
-
-/* Stats Section - UPDATED STYLING */
+/* Stats Section */
 .stats-section {
-  padding: 4rem 0 2rem;
+  padding: 2rem 0;
   text-align: center;
   opacity: 0;
   transform: translateY(30px);
@@ -391,80 +421,67 @@ onUnmounted(() => {
   transform: translateY(0);
 }
 
-.stats-container {
-  display: flex;
-  justify-content: center;
-  gap: 4rem;
-  flex-wrap: wrap;
-  max-width: 1200px;
-  margin: 0 auto;
+.stats-sentence {
+  font-family: var(--font-body);
+  font-size: clamp(1.2rem, 3vw, 2rem);
+  color: #ffffff;
+  line-height: 1.8;
+  max-width: 900px;
+  margin: 0 auto 3rem;
+  font-weight: 400;
+  text-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
 }
 
-.stat {
-  text-align: center;
+.stat-highlight {
+  font-family: var(--font-heading);
+  font-size: 1.3em;
+  font-weight: 900;
+  color: #f7e273;
+  display: inline-block;
+  padding: 0 0.3em;
+  position: relative;
   opacity: 0;
   transform: scale(0.8);
-  animation: popIn 0.6s ease forwards;
+  transition: all 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 
-.stat[data-index="1"] { animation-delay: 0.1s; }
-.stat[data-index="2"] { animation-delay: 0.3s; }
-.stat[data-index="3"] { animation-delay: 0.5s; }
-
-@keyframes popIn {
-  to {
-    opacity: 1;
-    transform: scale(1);
-  }
+.stat-highlight.animate {
+  opacity: 1;
+  transform: scale(1);
 }
 
-/* Counter Bubble - UPDATED COLORS */
-.stat-circle {
-  position: relative;
-  width: 180px;
-  height: 180px;
-  margin: 0 auto 1.5rem;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: #e5e4e2;
-  border-radius: 50%;
-  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
-  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-  border: 4px solid #1c1456;
+.stat-highlight::after {
+  content: '';
+  position: absolute;
+  bottom: -2px;
+  left: 0;
+  width: 100%;
+  height: 3px;
+  background: linear-gradient(90deg, #f7e273, #ffd966);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.4s ease 0.2s;
 }
 
-.stat:hover .stat-circle {
-  transform: translateY(-10px) rotate(5deg);
-  box-shadow: 0 20px 60px rgba(28, 20, 86, 0.4);
-  border-color: #1c1456;
+.stat-highlight.animate::after {
+  transform: scaleX(1);
 }
 
-.stat-number {
-  font-family: var(--font-heading);
-  font-size: 3.5rem;
-  color: var(--color-primary);
-  margin: 0;
+/* Description */
+.description-wrapper {
+  margin-top: 3rem;
+  padding-top: 2rem;
 }
 
-.stat-plus {
-  font-family: var(--font-heading);
-  font-size: 2rem;
-  color: var(--color-secondary);
-  margin-left: 0.2rem;
-}
-
-.stat-title {
+.subtitle {
   font-family: var(--font-body);
-  font-size: 1.3rem;
-  font-weight: 600;
-  color: var(--color-primary);
-  margin: 0;
-  transition: color 0.3s ease;
-}
-
-.stat:hover .stat-title {
-  color: var(--color-secondary);
+  font-size: clamp(1rem, 2.5vw, 1.3rem);
+  color: rgba(255, 255, 255, 0.9);
+  max-width: 600px;
+  margin: 0 auto;
+  line-height: 1.6;
+  font-weight: 400;
+  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.5);
 }
 
 /* Responsive Design */
@@ -473,20 +490,16 @@ onUnmounted(() => {
     padding: 3rem 1rem;
   }
 
-  .title-line-1,
-  .title-line-2 {
+  .title-line-1 {
     font-size: clamp(2rem, 10vw, 5rem);
   }
 
-  .corner-icon-button {
-    width: 70px;
-    height: 70px;
-    bottom: -50px;
-    left: 0;
+  .typewriter-subtitle {
+    font-size: clamp(1.2rem, 3vw, 2rem);
   }
 
-  .description-wrapper {
-    margin-top: 4rem;
+  .divider-wrapper {
+    margin: 3rem 0;
   }
 
   .divider-line {
@@ -498,46 +511,27 @@ onUnmounted(() => {
     height: 140px;
   }
 
-  .stats-section {
-    padding: 3rem 0 1rem;
+  .stats-sentence {
+    font-size: clamp(1rem, 2.5vw, 1.5rem);
   }
 
-  .stats-container {
-    gap: 3rem;
-  }
-  
-  .stat-circle {
-    width: 150px;
-    height: 150px;
-  }
-  
-  .stat-number {
-    font-size: 2.5rem;
-  }
-
-  .stat-plus {
-    font-size: 1.5rem;
-  }
-
-  .stat-title {
-    font-size: 1.1rem;
+  .description-wrapper {
+    margin-top: 2rem;
   }
 }
 
 @media (max-width: 480px) {
-  .title-line-1,
-  .title-line-2 {
+  .title-line-1 {
     font-size: clamp(1.8rem, 9vw, 3.5rem);
   }
 
-  .corner-icon-button {
-    width: 60px;
-    height: 60px;
-    bottom: -40px;
+  .typewriter-subtitle {
+    font-size: clamp(1rem, 2.5vw, 1.5rem);
+    letter-spacing: 0.05em;
   }
 
-  .description-wrapper {
-    margin-top: 3rem;
+  .divider-wrapper {
+    margin: 2rem 0;
   }
 
   .hover-image {
@@ -545,32 +539,22 @@ onUnmounted(() => {
     height: 120px;
   }
 
-  .stats-container {
-    gap: 2.5rem;
+  .stats-sentence {
+    font-size: clamp(0.9rem, 2vw, 1.2rem);
+    margin-bottom: 2rem;
   }
 
-  .stat-circle {
-    width: 130px;
-    height: 130px;
-  }
-
-  .stat-number {
-    font-size: 2rem;
+  .stat-highlight {
+    font-size: 1.2em;
   }
 }
 
 /* Performance Optimizations */
 .hover-image,
-.corner-icon-button {
+.video-background {
   -webkit-backface-visibility: hidden;
   backface-visibility: hidden;
   -webkit-perspective: 1000px;
   perspective: 1000px;
-}
-
-/* Accessibility */
-.corner-icon-button:focus-visible {
-  outline: 3px solid var(--color-primary);
-  outline-offset: 4px;
 }
 </style>
