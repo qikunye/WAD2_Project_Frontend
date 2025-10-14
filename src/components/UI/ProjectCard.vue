@@ -105,13 +105,24 @@ const healthScoreColor = computed(() => {
   position: relative;
   width: 100%;
   aspect-ratio: 1 / 1;
-  border-radius: 1rem;
+  border-radius: 1.5rem;
   overflow: hidden;
   cursor: pointer;
   transition: box-shadow 0.4s ease;
-  background: #000;
+ background-color: #fff; /* Keep the main background white */
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
   border-width: 0px;
+  border:none;
+}
+
+/* This pseudo-element keeps the dark base under the image */
+.card::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-color: #000;
+  z-index: 0; /* Behind image */
+  border-radius: 1.5rem;
 }
 
 .card:hover {

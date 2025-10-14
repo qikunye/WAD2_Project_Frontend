@@ -107,6 +107,8 @@ onMounted(async () => {
         console.log(response.data);
         updateCardsPerPage();
         window.addEventListener('resize', updateCardsPerPage);
+        //every 50ms it will run the updateCardsPerPage for pagination 
+        setTimeout(updateCardsPerPage, 50);
     } catch (err) {
         error.value = "Failed to load recipes.";
         console.error(err);
@@ -479,7 +481,7 @@ body {
     /* control spacing with padding instead */
     padding-bottom: 140px;
     overflow: hidden;
-    width: 100vw;
+    width: 99.5vw;
     /* full viewport width */
     margin-left: calc(50% - 50vw);
     /* remove container margins */

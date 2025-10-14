@@ -438,6 +438,7 @@ function addToMealPlan() {
 </template>
 
 <style scoped>
+
 .title {
     font-family: var(--font-body);
 }
@@ -447,7 +448,7 @@ function addToMealPlan() {
     position: relative;
     background: linear-gradient(135deg,
             var(--color-background) 0%,
-            #e5e4e2 50%,
+            #ffffff 50%,
             var(--color-background) 100%);
     overflow: hidden;
 }
