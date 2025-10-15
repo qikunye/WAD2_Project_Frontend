@@ -41,7 +41,7 @@
         </div>
 
         <!-- Meal Sharing Forum with dropdown -->
-        <div class="nav-item-wrapper" 
+        <!-- <div class="nav-item-wrapper" 
              @mouseenter="openDropdown('mealSharing')" 
              @mouseleave="startCloseTimer"
              @mouseenter.capture="cancelCloseTimer">
@@ -67,6 +67,16 @@
               </a>
             </div>
           </div>
+        </div> -->
+        <!-- Meal Sharing Forum link (no dropdown) -->
+        <div class="nav-item-wrapper">
+          <router-link 
+            to="/posts" 
+            class="nav-link"
+            active-class="active"
+          >
+            Meal Sharing Forum
+          </router-link>
         </div>
 
         <!-- Meal Planner & Shopping List with dropdown -->
