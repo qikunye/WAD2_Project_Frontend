@@ -749,4 +749,163 @@ onUnmounted(() => {
   outline: 2px solid var(--color-primary, #1c1456);
   outline-offset: 4px;
 }
+
+@media (min-width: 1280px) and (max-width: 1470px) {
+  /* Carousel scaling still valid */
+  .carousel-container {
+    width: 650px;
+    height: 650px;
+  }
+
+  .progress-ring-container {
+    width: 500px;
+    height: 500px;
+  }
+
+  .image-circle {
+    width: 450px;
+    height: 450px;
+  }
+
+  .title-text {
+    font-size: 4rem;
+  }
+
+  /* Description box adjustments */
+  .description-box {
+    max-width: 420px;
+    padding: 1.75rem;
+    transform: translateY(-2rem);
+  }
+
+  .description-content h3 {
+    font-size: 1.1rem;
+  }
+
+  .description-content p {
+    font-size: 0.85rem;
+    line-height: 1.5;
+  }
+
+  /* 🛠 Fix here: add positioning to enable `bottom` shift */
+  .bottom-content {
+    position: absolute;
+    bottom: 6rem;
+    left: 2rem;
+    right: 2rem;
+  }
+
+  .further-button {
+    position: absolute;
+    bottom: 2rem;
+    right: 2rem;
+  }
+}
+
+@media (max-width: 1469px) {
+  .bottom-content {
+    position: static; /* Remove absolute positioning */
+    flex-direction: column;
+    align-items: center;
+    gap: 2rem;
+    margin-top: 2rem;
+  }
+
+  .description-box {
+    max-width: 85%;
+    width: 85%;
+    padding: 1.5rem;
+  }
+
+  .further-button {
+    align-self: center;
+    flex-direction: row-reverse;
+    position: static;
+  }
+
+}
+
+@media (min-width: 1280px) and (max-width: 1469px) {
+  /* Carousel scaling */
+  .carousel-container {
+    width: 650px;
+    height: 650px;
+  }
+
+  .progress-ring-container {
+    width: 500px;
+    height: 500px;
+  }
+
+  .image-circle {
+    width: 450px;
+    height: 450px;
+  }
+
+  .title-text {
+    font-size: 4rem;
+  }
+
+  /* Stacked layout with reduced gap */
+  .bottom-content {
+    position: static;
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem; /* Reduced from 2rem */
+    margin-top: -1rem; /* Pull content closer to carousel */
+  }
+
+  .description-box {
+    width: 50%; /* 50% of screen width */
+    max-width: 50%;
+    padding: 1.75rem;
+  }
+
+  .description-content h3 {
+    font-size: 1.5rem;
+  }
+
+  .description-content p {
+    font-size: 1rem;
+    line-height: 1.5;
+  }
+
+  .further-button {
+    align-self: center;
+    flex-direction: row-reverse;
+    position: static;
+    margin-top: 0.5rem; /* Add small space above button */
+  }
+  
+  /* Move slide indicators up to prevent overlap */
+  .slide-indicators {
+    position: static;
+    margin-top: 1.5rem;
+    transform: none;
+  }
+}
+
+@media (max-width: 1279px) {
+  .bottom-content {
+    position: static;
+    flex-direction: column;
+    align-items: center;
+    gap: 2rem;
+    margin-top: 2rem;
+  }
+
+  .description-box {
+    max-width: 85%;
+    width: 85%;
+    padding: 1.5rem;
+  }
+
+  .further-button {
+    align-self: center;
+    flex-direction: row-reverse;
+    position: static;
+  }
+}
+
+
 </style>

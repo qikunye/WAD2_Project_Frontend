@@ -19,7 +19,7 @@
       Your browser does not support the video tag.
     </video>
     
-    <!-- Overlay for better text readability -->
+    <!-- Improved Overlay for better text readability -->
     <div class="video-overlay"></div>
 
     <!-- Hover Images - Multiple instances -->
@@ -33,13 +33,17 @@
       <img :src="image.src" alt="Interactive element" />
     </div>
 
-    <!-- Main Container -->
+    <!-- Main Container - RETUNED POSITIONING -->
     <div class="home-container">
-      <!-- Bold Title with Icon -->
-      <div class="title-wrapper">
+      
+      <!-- Title Block -->
+      <div class="title-block">
+        <!-- Main Title -->
         <h1 class="main-title">
           <span class="title-line-1">
-            <span>Beyond the b</span><img src="/images/homesection_pic1.png" alt="Discover" class="inline-icon" /><span>n</span>
+            <span>BEYOND THE B</span>
+            <img src="/images/homesection_pic1.png" alt="Discover" class="inline-icon" />
+            <span>N</span>
           </span>
         </h1>
         
@@ -57,7 +61,7 @@
         <div class="divider-line"></div>
       </div>
 
-      <!-- Stats Sentence Section -->
+      <!-- Stats Section (Bottom Description Removed) -->
       <div class="stats-section" ref="statsSection">
         <p class="stats-sentence">
           Our platform gives you access to over 
@@ -65,13 +69,6 @@
           <span class="stat-highlight" data-index="1">15+</span> ingredients, and 
           <span class="stat-highlight" data-index="2">5+</span> meal plans.
         </p>
-        
-        <!-- Bottom Description -->
-        <div class="description-wrapper">
-          <p class="subtitle">
-            Find out what drives us and how we bring a second life to leftovers.
-          </p>
-        </div>
       </div>
     </div>
   </section>
@@ -113,11 +110,9 @@ const spawnImage = (x, y) => {
   const imageId = imageIdCounter.value++;
   const imageSrc = hoverImages[currentImageIndex.value];
   
-  // Offset the image position (20px right, 20px down from cursor)
   const offsetX = x + 20;
   const offsetY = y + 20;
   
-  // Create new image object
   const newImage = {
     id: imageId,
     x: offsetX,
@@ -128,10 +123,8 @@ const spawnImage = (x, y) => {
   
   activeImages.value.push(newImage);
   
-  // Move to next image in sequence
   currentImageIndex.value = (currentImageIndex.value + 1) % hoverImages.length;
   
-  // Start fade out after 0.7 seconds
   setTimeout(() => {
     const image = activeImages.value.find(img => img.id === imageId);
     if (image) {
@@ -139,7 +132,6 @@ const spawnImage = (x, y) => {
     }
   }, 700);
   
-  // Remove after 1 second total
   setTimeout(() => {
     activeImages.value = activeImages.value.filter(img => img.id !== imageId);
   }, 1000);
@@ -152,7 +144,6 @@ const handleMouseMove = (e) => {
   const x = e.clientX - rect.left;
   const y = e.clientY - rect.top;
 
-  // Spawn image every 0.1 seconds
   if (!spawnTimer) {
     spawnImage(x, y);
     
@@ -177,13 +168,12 @@ const typeWriter = () => {
     if (charIndex < fullText.length) {
       displayedText.value += fullText.charAt(charIndex);
       charIndex++;
-      setTimeout(type, 80); // Typing speed
+      setTimeout(type, 80);
     } else {
       isTypingComplete.value = true;
     }
   };
   
-  // Start typing after a short delay
   setTimeout(type, 500);
 };
 
@@ -193,15 +183,13 @@ const animateStatHighlights = () => {
   highlights.forEach((highlight, index) => {
     setTimeout(() => {
       highlight.classList.add('animate');
-    }, 200 + (index * 150)); // Stagger the animations
+    }, 200 + (index * 150));
   });
 };
 
 onMounted(() => {
-  // Start typewriter animation
   typeWriter();
   
-  // Animate stats when section becomes visible
   const observer = new IntersectionObserver((entries) => {
     entries.forEach(entry => {
       if (entry.isIntersecting) {
@@ -246,7 +234,7 @@ onUnmounted(() => {
   z-index: 0;
 }
 
-/* Overlay for text readability */
+/* Improved overlay - lighter in center for cinematic effect */
 .video-overlay {
   position: absolute;
   top: 0;
@@ -255,9 +243,10 @@ onUnmounted(() => {
   height: 100%;
   background: linear-gradient(
     to bottom,
-    rgba(28, 20, 86, 0.7) 0%,
-    rgba(28, 20, 86, 0.5) 50%,
-    rgba(28, 20, 86, 0.7) 100%
+    rgba(28, 20, 86, 0.78) 0%,
+    rgba(28, 20, 86, 0.42) 35%,
+    rgba(28, 20, 86, 0.42) 65%,
+    rgba(28, 20, 86, 0.78) 100%
   );
   z-index: 1;
 }
@@ -306,7 +295,7 @@ onUnmounted(() => {
   filter: drop-shadow(0 10px 30px rgba(0, 0, 0, 0.3));
 }
 
-/* Main Container */
+/* Main Container - Retuned for better vertical centering */
 .home-container {
   position: relative;
   z-index: 2;
@@ -315,12 +304,12 @@ onUnmounted(() => {
   margin: 0 auto;
   text-align: center;
   padding: 0 2rem;
+  transform: translateY(-3vh); /* Slight upward shift for optical centering */
 }
 
-/* Title Wrapper */
-.title-wrapper {
-  position: relative;
-  margin-bottom: 3rem;
+/* Title Block - Tighter grouping */
+.title-block {
+  margin-bottom: 3rem; /* Balanced spacing before divider */
 }
 
 /* Main Title */
@@ -330,20 +319,21 @@ onUnmounted(() => {
   font-weight: 900;
   text-transform: uppercase;
   letter-spacing: -0.02em;
-  line-height: 0.85;
+  line-height: 0.9; /* Slightly increased from 0.85 for better readability */
   color: #ffffff;
-  margin: 0 0 2rem 0;
-  text-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+  margin: 0 0 1rem 0; /* Reduced to 1rem for tighter connection */
+  text-shadow: 0 6px 24px rgba(0, 0, 0, 0.6);
 }
 
 .title-line-1 {
-  font-size: clamp(3rem, 12vw, 10rem);
+  font-size: clamp(3.5rem, 13vw, 11rem); /* Slightly larger for impact */
   display: flex;
   align-items: center;
   justify-content: center;
+  gap: 0;
 }
 
-/* Embedded icon */
+/* Embedded icon with pop animation */
 .inline-icon {
   display: inline-block;
   width: 0.85em;
@@ -352,22 +342,37 @@ onUnmounted(() => {
   vertical-align: middle;
   transform: translateY(-0.05em);
   filter: brightness(0) invert(1);
+  animation: pop 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
 }
 
-/* Typewriter Subtitle */
+@keyframes pop {
+  0% {
+    transform: translateY(-0.05em) scale(0.5);
+    opacity: 0;
+  }
+  50% {
+    transform: translateY(-0.05em) scale(1.2);
+  }
+  100% {
+    transform: translateY(-0.05em) scale(1);
+    opacity: 1;
+  }
+}
+
+/* Typewriter Subtitle - Directly below title */
 .subtitle-wrapper {
-  margin-top: 1.5rem;
+  margin-top: 0;
 }
 
 .typewriter-subtitle {
   font-family: var(--font-body);
-  font-size: clamp(1.5rem, 4vw, 3rem);
+  font-size: clamp(1.6rem, 4.5vw, 3.2rem); /* Slightly larger */
   color: #ffffff;
   font-weight: 400;
   text-transform: uppercase;
-  letter-spacing: 0.1em;
+  letter-spacing: 0.12em;
   margin: 0;
-  text-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
+  text-shadow: 0 3px 12px rgba(0, 0, 0, 0.6);
 }
 
 .typed-text {
@@ -389,27 +394,27 @@ onUnmounted(() => {
   50%, 100% { opacity: 0; }
 }
 
-/* Divider */
+/* Divider - More elegant proportions */
 .divider-wrapper {
   display: flex;
   justify-content: center;
-  margin: 4rem 0;
+  margin: 3rem 0; /* Balanced spacing */
 }
 
 .divider-line {
   width: 2px;
-  height: 80px;
+  height: 70px; /* Medium height for balance */
   background: linear-gradient(
     to bottom,
     transparent 0%,
-    rgba(255, 255, 255, 0.8) 50%,
+    rgba(255, 255, 255, 0.75) 50%,
     transparent 100%
   );
 }
 
-/* Stats Section */
+/* Stats Section - Clean, no extra description */
 .stats-section {
-  padding: 2rem 0;
+  padding: 0;
   text-align: center;
   opacity: 0;
   transform: translateY(30px);
@@ -423,18 +428,18 @@ onUnmounted(() => {
 
 .stats-sentence {
   font-family: var(--font-body);
-  font-size: clamp(1.2rem, 3vw, 2rem);
+  font-size: clamp(1.3rem, 3.2vw, 2.2rem); /* Slightly larger for emphasis */
   color: #ffffff;
-  line-height: 1.8;
-  max-width: 900px;
-  margin: 0 auto 3rem;
+  line-height: 1.75;
+  max-width: 950px;
+  margin: 0 auto;
   font-weight: 400;
-  text-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
+  text-shadow: 0 3px 12px rgba(0, 0, 0, 0.6);
 }
 
 .stat-highlight {
   font-family: var(--font-heading);
-  font-size: 1.3em;
+  font-size: 1.35em; /* Slightly larger */
   font-weight: 900;
   color: #f7e273;
   display: inline-block;
@@ -453,7 +458,7 @@ onUnmounted(() => {
 .stat-highlight::after {
   content: '';
   position: absolute;
-  bottom: -2px;
+  bottom: -3px;
   left: 0;
   width: 100%;
   height: 3px;
@@ -467,43 +472,53 @@ onUnmounted(() => {
   transform: scaleX(1);
 }
 
-/* Description */
-.description-wrapper {
-  margin-top: 3rem;
-  padding-top: 2rem;
+/* Responsive Design - Optimized for 1280-1500px range */
+@media (min-width: 1280px) and (max-width: 1500px) {
+  .home-container {
+    transform: translateY(-2vh);
+  }
+  
+  .title-line-1 {
+    font-size: clamp(7rem, 11vw, 9.5rem);
+  }
+  
+  .typewriter-subtitle {
+    font-size: clamp(2rem, 4vw, 2.8rem);
+  }
+  
+  .stats-sentence {
+    font-size: clamp(1.4rem, 3vw, 2rem);
+  }
 }
 
-.subtitle {
-  font-family: var(--font-body);
-  font-size: clamp(1rem, 2.5vw, 1.3rem);
-  color: rgba(255, 255, 255, 0.9);
-  max-width: 600px;
-  margin: 0 auto;
-  line-height: 1.6;
-  font-weight: 400;
-  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.5);
-}
-
-/* Responsive Design */
 @media (max-width: 768px) {
   .home-section {
     padding: 3rem 1rem;
   }
 
+  .home-container {
+    transform: translateY(-2vh);
+  }
+
   .title-line-1 {
-    font-size: clamp(2rem, 10vw, 5rem);
+    font-size: clamp(2.5rem, 11vw, 6rem);
   }
 
   .typewriter-subtitle {
-    font-size: clamp(1.2rem, 3vw, 2rem);
+    font-size: clamp(1.3rem, 3.5vw, 2rem);
+    letter-spacing: 0.08em;
+  }
+
+  .title-block {
+    margin-bottom: 2.5rem;
   }
 
   .divider-wrapper {
-    margin: 3rem 0;
+    margin: 2.5rem 0;
   }
 
   .divider-line {
-    height: 60px;
+    height: 55px;
   }
 
   .hover-image {
@@ -512,26 +527,38 @@ onUnmounted(() => {
   }
 
   .stats-sentence {
-    font-size: clamp(1rem, 2.5vw, 1.5rem);
+    font-size: clamp(1.1rem, 2.8vw, 1.6rem);
   }
 
-  .description-wrapper {
-    margin-top: 2rem;
+  .stat-highlight {
+    font-size: 1.3em;
   }
 }
 
 @media (max-width: 480px) {
+  .home-container {
+    transform: translateY(-1vh);
+  }
+
   .title-line-1 {
-    font-size: clamp(1.8rem, 9vw, 3.5rem);
+    font-size: clamp(2rem, 10vw, 4rem);
   }
 
   .typewriter-subtitle {
-    font-size: clamp(1rem, 2.5vw, 1.5rem);
-    letter-spacing: 0.05em;
+    font-size: clamp(1.1rem, 3vw, 1.6rem);
+    letter-spacing: 0.06em;
+  }
+
+  .title-block {
+    margin-bottom: 2rem;
   }
 
   .divider-wrapper {
     margin: 2rem 0;
+  }
+
+  .divider-line {
+    height: 50px;
   }
 
   .hover-image {
@@ -540,12 +567,12 @@ onUnmounted(() => {
   }
 
   .stats-sentence {
-    font-size: clamp(0.9rem, 2vw, 1.2rem);
-    margin-bottom: 2rem;
+    font-size: clamp(1rem, 2.5vw, 1.3rem);
+    line-height: 1.7;
   }
 
   .stat-highlight {
-    font-size: 1.2em;
+    font-size: 1.25em;
   }
 }
 

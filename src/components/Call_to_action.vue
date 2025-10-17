@@ -1,641 +1,563 @@
 <template>
   <section id="call_to_action" class="call-to-action-section" ref="sectionRef">
-    <!-- Animated Background Image Container -->
-    <div class="background-container">
-      <div 
-        class="background-image"
-        :class="{ 'is-transitioning': isTransitioning, 'show-after': showAfter }"
-        :style="{ backgroundImage: `url(${beforeImage})` }"
-      ></div>
-      <div 
-        class="background-image background-after"
-        :class="{ 'is-transitioning': isTransitioning, 'show-after': showAfter }"
-        :style="{ backgroundImage: `url(${afterImage})` }"
-      ></div>
+    <div class="impact-container">
+      <h1 class="impact-title">
+        <span class="title-line">TRANSFORM</span>
+        <span class="title-line">YOUR IMPACT</span>
+      </h1>
       
-      <!-- Animated particles overlay -->
-      <div class="particles-overlay" :class="{ 'active': showAfter }">
-        <div v-for="i in 20" :key="i" class="particle" :style="getParticleStyle(i)"></div>
-      </div>
-    </div>
+      <p class="impact-subtitle">
+        See the journey from waste to sustainability
+      </p>
 
-    <!-- Content Overlay -->
-    <div class="content-overlay">
-      <div class="content-wrapper">
-        <!-- Main Title -->
-        <div class="hero-content">
-          <h1 class="main-title">
-            <span class="title-line" :class="{ 'animate': showAfter }">Transform</span>
-            <span class="title-line" :class="{ 'animate': showAfter }">Your Impact</span>
-          </h1>
-          
-          <p class="subtitle">
-            See the journey from waste to sustainability
-          </p>
-        </div>
-
-        <!-- Before/After Toggle Buttons -->
-        <div class="toggle-container">
-          <button 
-            @click="toggleState(false)" 
-            class="toggle-button"
-            :class="{ active: !showAfter }"
-          >
-            <span class="button-icon">🗑️</span>
-            <span class="button-text">BEFORE</span>
-          </button>
-          
-          <div class="toggle-divider"></div>
-          
-          <button 
-            @click="toggleState(true)" 
-            class="toggle-button"
-            :class="{ active: showAfter }"
-          >
-            <span class="button-icon">🌱</span>
-            <span class="button-text">AFTER</span>
-          </button>
-        </div>
-
-        <!-- Dynamic Call to Action Content -->
-        <transition name="content-fade" mode="out-in">
-          <div :key="showAfter ? 'after' : 'before'" class="cta-content">
-            <h2>{{ currentContent.title }}</h2>
-            <p>{{ currentContent.description }}</p>
-            
-            <button @click="handleStartJourney" class="cta-button">
-              <span class="button-shine"></span>
-              Start Your Journey
-            </button>
-          </div>
-        </transition>
-      </div>
-    </div>
-
-    <!-- Back to Top Arrow -->
-    <transition name="fade">
-      <button
-        v-if="showBackToTop"
-        @click="scrollToTop"
-        class="back-to-top"
-        aria-label="Back to top"
+      <!-- Image Slider Container -->
+      <div 
+        class="slider-wrapper"
+        @mouseenter="handleHover"
+        @mouseleave="handleLeave"
       >
-        ↑
-      </button>
-    </transition>
+        <!-- Before Image (Background Layer) -->
+        <div class="image-layer before-layer">
+          <img 
+            src="/images/call_to_action_before.png" 
+            alt="Before - Food Waste" 
+            class="impact-image"
+          />
+          <div class="image-label before-label">
+            <span class="label-icon">🗑️</span>
+            <span>BEFORE</span>
+          </div>
+        </div>
+
+        <!-- Gradient Divider with Motion Blur -->
+        <div 
+          class="divider"
+          :style="{ left: `${sliderPosition}%` }"
+        >
+          <div class="divider-gradient"></div>
+          <div class="divider-handle">
+            <span class="handle-icon">↔</span>
+          </div>
+        </div>
+
+        <!-- After Image (Foreground Layer with Clip Path) -->
+        <div 
+          class="image-layer after-layer"
+          :style="{ clipPath: `inset(0 ${100 - sliderPosition}% 0 0)` }"
+        >
+          <img 
+            src="/images/call_to_action_after.png" 
+            alt="After - Sustainability" 
+            class="impact-image"
+          />
+          <div class="image-label after-label">
+            <span class="label-icon">🌱</span>
+            <span>AFTER</span>
+          </div>
+        </div>
+
+        <!-- Interactive Overlay -->
+        <div 
+          class="slider-overlay"
+          @mousemove="handleSlide"
+          @touchmove="handleTouchSlide"
+        ></div>
+
+        <!-- Canvas Confetti -->
+        <canvas 
+          ref="confettiCanvas"
+          class="confetti-canvas"
+          :class="{ 'active': showConfetti }"
+        ></canvas>
+      </div>
+
+      <!-- Challenge Section -->
+      <div class="challenge-section">
+        <h2 class="challenge-title">The Challenge We Face Today</h2>
+        <p class="challenge-text">
+          Food waste is a growing problem, but together we can change that.
+        </p>
+        <button class="cta-button" @click="scrollToStart">
+          START YOUR JOURNEY
+        </button>
+      </div>
+    </div>
   </section>
 </template>
 
 <script setup>
-import { ref, computed, onMounted, onUnmounted } from 'vue';
+import { ref, watch, onMounted, onUnmounted } from 'vue'
 
-// State management
-const sectionRef = ref(null);
-const showBackToTop = ref(false);
-const showAfter = ref(false);
-const isTransitioning = ref(false);
+const sectionRef = ref(null)
+const confettiCanvas = ref(null)
+const sliderPosition = ref(50)
+const isHovering = ref(false)
+const showConfetti = ref(false)
+let confettiContext = null
 
-// Image sources (replace with your actual image paths)
-const beforeImage = '/images/call_to_action_before.png';
-const afterImage = '/images/call_to_action_after.png';
+// Confetti particle class
+class ConfettiParticle {
+  constructor(canvas) {
+    this.canvas = canvas
+    this.reset()
+  }
 
-// Dynamic content based on state
-const currentContent = computed(() => {
-  return showAfter.value 
-    ? {
-        title: "The Future We're Building Together",
-        description: "Join thousands who are already making a difference—one meal, one choice, one day at a time."
-      }
-    : {
-        title: "The Challenge We Face Today",
-        description: "Food waste is a growing problem, but together we can change that."
-      };
-});
+  reset() {
+    this.x = Math.random() * this.canvas.width
+    this.y = -20 - Math.random() * 100 // Start above canvas
+    this.velocity = {
+      x: (Math.random() - 0.5) * 6,
+      y: Math.random() * 3 + 2
+    }
+    this.rotation = Math.random() * 360
+    this.rotationSpeed = (Math.random() - 0.5) * 10
+    this.size = Math.random() * 8 + 4
+    this.colors = ['#4ade80', '#22c55e', '#16a34a', '#86efac', '#dcfce7']
+    this.color = this.colors[Math.floor(Math.random() * this.colors.length)]
+    this.opacity = 1
+    this.gravity = 0.3
+  }
 
-// Toggle between before/after states with animation
-const toggleState = (state) => {
-  if (showAfter.value === state) return;
+  update() {
+    this.velocity.y += this.gravity
+    this.x += this.velocity.x
+    this.y += this.velocity.y
+    this.rotation += this.rotationSpeed
+
+    // Fade out near bottom
+    if (this.y > this.canvas.height * 0.8) {
+      this.opacity -= 0.02
+    }
+
+    // Reset if off screen
+    if (this.y > this.canvas.height + 20 || this.opacity <= 0) {
+      this.reset()
+    }
+  }
+
+  draw(ctx) {
+    ctx.save()
+    ctx.globalAlpha = this.opacity
+    ctx.translate(this.x, this.y)
+    ctx.rotate((this.rotation * Math.PI) / 180)
+    
+    // Draw confetti piece (rectangle)
+    ctx.fillStyle = this.color
+    ctx.fillRect(-this.size / 2, -this.size / 2, this.size, this.size * 0.6)
+    
+    ctx.restore()
+  }
+}
+
+const initConfetti = () => {
+  if (!confettiCanvas.value) return
   
-  isTransitioning.value = true;
-  showAfter.value = state;
+  const canvas = confettiCanvas.value
+  const ctx = canvas.getContext('2d')
+  confettiContext = ctx
+  
+  // Set canvas size
+  const resizeCanvas = () => {
+    canvas.width = canvas.offsetWidth
+    canvas.height = canvas.offsetHeight
+  }
+  resizeCanvas()
+  window.addEventListener('resize', resizeCanvas)
+}
+
+let confettiParticles = []
+let confettiAnimationFrame = null
+
+const startConfetti = () => {
+  if (!confettiCanvas.value || !confettiContext) return
+  
+  // Create confetti particles if not already created
+  if (confettiParticles.length === 0) {
+    for (let i = 0; i < 100; i++) {
+      confettiParticles.push(new ConfettiParticle(confettiCanvas.value))
+    }
+  }
+  
+  // Start animation loop
+  if (!confettiAnimationFrame) {
+    animateConfetti()
+  }
+}
+
+const stopConfetti = () => {
+  // Stop animation
+  if (confettiAnimationFrame) {
+    cancelAnimationFrame(confettiAnimationFrame)
+    confettiAnimationFrame = null
+  }
+  
+  // Clear particles
+  confettiParticles = []
+  
+  // Clear canvas
+  if (confettiContext && confettiCanvas.value) {
+    confettiContext.clearRect(0, 0, confettiCanvas.value.width, confettiCanvas.value.height)
+  }
+}
+
+const animateConfetti = () => {
+  if (!confettiContext || !confettiCanvas.value || !showConfetti.value) {
+    stopConfetti()
+    return
+  }
+  
+  confettiContext.clearRect(0, 0, confettiCanvas.value.width, confettiCanvas.value.height)
+  
+  confettiParticles.forEach(particle => {
+    particle.update()
+    particle.draw(confettiContext)
+  })
+  
+  confettiAnimationFrame = requestAnimationFrame(animateConfetti)
+}
+
+// Watch slider position to control confetti
+watch(sliderPosition, (newPosition) => {
+  if (newPosition > 75) {
+    showConfetti.value = true
+    startConfetti()
+  } else {
+    showConfetti.value = false
+    stopConfetti()
+  }
+})
+
+const handleSlide = (event) => {
+  const target = event.currentTarget
+  const rect = target.getBoundingClientRect()
+  const x = event.clientX - rect.left
+  const percentage = (x / rect.width) * 100
+  sliderPosition.value = Math.max(0, Math.min(100, percentage))
+}
+
+const handleTouchSlide = (event) => {
+  const target = event.currentTarget
+  const rect = target.getBoundingClientRect()
+  const touch = event.touches[0]
+  const x = touch.clientX - rect.left
+  const percentage = (x / rect.width) * 100
+  sliderPosition.value = Math.max(0, Math.min(100, percentage))
+}
+
+const handleHover = () => {
+  isHovering.value = true
+}
+
+const handleLeave = () => {
+  isHovering.value = false
+}
+
+const scrollToStart = () => {
+  // Scroll to login section or register
+  const targetElement = document.querySelector('#login') || document.querySelector('#register')
+  if (targetElement) {
+    targetElement.scrollIntoView({ behavior: 'smooth' })
+  } else {
+    window.scrollTo({ top: 0, behavior: 'smooth' })
+  }
+}
+
+// Auto-animate on mount for first impression
+onMounted(() => {
+  initConfetti()
   
   setTimeout(() => {
-    isTransitioning.value = false;
-  }, 800);
-};
-
-// Particle animation styles
-const getParticleStyle = (index) => {
-  const randomDelay = Math.random() * 2;
-  const randomDuration = 3 + Math.random() * 2;
-  const randomX = Math.random() * 100;
-  const randomY = Math.random() * 100;
-  
-  return {
-    left: `${randomX}%`,
-    top: `${randomY}%`,
-    animationDelay: `${randomDelay}s`,
-    animationDuration: `${randomDuration}s`
-  };
-};
-
-// Scroll handlers
-const handleScroll = () => {
-  showBackToTop.value = window.scrollY > 300;
-};
-
-const scrollToTop = () => {
-  window.scrollTo({ 
-    top: 0, 
-    behavior: 'smooth' 
-  });
-};
-
-const handleStartJourney = () => {
-  // Navigation logic - you can implement router navigation here
-  console.log('Starting journey...');
-  // Example: router.push('/login');
-};
-
-// Lifecycle hooks
-onMounted(() => {
-  window.addEventListener('scroll', handleScroll);
-});
+    let progress = 50
+    const interval = setInterval(() => {
+      progress += 1
+      sliderPosition.value = progress
+      
+      if (progress >= 85) {
+        clearInterval(interval)
+        
+        // Reset after demo
+        setTimeout(() => {
+          sliderPosition.value = 50
+        }, 3000)
+      }
+    }, 20)
+  }, 1000)
+})
 
 onUnmounted(() => {
-  window.removeEventListener('scroll', handleScroll);
-});
+  stopConfetti()
+})
 </script>
 
 <style scoped>
-/* Root section */
 .call-to-action-section {
   position: relative;
-  width: 100%;
   min-height: 100vh;
-  background: #fbfaf9;
-  overflow: hidden;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-/* Background container */
-.background-container {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  z-index: 1;
-}
-
-/* Background images with advanced transition */
-.background-image {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background-size: cover;
-  background-position: center;
-  background-repeat: no-repeat;
-  filter: brightness(0.6);
-  opacity: 1;
-  transform: scale(1);
-  transition: opacity 0.8s cubic-bezier(0.4, 0, 0.2, 1),
-              transform 0.8s cubic-bezier(0.4, 0, 0.2, 1),
-              filter 0.8s ease;
-}
-
-.background-after {
-  opacity: 0;
-  transform: scale(1.1);
-}
-
-.background-image.is-transitioning {
-  transition: opacity 0.8s cubic-bezier(0.4, 0, 0.2, 1),
-              transform 0.8s cubic-bezier(0.4, 0, 0.2, 1),
-              filter 0.8s ease;
-}
-
-.background-image.show-after {
-  opacity: 0;
-  transform: scale(0.95);
-}
-
-.background-after.show-after {
-  opacity: 1;
-  transform: scale(1);
-  filter: brightness(0.65);
-}
-
-/* Particles overlay */
-.particles-overlay {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  pointer-events: none;
-  opacity: 0;
-  transition: opacity 0.6s ease;
-}
-
-.particles-overlay.active {
-  opacity: 1;
-}
-
-.particle {
-  position: absolute;
-  width: 4px;
-  height: 4px;
-  background: rgba(255, 255, 255, 0.6);
-  border-radius: 50%;
-  animation: float 4s infinite ease-in-out;
-}
-
-@keyframes float {
-  0%, 100% {
-    transform: translateY(0) translateX(0);
-    opacity: 0;
-  }
-  10% {
-    opacity: 1;
-  }
-  90% {
-    opacity: 1;
-  }
-  100% {
-    transform: translateY(-100px) translateX(20px);
-    opacity: 0;
-  }
-}
-
-/* Content overlay */
-.content-overlay {
-  position: relative;
-  width: 100%;
-  height: 100%;
-  min-height: 100vh;
-  z-index: 2;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: linear-gradient(
-    to bottom,
-    rgba(0, 0, 0, 0.3) 0%,
-    rgba(0, 0, 0, 0.1) 50%,
-    rgba(0, 0, 0, 0.4) 100%
-  );
+  background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
   padding: 4rem 2rem;
+  overflow: hidden;
 }
 
-.content-wrapper {
-  width: 100%;
-  max-width: 1200px;
+.impact-container {
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+.impact-title {
   text-align: center;
-}
-
-/* Hero content */
-.hero-content {
-  margin-bottom: 3rem;
-  animation: fadeInUp 0.8s ease forwards;
-}
-
-@keyframes fadeInUp {
-  from {
-    opacity: 0;
-    transform: translateY(30px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-.main-title {
-  font-family: var(--font-heading, 'Anton', sans-serif);
-  font-size: clamp(3rem, 10vw, 7rem);
-  font-weight: 900;
-  text-transform: uppercase;
+  margin-bottom: 1rem;
   line-height: 0.9;
-  color: white;
-  margin-bottom: 1.5rem;
-  text-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
 }
 
 .title-line {
   display: block;
-  letter-spacing: -0.02em;
-  transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+  font-family: var(--font-heading, 'Anton', sans-serif);
+  font-size: clamp(3rem, 12vw, 8rem);
+  font-weight: 900;
+  letter-spacing: 0.02em;
+  background: linear-gradient(180deg, #ffffff 0%, rgba(255, 255, 255, 0.4) 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  text-shadow: 0 4px 20px rgba(255, 255, 255, 0.1);
 }
 
-.title-line.animate {
-  animation: titlePulse 0.6s ease;
-}
-
-@keyframes titlePulse {
-  0%, 100% {
-    transform: scale(1);
-  }
-  50% {
-    transform: scale(1.05);
-  }
-}
-
-.subtitle {
-  font-family: var(--font-body, 'Poppins', sans-serif);
+.impact-subtitle {
+  text-align: center;
   font-size: clamp(1rem, 2.5vw, 1.5rem);
-  color: rgba(255, 255, 255, 0.9);
+  color: rgba(255, 255, 255, 0.7);
+  margin-bottom: 4rem;
   font-weight: 300;
   letter-spacing: 0.05em;
-  text-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
+  font-family: var(--font-body, 'Poppins', sans-serif);
 }
 
-/* Toggle container */
-.toggle-container {
+.slider-wrapper {
+  position: relative;
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto 4rem;
+  aspect-ratio: 16 / 9;
+  border-radius: 24px;
+  overflow: hidden;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+  cursor: ew-resize;
+}
+
+.image-layer {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.impact-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.before-layer {
+  z-index: 1;
+}
+
+.after-layer {
+  z-index: 2;
+  transition: clip-path 0.1s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.image-label {
+  position: absolute;
+  top: 2rem;
+  padding: 0.875rem 2rem;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  gap: 0.625rem;
+  font-weight: 700;
+  font-size: 0.875rem;
+  letter-spacing: 0.1em;
+  z-index: 10;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+  backdrop-filter: blur(8px);
+  font-family: var(--font-heading, 'Anton', sans-serif);
+}
+
+.before-label {
+  right: 2rem;
+  background: rgba(0, 0, 0, 0.8);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: #ffffff;
+}
+
+.after-label {
+  left: 2rem;
+  background: rgba(34, 197, 94, 0.95);
+  border: 1px solid rgba(34, 197, 94, 1);
+  color: #ffffff;
+}
+
+.label-icon {
+  font-size: 1.25rem;
+}
+
+/* Gradient Divider with Motion Blur */
+.divider {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 8px;
+  z-index: 5;
+  transform: translateX(-50%);
+  pointer-events: none;
+  transition: left 0.1s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.divider-gradient {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(255, 255, 255, 0.1) 20%,
+    rgba(255, 255, 255, 0.8) 50%,
+    rgba(255, 255, 255, 0.1) 80%,
+    transparent 100%
+  );
+  filter: blur(2px);
+  animation: pulse 2s ease-in-out infinite;
+}
+
+.divider-handle {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 48px;
+  height: 48px;
+  background: rgba(255, 255, 255, 0.95);
+  border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 1rem;
-  margin: 3rem auto;
-  max-width: 500px;
-  background: rgba(0, 0, 0, 0.5);
-  backdrop-filter: blur(10px);
-  border-radius: 50px;
-  padding: 0.5rem;
-  animation: fadeInUp 0.8s ease 0.2s forwards;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+  backdrop-filter: blur(8px);
+}
+
+.handle-icon {
+  font-size: 24px;
+  color: #1e293b;
+  font-weight: bold;
+}
+
+.slider-overlay {
+  position: absolute;
+  inset: 0;
+  z-index: 4;
+  cursor: ew-resize;
+}
+
+.confetti-canvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 6;
+  pointer-events: none;
   opacity: 0;
+  transition: opacity 0.3s ease;
 }
 
-.toggle-button {
-  flex: 1;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 0.75rem;
-  padding: 1rem 2rem;
+.confetti-canvas.active {
+  opacity: 1;
+}
+
+/* Challenge Section */
+.challenge-section {
+  text-align: center;
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.challenge-title {
+  font-family: var(--font-heading, 'Anton', sans-serif);
+  font-size: clamp(2rem, 5vw, 3.5rem);
+  color: #ffffff;
+  margin-bottom: 1rem;
+  letter-spacing: 0.02em;
+}
+
+.challenge-text {
+  font-size: clamp(1rem, 2.5vw, 1.25rem);
+  color: rgba(255, 255, 255, 0.7);
+  line-height: 1.6;
+  margin-bottom: 2rem;
+  font-family: var(--font-body, 'Poppins', sans-serif);
+}
+
+.cta-button {
+  background: linear-gradient(135deg, #1c1456 0%, #f4b6c2 100%);
+  color: white;
+  padding: 1rem 3rem;
   border: none;
   border-radius: 50px;
-  background: transparent;
-  color: rgba(255, 255, 255, 0.7);
-  font-family: var(--font-heading, 'Anton', sans-serif);
-  font-size: 1.1rem;
+  font-size: 1rem;
   font-weight: 700;
   letter-spacing: 0.05em;
   cursor: pointer;
   transition: all 0.3s ease;
-  position: relative;
-  overflow: hidden;
-}
-
-.toggle-button::before {
-  content: '';
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  width: 0;
-  height: 0;
-  border-radius: 50%;
-  background: rgba(255, 255, 255, 0.1);
-  transform: translate(-50%, -50%);
-  transition: width 0.6s, height 0.6s;
-}
-
-.toggle-button:hover::before {
-  width: 300px;
-  height: 300px;
-}
-
-.toggle-button:hover {
-  color: white;
-  transform: scale(1.02);
-}
-
-.toggle-button.active {
-  background: linear-gradient(135deg, #1c1456, #f4b6c2);
-  color: white;
-  box-shadow: 0 5px 20px rgba(244, 182, 194, 0.4);
-}
-
-.button-icon {
-  font-size: 1.5rem;
-  transition: transform 0.3s ease;
-}
-
-.toggle-button.active .button-icon {
-  animation: bounce 0.6s ease;
-}
-
-@keyframes bounce {
-  0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(-5px); }
-}
-
-.button-text {
-  white-space: nowrap;
-  position: relative;
-  z-index: 1;
-}
-
-.toggle-divider {
-  width: 2px;
-  height: 30px;
-  background: rgba(255, 255, 255, 0.3);
-}
-
-/* CTA content with transition */
-.cta-content {
-  margin-top: 4rem;
-  animation: fadeInUp 0.8s ease 0.4s forwards;
-  opacity: 0;
-}
-
-.content-fade-enter-active,
-.content-fade-leave-active {
-  transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
-}
-
-.content-fade-enter-from {
-  opacity: 0;
-  transform: translateY(20px);
-}
-
-.content-fade-leave-to {
-  opacity: 0;
-  transform: translateY(-20px);
-}
-
-.cta-content h2 {
-  font-family: var(--font-heading, 'Anton', sans-serif);
-  font-size: clamp(1.5rem, 4vw, 2.5rem);
-  color: white;
-  margin-bottom: 1rem;
-  text-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
-}
-
-.cta-content p {
+  box-shadow: 0 10px 30px rgba(28, 20, 86, 0.3);
   font-family: var(--font-body, 'Poppins', sans-serif);
-  font-size: clamp(0.9rem, 2vw, 1.2rem);
-  color: rgba(255, 255, 255, 0.9);
-  max-width: 600px;
-  margin: 0 auto 2.5rem;
-  line-height: 1.6;
-  text-shadow: 0 1px 5px rgba(0, 0, 0, 0.5);
-}
-
-/* CTA button with shine effect */
-.cta-button {
-  position: relative;
-  padding: 1.25rem 3.5rem;
-  font-family: var(--font-body, 'Poppins', sans-serif);
-  font-size: 1.1rem;
-  font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: 0.1em;
-  color: white;
-  background: linear-gradient(135deg, #1c1456, #f4b6c2);
-  border: none;
-  border-radius: 50px;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  box-shadow: 0 10px 30px rgba(244, 182, 194, 0.4);
-  overflow: hidden;
-}
-
-.button-shine {
-  position: absolute;
-  top: 0;
-  left: -100%;
-  width: 100%;
-  height: 100%;
-  background: linear-gradient(
-    90deg,
-    transparent,
-    rgba(255, 255, 255, 0.3),
-    transparent
-  );
-  transition: left 0.5s;
-}
-
-.cta-button:hover .button-shine {
-  left: 100%;
 }
 
 .cta-button:hover {
-  transform: translateY(-3px);
-  box-shadow: 0 15px 40px rgba(244, 182, 194, 0.5);
+  transform: translateY(-2px);
+  box-shadow: 0 15px 40px rgba(244, 182, 194, 0.4);
+  background: linear-gradient(135deg, #f4b6c2 0%, #1c1456 100%);
 }
 
-/* Back to top button */
-.back-to-top {
-  position: fixed;
-  bottom: 2rem;
-  right: 2rem;
-  width: 50px;
-  height: 50px;
-  border-radius: 50%;
-  background: rgba(255, 255, 255, 0.9);
-  backdrop-filter: blur(10px);
-  border: 2px solid rgba(255, 255, 255, 0.3);
-  color: #1c1456;
-  font-size: 1.5rem;
-  font-weight: bold;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition: all 0.3s ease;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
-  z-index: 1000;
+@keyframes pulse {
+  0%, 100% {
+    opacity: 0.6;
+  }
+  50% {
+    opacity: 1;
+  }
 }
 
-.back-to-top:hover {
-  transform: translateY(-3px);
-  background: white;
-  box-shadow: 0 6px 30px rgba(0, 0, 0, 0.3);
-}
-
-/* Fade transition */
-.fade-enter-active,
-.fade-leave-active {
-  transition: opacity 0.3s, transform 0.3s;
-}
-
-.fade-enter-from,
-.fade-leave-to {
-  opacity: 0;
-  transform: scale(0.8);
-}
-
-/* Responsive design */
+/* Responsive Design */
 @media (max-width: 768px) {
-  .content-overlay {
-    padding: 2rem 1.5rem;
+  .call-to-action-section {
+    padding: 2rem 1rem;
   }
 
-  .hero-content {
-    margin-bottom: 2rem;
+  .slider-wrapper {
+    aspect-ratio: 4 / 3;
+    border-radius: 16px;
   }
 
-  .toggle-container {
-    flex-direction: column;
-    gap: 0.5rem;
-    padding: 0.75rem;
-    max-width: 300px;
+  .image-label {
+    top: 1rem;
+    padding: 0.625rem 1.25rem;
+    font-size: 0.75rem;
   }
 
-  .toggle-divider {
-    width: 80%;
-    height: 2px;
+  .before-label {
+    right: 1rem;
   }
 
-  .toggle-button {
-    width: 100%;
-    padding: 0.875rem 1.5rem;
-    font-size: 1rem;
+  .after-label {
+    left: 1rem;
   }
 
-  .button-icon {
-    font-size: 1.25rem;
+  .divider-handle {
+    width: 40px;
+    height: 40px;
   }
 
-  .cta-content {
-    margin-top: 2.5rem;
-  }
-
-  .cta-button {
-    padding: 1rem 2.5rem;
-    font-size: 1rem;
-  }
-
-  .back-to-top {
-    width: 45px;
-    height: 45px;
-    bottom: 1.5rem;
-    right: 1.5rem;
-  }
-}
-
-@media (max-width: 480px) {
-  .main-title {
-    margin-bottom: 1rem;
-  }
-
-  .toggle-container {
-    max-width: 280px;
-  }
-
-  .toggle-button {
-    padding: 0.75rem 1.25rem;
-    font-size: 0.95rem;
-    gap: 0.5rem;
-  }
-
-  .cta-button {
-    padding: 1rem 2rem;
-    font-size: 0.95rem;
+  .handle-icon {
+    font-size: 20px;
   }
 }
 </style>

@@ -8,14 +8,19 @@
       <img src="/images/login_food4.jpg" alt="" class="food food-4" />
     </div>
 
-    <div class="login-card">
-      <!-- Left: image -->
-      <div class="login-image" aria-hidden="true">
-        <img src="/images/login_pic.jpg" alt="Login illustration" />
-      </div>
+    <div class="login-card-wrapper">
+      <!-- Animated Border -->
+      <div class="shine-border"></div>
+      
+      <!-- Card Content -->
+      <div class="login-card">
+        <!-- Left: image -->
+        <div class="login-image" aria-hidden="true">
+          <img src="/images/login_pic.jpg" alt="Login illustration" />
+        </div>
 
-      <!-- Right: form -->
-      <div class="login-content">
+        <!-- Right: form -->
+        <div class="login-content">
         <h1>Login</h1>
         <p class="welcome-text">
           Welcome back! Time to turn your ingredients into delicious meals.
@@ -52,6 +57,7 @@
           <router-link to="/register">Register</router-link>
         </p>
       </div>
+    </div>
     </div>
   </div>
 </template>
@@ -148,7 +154,6 @@ async function handleLogin() {
   animation: floatAround 14s ease-in-out infinite alternate;
 }
 
-/* Floating animation for all foods moving in both X/Y and rotation */
 @keyframes floatAround {
   0% {
     transform: translate(0px, 0px) rotate(0deg) scale(1);
@@ -192,30 +197,66 @@ async function handleLogin() {
   }
 }
 
-/* Card translucent */
-.login-card {
+/* Card wrapper for border effect */
+.login-card-wrapper {
   position: relative;
-  display: flex;
   width: 900px;
   max-width: 95%;
   border-radius: 1rem;
+  padding: 3px;
+  background: transparent;
+  z-index: 1;
+}
+
+/* Animated Rainbow Border */
+.shine-border {
+  position: absolute;
+  inset: -1px;
+  border-radius: 1rem;
+
+  background: linear-gradient(
+    90deg,
+    #a07cfe,
+    #fe8fb5,
+    #ffbe7b,
+    #a07cfe
+  );
+  background-size: 400% 400%;
+  animation: shineRotate 3s linear infinite;
+  z-index: -1;
+}
+
+@keyframes shineRotate {
+  0% {
+    background-position: 0% 50%;
+  }
+  100% {
+    background-position: 400% 50%;
+  }
+}
+
+/* Card with shine border */
+.login-card {
+  position: relative;
+  display: flex;
+  width: 100%;
+  border-radius: calc(1rem - 3px);
   overflow: hidden;
   box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
-  background: rgba(255, 255, 255, 0.85);
+  background: rgba(255, 255, 255, 0.95);
   backdrop-filter: blur(6px) saturate(120%);
   -webkit-backdrop-filter: blur(6px) saturate(120%);
   align-items: stretch;
   z-index: 1;
 }
 
-/* Left image */
 .login-image {
   flex: 1;
   min-width: 320px;
   max-width: 460px;
   display: block;
   overflow: hidden;
-  z-index: 1;
+  z-index: 2;
 }
 .login-image img {
   width: 100%;
@@ -226,7 +267,6 @@ async function handleLogin() {
   filter: saturate(105%) contrast(98%);
 }
 
-/* Right content */
 .login-content {
   flex: 1;
   padding: 2.25rem;
@@ -236,7 +276,6 @@ async function handleLogin() {
   z-index: 2;
 }
 
-/* Form styles */
 h1 {
   font-family: "Anton", sans-serif;
   margin-bottom: 1.5rem;
@@ -301,7 +340,6 @@ p a {
   font-weight: 600;
 }
 
-/* Responsive */
 @media (max-width: 880px) {
   .login-card {
     flex-direction: column;

@@ -52,7 +52,7 @@
 
         <!-- Subheading -->
         <p class="title-subheading" ref="titleSubheading">
-          Minimize food waste and maximize sustainability in your kitchen
+          Discover what drives us and how we give leftovers a second life.
         </p>
       </div>
     </div>
@@ -241,16 +241,28 @@ const handleTitleHover = (hovering) => {
 const initAnimation = () => {
   if (!featuresSection.value) return;
 
-  gsap.set(imageRefs.value, {
-    opacity: 0,
-    scale: 0.3,
-  });
+  // Check if we're on desktop
+  const isDesktop = window.innerWidth > 1024;
 
-  imageRefs.value.forEach((img, index) => {
-    const corner = features[index].corner;
-    const startPosition = getStartPosition(corner);
-    gsap.set(img, startPosition);
-  });
+  if (isDesktop) {
+    // Desktop: Set up animation from corners
+    gsap.set(imageRefs.value, {
+      opacity: 0,
+      scale: 0.3,
+    });
+
+    imageRefs.value.forEach((img, index) => {
+      const corner = features[index].corner;
+      const startPosition = getStartPosition(corner);
+      gsap.set(img, startPosition);
+    });
+  } else {
+    // Mobile: Just set opacity
+    gsap.set(imageRefs.value, {
+      opacity: 0,
+      scale: 0.8,
+    });
+  }
 
   gsap.set(titleContainer.value, {
     opacity: 0,
@@ -266,6 +278,7 @@ const initAnimation = () => {
     onLeave: () => animateOut(),
     onEnterBack: () => animateIn(),
     onLeaveBack: () => animateOut(),
+    invalidateOnRefresh: true, // Recalculate on resize
   });
 };
 
@@ -287,6 +300,12 @@ const getStartPosition = (corner) => {
 const animateIn = () => {
   if (!titleContainer.value || imageRefs.value.length === 0) return;
 
+  // Kill any existing animations first
+  imageRefs.value.forEach(img => {
+    gsap.killTweensOf(img);
+  });
+
+  const isDesktop = window.innerWidth > 1024;
   const tl = gsap.timeline();
 
   tl.to(titleContainer.value, {
@@ -299,36 +318,51 @@ const animateIn = () => {
 
   imageRefs.value.forEach((img, index) => {
     const randomDelay = Math.random() * 0.3;
-    const randomRotation = (Math.random() - 0.5) * 10;
     
-    tl.to(img, {
-      x: 0,
-      y: 0,
-      opacity: 1,
-      scale: 1,
-      rotation: randomRotation,
-      duration: 0.9,
-      ease: 'back.out(1.7)',
-      onComplete: () => {
-        gsap.to(img, {
-          rotation: 0,
-          duration: 0.5,
-          ease: 'power2.out'
-        });
-      }
-    }, 0.3 + (index * 0.08) + randomDelay);
+    if (isDesktop) {
+      // Desktop: Animate from corners
+      const randomRotation = (Math.random() - 0.5) * 10;
+      
+      tl.to(img, {
+        x: 0,
+        y: 0,
+        opacity: 1,
+        scale: 1,
+        rotation: randomRotation,
+        duration: 0.9,
+        ease: 'back.out(1.7)',
+        onComplete: () => {
+          gsap.to(img, {
+            rotation: 0,
+            duration: 0.5,
+            ease: 'power2.out'
+          });
+        }
+      }, 0.3 + (index * 0.08) + randomDelay);
+    } else {
+      // Mobile: Simple fade in and scale up
+      tl.to(img, {
+        opacity: 1,
+        scale: 1,
+        duration: 0.6,
+        ease: 'power2.out'
+      }, 0.2 + (index * 0.1) + randomDelay);
+    }
   });
 
+  // Only add floating animation on larger screens
   tl.add(() => {
-    imageRefs.value.forEach((img, index) => {
-      gsap.to(img, {
-        y: '+=10',
-        duration: 2 + (index * 0.2),
-        repeat: -1,
-        yoyo: true,
-        ease: 'sine.inOut'
+    if (window.innerWidth > 1024) {
+      imageRefs.value.forEach((img, index) => {
+        gsap.to(img, {
+          y: '+=10',
+          duration: 2 + (index * 0.2),
+          repeat: -1,
+          yoyo: true,
+          ease: 'sine.inOut'
+        });
       });
-    });
+    }
   });
 };
 
@@ -339,21 +373,34 @@ const animateOut = () => {
     gsap.killTweensOf(img);
   });
 
+  const isDesktop = window.innerWidth > 1024;
   const tl = gsap.timeline();
 
   imageRefs.value.forEach((img, index) => {
-    const corner = features[index].corner;
-    const endPosition = getStartPosition(corner);
     const randomDelay = Math.random() * 0.2;
     
-    tl.to(img, {
-      ...endPosition,
-      opacity: 0,
-      scale: 0.3,
-      rotation: (Math.random() - 0.5) * 20,
-      duration: 0.6,
-      ease: 'back.in(1.7)'
-    }, index * 0.05 + randomDelay);
+    if (isDesktop) {
+      // Desktop: Animate back to corners
+      const corner = features[index].corner;
+      const endPosition = getStartPosition(corner);
+      
+      tl.to(img, {
+        ...endPosition,
+        opacity: 0,
+        scale: 0.3,
+        rotation: (Math.random() - 0.5) * 20,
+        duration: 0.6,
+        ease: 'back.in(1.7)'
+      }, index * 0.05 + randomDelay);
+    } else {
+      // Mobile: Simple fade out and scale down
+      tl.to(img, {
+        opacity: 0,
+        scale: 0.8,
+        duration: 0.4,
+        ease: 'power2.in'
+      }, index * 0.05 + randomDelay);
+    }
   });
 
   tl.to(titleContainer.value, {
@@ -691,8 +738,6 @@ const animateOut = () => {
   line-height: 1.4;
 }
 
-
-
 /* Responsive Design - Mobile and Tablet (7-row layout) */
 @media (max-width: 1024px) {
   .features-section {
@@ -726,10 +771,14 @@ const animateOut = () => {
     font-size: clamp(45px, 10vw, 80px);
   }
 
+  .title-subheading {
+    font-size: clamp(0.7rem, 1.6vw, 0.85rem);
+  }
+
   .text-bubble {
-    font-size: clamp(0.75rem, 1.8vw, 0.88rem);
-    padding: clamp(0.7rem, 1.8vw, 1.1rem) clamp(1rem, 2.2vw, 1.5rem);
-    max-width: clamp(180px, 35vw, 240px);
+    font-size: clamp(0.65rem, 1.5vw, 0.75rem);
+    padding: clamp(0.6rem, 1.5vw, 0.9rem) clamp(0.8rem, 1.8vw, 1.2rem);
+    max-width: clamp(160px, 32vw, 220px);
   }
 
   .bubble-top-right {
@@ -753,15 +802,13 @@ const animateOut = () => {
   }
 
   .feature-image {
-    position: relative !important;
+    position: static !important;
     width: 100% !important;
     max-width: min(400px, 90vw);
     height: clamp(180px, 25vw, 220px) !important;
     margin: 0 auto;
-    left: auto !important;
-    right: auto !important;
-    top: auto !important;
-    bottom: auto !important;
+    /* Remove all positioning overrides */
+    inset: auto !important;
     transform: none !important;
   }
 
@@ -802,10 +849,14 @@ const animateOut = () => {
     font-size: clamp(40px, 12vw, 60px);
   }
 
+  .title-subheading {
+    font-size: clamp(0.65rem, 1.8vw, 0.75rem);
+  }
+
   .text-bubble {
-    font-size: clamp(0.7rem, 2vw, 0.8rem);
-    padding: clamp(0.6rem, 1.5vw, 0.9rem) clamp(0.8rem, 2vw, 1.2rem);
-    max-width: clamp(160px, 40vw, 200px);
+    font-size: clamp(0.6rem, 1.8vw, 0.7rem);
+    padding: clamp(0.5rem, 1.2vw, 0.75rem) clamp(0.7rem, 1.6vw, 1rem);
+    max-width: clamp(140px, 38vw, 180px);
   }
 
   .bubble-top-right {
