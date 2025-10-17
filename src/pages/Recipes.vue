@@ -123,9 +123,9 @@ onUnmounted(() => {
 
 //check if theres any results
 watch(recipes, (newVal) => {
-  if (newVal.length === 0) {
-    error.value = "No results available.";
-  } 
+    if (newVal.length === 0) {
+        error.value = "No results available.";
+    }
 });
 
 //Calls backend api to filter based on search and filters
@@ -273,186 +273,197 @@ const resetFilters = () => {
             <div class="hero-curve"></div>
         </section>
 
-        <!-- Top Search Bar + Search Button -->
-        <div class="search-bar-box">
-            <div class="search-box">
-
-                <input v-model="searchQuery" type="text" id="searchQuery"
-                    placeholder="Search recipes by name (e.g. pasta)" class="search-input" />
-                <button class="search-btn" @click="handleSearch">
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" height="24" width="24">
-                        <g id="Search">
-                            <path id="Union" fill="#ffffff"
-                                d="M11 2c4.9706 0 9 4.02944 9 9 0 2.125 -0.7381 4.0766 -1.9697 5.6162l4.1767 4.1768 -1.414 1.414 -4.1768 -4.1767C15.0766 19.2619 13.125 20 11 20c-4.97056 0 -9 -4.0294 -9 -9 0 -4.97056 4.02944 -9 9 -9m0 2c-3.86599 0 -7 3.13401 -7 7 0 3.866 3.13401 7 7 7 3.866 0 7 -3.134 7 -7 0 -3.86599 -3.134 -7 -7 -7"
-                                stroke-width="1"></path>
-                        </g>
-                    </svg>
-                    <span style="font-size: 15px;"> Search</span>
-                </button>
-            </div>
+        <!-- if page is loading show this  -->
+        <div v-if="loading" class="content-section container-fluid">
+            <div class="spinner"></div>
+            <h5 class="text-center">Loading... Please wait.</h5>
+            <div v-if="error" class="text-danger text-center">{{ error }}</div>
         </div>
+        <!-- if page is done loading recipes  -->
+        <div v-else class="content-section container-fluid">
+            <!-- Top Search Bar + Search Button -->
+            <div class="search-bar-box">
+                <div class="search-box">
 
-        <!-- Advanced Filters (Left) + Recipe Cards (Right) -->
-        <div class="row g-4">
-            <!-- LEFT: Advanced Filters -->
-            <div class="col-12 col-lg-4 col-xl-3 col-xxl-3">
-                <div class="advanced-filter-card shadow-sm p-4">
-                    <h5 class="filter-heading">Advanced Filters</h5>
-                    <hr class="filter-divider" />
+                    <input v-model="searchQuery" type="text" id="searchQuery"
+                        placeholder="Search recipes by name (e.g. pasta)" class="search-input" />
+                    <button class="search-btn" @click="handleSearch">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" height="24" width="24">
+                            <g id="Search">
+                                <path id="Union" fill="#ffffff"
+                                    d="M11 2c4.9706 0 9 4.02944 9 9 0 2.125 -0.7381 4.0766 -1.9697 5.6162l4.1767 4.1768 -1.414 1.414 -4.1768 -4.1767C15.0766 19.2619 13.125 20 11 20c-4.97056 0 -9 -4.0294 -9 -9 0 -4.97056 4.02944 -9 9 -9m0 2c-3.86599 0 -7 3.13401 -7 7 0 3.866 3.13401 7 7 7 3.866 0 7 -3.134 7 -7 0 -3.86599 -3.134 -7 -7 -7"
+                                    stroke-width="1"></path>
+                            </g>
+                        </svg>
+                        <span style="font-size: 15px;"> Search</span>
+                    </button>
+                </div>
+            </div>
 
-                    <!-- Cuisine dropdown -->
-                    <div class="filter-group">
-                        <label for="cuisine" class="filter-label">Cuisine</label>
-                        <select v-model="selectedCuisine" id="cuisine" class="filter-select">
-                            <option value="">All</option>
-                            <option v-for="cuisine in cuisines" :key="cuisine" :value="cuisine">
-                                {{ cuisine }}
-                            </option>
-                        </select>
-                    </div>
+            <!-- Advanced Filters (Left) + Recipe Cards (Right) -->
+            <div class="row g-4">
+                <!-- LEFT: Advanced Filters -->
+                <div class="col-12 col-lg-4 col-xl-3 col-xxl-3">
+                    <div class="advanced-filter-card shadow-sm p-4">
+                        <h5 class="filter-heading">Advanced Filters</h5>
+                        <hr class="filter-divider" />
 
-                    <!-- Diet checkboxes in 2 columns -->
-                    <div class="filter-group">
-                        <label class="filter-label">Diet Preferences</label>
-                        <div class="filter-box">
-                            <div class="" v-for="diet in diets" :key="diet">
-                                <div class="form-check">
-                                    <input class="form-check-input" type="checkbox" :id="diet" :value="diet"
-                                        v-model="selectedDiets" />
-                                    <label class="form-check-label" :for="diet">{{ diet }}</label>
-                                </div>
-                            </div>
+                        <!-- Cuisine dropdown -->
+                        <div class="filter-group">
+                            <label for="cuisine" class="filter-label">Cuisine</label>
+                            <select v-model="selectedCuisine" id="cuisine" class="filter-select">
+                                <option value="">All</option>
+                                <option v-for="cuisine in cuisines" :key="cuisine" :value="cuisine">
+                                    {{ cuisine }}
+                                </option>
+                            </select>
                         </div>
-                    </div>
 
-                    <!-- Intolerances checkboxes in 2 columns -->
-                    <div class="filter-group">
-                        <label class="filter-label">Intolerances</label>
-                        <div class="filter-box">
-                            <div class="row">
-                                <div class="col-6" v-for="item in intolerances" :key="item">
+                        <!-- Diet checkboxes in 2 columns -->
+                        <div class="filter-group">
+                            <label class="filter-label">Diet Preferences</label>
+                            <div class="filter-box">
+                                <div class="" v-for="diet in diets" :key="diet">
                                     <div class="form-check">
-                                        <input class="form-check-input" type="checkbox" :id="item" :value="item"
-                                            v-model="selectedIntolerances" />
-                                        <label class="form-check-label" :for="item">{{ item }}</label>
+                                        <input class="form-check-input" type="checkbox" :id="diet" :value="diet"
+                                            v-model="selectedDiets" />
+                                        <label class="form-check-label" :for="diet">{{ diet }}</label>
                                     </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
 
-                    <!-- Include ingredients -->
-                    <div class="filter-group">
-                        <label for="includeIng" class="filter-label">Include Ingredients</label>
-                        <input v-model="selectedIncludedIngredients" type="text" id="includeIng"
-                            placeholder="(e.g. beef,chicken)" class="filter-input" />
-                    </div>
-
-                    <!-- Exclude ingredients -->
-                    <div class="filter-group">
-                        <label for="excludeIng" class="filter-label">Exclude Ingredients</label>
-                        <input v-model="selectedExcludedIngredients" type="text" id="excludeIng"
-                            placeholder="(e.g. peanut,almonds)" class="filter-input" />
-                    </div>
-
-                    <!-- Sorting options -->
-                    <div class="filter-group">
-                        <label class="filter-label">Sort By</label>
-                        <div class="d-flex gap-2">
-                            <select v-model="selectedSortingOption" class="filter-select">
-                                <option value="">None</option>
-                                <option v-for="opt in sortOptions" :key="opt" :value="opt">
-                                    {{ opt }}
-                                </option>
-                            </select>
-                            <select v-model="selectedSortingDir" class="filter-select">
-                                <option value="">Direction</option>
-                                <option value="asc">Ascending</option>
-                                <option value="desc">Descending</option>
-                            </select>
-                        </div>
-                    </div>
-
-                    <!-- Nutrient sliders -->
-                    <div class="filter-group">
-                        <label class="filter-label">Nutrition Filters</label>
-                        <hr class="filter-sub-divider" />
-
-                        <label class="filter-label-small pb-5">Carbs (g)</label>
-                        <Slider v-model="carbRange" :min="0" :max="400" />
-                        <div class="d-flex justify-content-between small text-muted mt-1">
-                            <span>{{ carbRange[0] }}g</span>
-                            <span>{{ carbRange[1] }}g</span>
+                        <!-- Intolerances checkboxes in 2 columns -->
+                        <div class="filter-group">
+                            <label class="filter-label">Intolerances</label>
+                            <div class="filter-box">
+                                <div class="row">
+                                    <div class="col-6" v-for="item in intolerances" :key="item">
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="checkbox" :id="item" :value="item"
+                                                v-model="selectedIntolerances" />
+                                            <label class="form-check-label" :for="item">{{ item }}</label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
 
-                        <label class="filter-label-small mt-3 pb-5">Protein (g)</label>
-                        <Slider v-model="proteinRange" :min="0" :max="200" />
-                        <div class="d-flex justify-content-between small text-muted mt-1">
-                            <span>{{ proteinRange[0] }}g</span>
-                            <span>{{ proteinRange[1] }}g</span>
+                        <!-- Include ingredients -->
+                        <div class="filter-group">
+                            <label for="includeIng" class="filter-label">Include Ingredients</label>
+                            <input v-model="selectedIncludedIngredients" type="text" id="includeIng"
+                                placeholder="(e.g. beef,chicken)" class="filter-input" />
                         </div>
 
-                        <label class="filter-label-small mt-3 pb-5">Calories (kcal)</label>
-                        <Slider v-model="caloriesRange" :min="0" :max="3000" />
-                        <div class="d-flex justify-content-between small text-muted mt-1">
-                            <span>{{ caloriesRange[0] }}</span>
-                            <span>{{ caloriesRange[1] }}</span>
+                        <!-- Exclude ingredients -->
+                        <div class="filter-group">
+                            <label for="excludeIng" class="filter-label">Exclude Ingredients</label>
+                            <input v-model="selectedExcludedIngredients" type="text" id="excludeIng"
+                                placeholder="(e.g. peanut,almonds)" class="filter-input" />
                         </div>
 
-                        <label class="filter-label-small mt-3 pb-5">Fat (g)</label>
-                        <Slider v-model="fatRange" :min="0" :max="200" />
-                        <div class="d-flex justify-content-between small text-muted mt-1">
-                            <span>{{ fatRange[0] }}g</span>
-                            <span>{{ fatRange[1] }}g</span>
+                        <!-- Sorting options -->
+                        <div class="filter-group">
+                            <label class="filter-label">Sort By</label>
+                            <div class="d-flex gap-2">
+                                <select v-model="selectedSortingOption" class="filter-select">
+                                    <option value="">None</option>
+                                    <option v-for="opt in sortOptions" :key="opt" :value="opt">
+                                        {{ opt }}
+                                    </option>
+                                </select>
+                                <select v-model="selectedSortingDir" class="filter-select">
+                                    <option value="">Direction</option>
+                                    <option value="asc">Ascending</option>
+                                    <option value="desc">Descending</option>
+                                </select>
+                            </div>
                         </div>
-                    </div>
 
-                    <!-- Buttons -->
-                    <div class="d-flex flex-column gap-2 mt-4">
-                        <button class="btn apply-btn" @click="handleSearch">✔ Apply Filters</button>
-                        <button class="btn reset-btn" @click="resetFilters">↺ Reset Filters</button>
+                        <!-- Nutrient sliders -->
+                        <div class="filter-group">
+                            <label class="filter-label">Nutrition Filters</label>
+                            <hr class="filter-sub-divider" />
+
+                            <label class="filter-label-small pb-5">Carbs (g)</label>
+                            <Slider v-model="carbRange" :min="0" :max="400" />
+                            <div class="d-flex justify-content-between small text-muted mt-1">
+                                <span>{{ carbRange[0] }}g</span>
+                                <span>{{ carbRange[1] }}g</span>
+                            </div>
+
+                            <label class="filter-label-small mt-3 pb-5">Protein (g)</label>
+                            <Slider v-model="proteinRange" :min="0" :max="200" />
+                            <div class="d-flex justify-content-between small text-muted mt-1">
+                                <span>{{ proteinRange[0] }}g</span>
+                                <span>{{ proteinRange[1] }}g</span>
+                            </div>
+
+                            <label class="filter-label-small mt-3 pb-5">Calories (kcal)</label>
+                            <Slider v-model="caloriesRange" :min="0" :max="3000" />
+                            <div class="d-flex justify-content-between small text-muted mt-1">
+                                <span>{{ caloriesRange[0] }}</span>
+                                <span>{{ caloriesRange[1] }}</span>
+                            </div>
+
+                            <label class="filter-label-small mt-3 pb-5">Fat (g)</label>
+                            <Slider v-model="fatRange" :min="0" :max="200" />
+                            <div class="d-flex justify-content-between small text-muted mt-1">
+                                <span>{{ fatRange[0] }}g</span>
+                                <span>{{ fatRange[1] }}g</span>
+                            </div>
+                        </div>
+
+                        <!-- Buttons -->
+                        <div class="d-flex flex-column gap-2 mt-4">
+                            <button class="btn apply-btn" @click="handleSearch">✔ Apply Filters</button>
+                            <button class="btn reset-btn" @click="resetFilters">↺ Reset Filters</button>
+                        </div>
                     </div>
                 </div>
-            </div>
 
-            <!-- RIGHT: Recipe Cards -->
-            <div class="col-12 col-lg-8 col-xl-9 col-xxl-9" style="margin-top:50px">
-                <div v-if="loading" class="text-center">Loading...</div>
-                <div v-else-if="error" class="text-danger text-center">{{ error }}</div>
+                <!-- RIGHT: Recipe Cards -->
+                <div class="col-12 col-lg-8 col-xl-9 col-xxl-9" style="margin-top:50px">
+                    <div v-if="loading" class="text-center">Loading...</div>
+                    <div v-else-if="error" class="text-danger text-center">{{ error }}</div>
 
-                <div v-else class="row g-4">
-                    <div class="col-12 col-md-6 col-lg-6 col-xl-4 col-xxl-4 recipe-col"
-                        v-for="recipe in paginatedRecipes" :key="recipe.id">
-                        <ProjectCard :title="recipe.title" :image="recipe.image" :tags="recipe.dishTypes"
-                            :prepTime="recipe.readyInMinutes" :servings="recipe.servings"
-                            :healthScore="recipe.healthScore"
-                            @click="$router.push({ name: 'SpecificRecipe', query: { id: recipe.id } })" />
+                    <div v-else class="row g-4">
+                        <div class="col-12 col-md-6 col-lg-6 col-xl-4 col-xxl-4 recipe-col"
+                            v-for="recipe in paginatedRecipes" :key="recipe.id">
+                            <ProjectCard :title="recipe.title" :image="recipe.image" :tags="recipe.dishTypes"
+                                :prepTime="recipe.readyInMinutes" :servings="recipe.servings"
+                                :healthScore="recipe.healthScore"
+                                @click="$router.push({ name: 'SpecificRecipe', query: { id: recipe.id } })" />
+                        </div>
+                    </div>
+                    <!-- Pagination Controls -->
+                    <div v-if="totalPages > 1 && cardsPerPage < recipes.length"
+                        class="d-flex justify-content-center align-items-center mt-4">
+                        <nav>
+                            <ul class="pagination mb-0">
+                                <li class="page-item" :class="{ disabled: currentPage === 1 }">
+                                    <button class="page-link" @click="goToPage(currentPage - 1)">Previous</button>
+                                </li>
+
+                                <li v-for="page in totalPages" :key="page" class="page-item"
+                                    :class="{ active: page === currentPage }">
+                                    <button class="page-link" @click="goToPage(page)">{{ page }}</button>
+                                </li>
+
+                                <li class="page-item" :class="{ disabled: currentPage === totalPages }">
+                                    <button class="page-link" @click="goToPage(currentPage + 1)">Next</button>
+                                </li>
+                            </ul>
+                        </nav>
                     </div>
                 </div>
-                <!-- Pagination Controls -->
-                <div v-if="totalPages > 1 && cardsPerPage < recipes.length"
-                    class="d-flex justify-content-center align-items-center mt-4">
-                    <nav>
-                        <ul class="pagination mb-0">
-                            <li class="page-item" :class="{ disabled: currentPage === 1 }">
-                                <button class="page-link" @click="goToPage(currentPage - 1)">Previous</button>
-                            </li>
 
-                            <li v-for="page in totalPages" :key="page" class="page-item"
-                                :class="{ active: page === currentPage }">
-                                <button class="page-link" @click="goToPage(page)">{{ page }}</button>
-                            </li>
-
-                            <li class="page-item" :class="{ disabled: currentPage === totalPages }">
-                                <button class="page-link" @click="goToPage(currentPage + 1)">Next</button>
-                            </li>
-                        </ul>
-                    </nav>
-                </div>
             </div>
 
         </div>
     </div>
+
 </template>
 
 <style>
@@ -501,7 +512,7 @@ body {
     font-size: 6rem;
     letter-spacing: 2px;
     margin: 0;
-    top:65px;
+    top: 65px;
     z-index: 2;
     position: relative;
 }
@@ -518,7 +529,7 @@ body {
     -webkit-text-fill-color: transparent;
     margin-top: 0.2rem;
     position: relative;
-    top:65px;
+    top: 65px;
     z-index: 2;
 }
 
@@ -619,6 +630,35 @@ body {
 
 .icon4 {
     animation-delay: 1.5s;
+}
+
+/* loading portion */
+.content-section {
+  width: 100%;           /* full viewport width */
+  padding-left: 2rem;
+  padding-right: 2rem;
+  box-sizing: border-box;
+}
+
+.spinner {
+    width: 48px;
+    height: 48px;
+    border: 5px solid #e0e0e0;
+    border-top-color: #3490dc;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+.error {
+    color: #dc2626;
+    margin-top: 0.5rem;
+    text-align: center;
 }
 
 /* Keep dropdown menu properly positioned */
