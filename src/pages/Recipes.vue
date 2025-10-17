@@ -1,6 +1,6 @@
 <script setup>
 import ProjectCard from "../components/UI/ProjectCard.vue";
-import { ref, onMounted, onUnmounted, computed } from "vue";
+import { ref, onMounted, onUnmounted, computed, watch } from "vue";
 import axios from "axios";
 import Slider from '@vueform/slider'
 
@@ -119,6 +119,13 @@ onMounted(async () => {
 
 onUnmounted(() => {
     window.removeEventListener('resize', updateCardsPerPage);
+});
+
+//check if theres any results
+watch(recipes, (newVal) => {
+  if (newVal.length === 0) {
+    error.value = "No results available.";
+  } 
 });
 
 //Calls backend api to filter based on search and filters

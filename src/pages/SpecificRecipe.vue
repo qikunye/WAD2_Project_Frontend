@@ -93,7 +93,7 @@ function addToMealPlan() {
                 <!-- Home link -->
                 <router-link to="/" class="breadcrumb-link d-flex align-items-center">
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14"
-                        id="Home-2--Streamline-Flex-Remix" height="16" width="16">
+                        id="Home-2--Streamline-Flex-Remix" height="14" width="14">
                         <desc>
                             Home 2 Streamline Icon: https://streamlinehq.com
                         </desc>
@@ -559,6 +559,7 @@ ol li {
     text-decoration: none;
     font-weight: 500;
     transition: color 0.2s ease;
+    font-size: 16px;
 }
 
 .breadcrumb-link:hover {
@@ -574,6 +575,7 @@ ol li {
 .breadcrumb-current {
     color: #1c1456;
     font-weight: 600;
+    font-size: 16px;
 }
 
 /* Gradient styles */
@@ -906,6 +908,7 @@ img {
     text-align: left;
     color:#7d7d7d;
     font-size: 18px;
+    font-weight: bold;
 }
 
 .nutrition-card {
