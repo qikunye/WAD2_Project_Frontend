@@ -3,6 +3,7 @@ import ProjectCard from "../components/UI/ProjectCard.vue";
 import { ref, onMounted, onUnmounted, computed, watch } from "vue";
 import axios from "axios";
 import Slider from '@vueform/slider'
+import { DotLottieVue } from '@lottiefiles/dotlottie-vue'
 
 
 //If you have HTML that needs to update depending on a variable value you can use a "reactive reference" with ref(initialValue)
@@ -274,10 +275,33 @@ const resetFilters = () => {
         </section>
 
         <!-- if page is loading show this  -->
-        <div v-if="loading" class="content-section container-fluid">
-            <div class="spinner"></div>
-            <h5 class="text-center">Loading... Please wait.</h5>
-            <div v-if="error" class="text-danger text-center">{{ error }}</div>
+        <div v-if="loading" class="content-section container-fluid d-flex justify-content-center align-items-center"
+            style="min-height: 200px;">
+            <!-- <div class="spinner"></div> -->
+            <div class="d-flex align-items-center gap-3">
+                <DotLottieVue style="height: 40px; width: 40px;" autoplay loop
+                    src="https://lottie.host/db7c62b0-1a03-498f-b32b-f382cda1cbf8/1NN7GPjqSP.lottie" />
+                <h5 class="m-0" style="font-size: 20px;font-family: var(--font-heading2);">Loading... Thank you for your
+                    patience.</h5>
+            </div>
+        </div>
+        <!-- if page is done loading & failed to retrieve recipes  -->
+        <div v-else-if="loading === false && error" class="content-section container-fluid d-flex justify-content-center align-items-center"
+            style="min-height: 200px;">
+            <div class="d-flex align-items-center gap-3">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14" id="Sad-Face--Streamline-Core-Remix"
+                height="30" width="30">
+                <desc>
+                    Sad Face Streamline Icon: https://streamlinehq.com
+                </desc>
+                <g id="Free Remix/Mail/Mail/Smiley/sad-face--smiley-chat-message-emoji-sad-face-unsatisfied">
+                    <path id="Union" fill="#DC3545" fill-rule="evenodd"
+                        d="M7 1.25C3.82436 1.25 1.25 3.82436 1.25 7c0 3.1756 2.57436 5.75 5.75 5.75 3.1756 0 5.75 -2.5744 5.75 -5.75 0 -3.17564 -2.5744 -5.75 -5.75 -5.75ZM0 7c0 -3.86599 3.13401 -7 7 -7 3.866 0 7 3.13401 7 7 0 3.866 -3.134 7 -7 7 -3.86599 0 -7 -3.134 -7 -7Zm4.75 -2.75c0.55228 0 1 0.44772 1 1s-0.44772 1 -1 1 -1 -0.44772 -1 -1 0.44772 -1 1 -1Zm3.5 1c0 0.55228 0.44771 1 1 1s1 -0.44772 1 -1 -0.44771 -1 -1 -1 -1 0.44772 -1 1Zm-1.25001 2c-1.34188 0 -2.53883 0.62276 -3.3165 1.59211 -0.2592 0.32309 -0.20741 0.79513 0.11567 1.05433 0.32309 0.25916 0.79514 0.20746 1.05434 -0.11567C5.35872 9.15102 6.13227 8.75 6.99999 8.75c0.86773 0 1.64128 0.40102 2.1465 1.03077 0.2592 0.32313 0.73124 0.37483 1.05431 0.11567 0.3231 -0.2592 0.3749 -0.73124 0.1157 -1.05433C9.53882 7.87276 8.34188 7.25 6.99999 7.25Z"
+                        clip-rule="evenodd" stroke-width="1"></path>
+                </g>
+            </svg>
+            <h5 class="m-0 text-danger" style="font-size: 25px;font-family: var(--font-heading2);">{{ error }}</h5>
+            </div>
         </div>
         <!-- if page is done loading recipes  -->
         <div v-else class="content-section container-fluid">
@@ -640,14 +664,14 @@ body {
   box-sizing: border-box;
 }
 
-.spinner {
+/* .spinner {
     width: 48px;
     height: 48px;
     border: 5px solid #e0e0e0;
     border-top-color: #3490dc;
     border-radius: 50%;
     animation: spin 1s linear infinite;
-}
+} */
 
 @keyframes spin {
     to {
