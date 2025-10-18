@@ -65,9 +65,9 @@
       <div class="stats-section" ref="statsSection">
         <p class="stats-sentence">
           Our platform gives you access to over 
-          <span class="stat-highlight" data-index="0">30+</span> recipes, 
-          <span class="stat-highlight" data-index="1">15+</span> ingredients, and 
-          <span class="stat-highlight" data-index="2">5+</span> meal plans.
+          <span class="stat-highlight" data-index="0">5000+</span> recipes, 
+          <span class="stat-highlight" data-index="1">2500+</span> ingredients, and 
+          <span class="stat-highlight" data-index="2">1000+</span> meal plans.
         </p>
       </div>
     </div>
