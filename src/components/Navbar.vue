@@ -2,10 +2,10 @@
   <header class="navbar-container">
     <div class="navbar-inner">
       <!-- Brand -->
-      <div class="navbar-brand-section">
+      <router-link to="/" class="navbar-brand-section">
         <img src="/images/zerobites_logo.png" alt="ZeroBites Logo" class="navbar-logo" />
         <div class="navbar-brand-text">ZeroBites</div>
-      </div>
+      </router-link>
 
       <!-- Main Navigation -->
       <nav class="navbar-main">
@@ -26,7 +26,9 @@
                :href="section.href" 
                class="dropdown-item-compact" 
                @click.prevent="handleHomeNavigation(section.href)">
-              <div class="item-icon">📍</div>
+              <div class="item-icon">
+                <img :src="section.image" :alt="section.title" class="icon-image" />
+              </div>
               <div class="item-content">
                 <div class="item-title">{{ section.title }}</div>
                 <div class="item-description">{{ section.description }}</div>
@@ -127,9 +129,9 @@ let closeTimer = null;
 const navigation = {
   home: {
     sections: [
-      { title: 'Problems', description: 'Understanding food waste challenges', href: '/#problems' },
-      { title: 'Features', description: 'Explore our solutions', href: '/#features' },
-      { title: 'Call to Action', description: 'Join the movement', href: '/#call_to_action' }
+      { title: 'Problems', description: 'Understanding food waste challenges', href: '/#problems', image: '/images/nav_bar_problem.jpeg' },
+      { title: 'Features', description: 'Explore our solutions', href: '/#features', image: '/images/nav_bar_features.jpeg' },
+      { title: 'Call to Action', description: 'Join the movement', href: '/#call_to_action', image: '/images/nav_bar_calltoaction.jpeg' }
     ]
   },
   mealSharing: {
@@ -249,6 +251,13 @@ onMounted(async () => {
   display: flex;
   align-items: center;
   gap: 0.5rem;
+  text-decoration: none;
+  cursor: pointer;
+  transition: opacity 0.3s ease;
+}
+
+.navbar-brand-section:hover {
+  opacity: 0.8;
 }
 
 .navbar-logo {
@@ -383,6 +392,17 @@ onMounted(async () => {
 .item-icon {
   font-size: 1.5rem;
   flex-shrink: 0;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.icon-image {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
 }
 
 .item-content {
